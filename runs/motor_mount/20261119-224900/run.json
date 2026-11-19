@@ -1,0 +1,14 @@
+{
+ "part": "motor_mount",
+ "part_dir": "/home/user/cnc-llm/parts/dev/motor_mount",
+ "part_sha256": "b0b9017fecc5e63975fb753d16971720cdfda78ca23f359caa975e7b76748333",
+ "created": "20261119-224900",
+ "label": "",
+ "harness": {
+  "sha256": "89ff3a9e19086ce3d59ec95053170d7fc059058016253bf03acb878d66a9e3d4",
+  "git_head": "a42dc4e",
+  "harness_modified": false,
+  "modified_files": []
+ },
+ "model": "claude-opus-5-5 (Claude Code subagent)"
+}

@@ -1,0 +1,14 @@
+{
+ "part": "mould_cavity",
+ "part_dir": "/home/user/cnc-llm/parts/dev/mould_cavity",
+ "part_sha256": "449c20c43481fda271c7465c781fab4adf46956914945f9239ec1268e4c4b099",
+ "created": "20261119-224900",
+ "label": "",
+ "harness": {
+  "sha256": "89ff3a9e19086ce3d59ec95053170d7fc059058016253bf03acb878d66a9e3d4",
+  "git_head": "a42dc4e",
+  "harness_modified": false,
+  "modified_files": []
+ },
+ "model": "claude-opus-5-5 (Claude Code subagent)"
+}
