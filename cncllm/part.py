@@ -21,7 +21,8 @@ from .tools import LIBRARY
 TOL = 0.1
 SURF_DENSITY = 0.15     # mm^2 of surface per probe point
 MAX_POINTS = 250_000
-TARGET_RES = 0.05       # target height-field resolution for accessibility (mm)
+TARGET_RES = 0.05
+EDGE_BAND = 0.03        # mm       # target height-field resolution for accessibility (mm)
 
 
 @dataclass
@@ -42,6 +43,8 @@ class Part:
     Hach: np.ndarray         # lowest top achievable with the library without gouging (same grid)
     grid: dict               # x0 y0 res nx ny of Ht / Hach
     sha: str
+    preach: np.ndarray = None
+    pedge: np.ndarray = None   # probe within EDGE_BAND of its B-rep face boundary (normal probing is ill-posed there)  # machinable only by the smallest tools, whose holder reach is too short (informational)
 
     @property
     def stock_lo(self):
@@ -211,18 +214,60 @@ def _upward_blocked(V, F, TF, Q, qface):
     return hit
 
 
+def edge_band(V, F, TF, P, PF, band=EDGE_BAND):
+    """True for probes closer than `band` to the boundary of their own B-rep face. At a face edge the normal ray
+    enters the neighbouring face's material/air, so a micron-level wall offset reads as a +-5 mm deviation."""
+    from scipy.spatial import cKDTree
+
+    out = np.zeros(len(P), bool)
+    for f in np.unique(TF):
+        tris = F[TF == f]
+        e = np.sort(np.concatenate([tris[:, [0, 1]], tris[:, [1, 2]], tris[:, [2, 0]]]), axis=1)
+        u, c = np.unique(e, axis=0, return_counts=True)
+        b = u[c == 1]
+        if not len(b):
+            continue
+        a, d = V[b[:, 0]], V[b[:, 1]]
+        L = np.linalg.norm(d - a, axis=1)
+        n = np.maximum(np.ceil(L / (band / 3)).astype(int), 1)
+        pts = np.concatenate([a[i] + (d[i] - a[i]) * (np.arange(n[i] + 1)[:, None] / n[i]) for i in range(len(b))])
+        k = np.where(PF == f)[0]
+        if not len(k):
+            continue
+        dist, _ = cKDTree(pts).query(P[k], distance_upper_bound=band)
+        out[k[np.isfinite(dist)]] = True
+    return out
+
+
+def holder_floor(Ht, res, holder_R, stickout, block=5):
+    """Lowest tip height at which the holder (cylinder of holder_R starting stick-out above the tip) clears the target:
+    max of Ht within holder_R, minus stick-out. Conservative block-max on a coarse grid."""
+    from scipy import ndimage
+
+    ny, nx = Ht.shape
+    py, px = (-ny) % block, (-nx) % block
+    Hp = np.pad(Ht, ((0, py), (0, px)), mode="edge")
+    C = Hp.reshape(Hp.shape[0] // block, block, Hp.shape[1] // block, block).max(axis=(1, 3))
+    r = int(np.ceil(holder_R / (res * block))) + 1
+    yy, xx = np.mgrid[-r:r + 1, -r:r + 1]
+    fp = np.hypot(yy, xx) * res * block <= holder_R + res * block
+    M = ndimage.maximum_filter(C, footprint=fp, mode="nearest")
+    U = np.repeat(np.repeat(M, block, 0), block, 1)[:ny, :nx]
+    return np.ascontiguousarray(U - stickout)
+
+
 def load(part_dir, rebuild: bool = False, verbose: bool = True) -> Part:
     pdir = Path(part_dir)
     step = pdir / "part.step"
     stock = json.loads((pdir / "stock.json").read_text())
     sha = _sha(step)
     cdir = pdir / ".cache"
-    cfile = cdir / f"pre_{sha[:16]}.npz"
+    cfile = cdir / f"pre3_{sha[:16]}.npz"
     if cfile.exists() and not rebuild:
         z = np.load(cfile, allow_pickle=False)
         meta = json.loads(str(z["meta"]))
         return Part(pdir, stock.get("name", pdir.name), stock, z["V"], z["F"], z["TF"], meta["faces"], z["P"], z["N"],
-                    z["pface"], z["parea"], z["pclass"], z["Ht"], z["Hach"], meta["grid"], sha)
+                    z["pface"], z["parea"], z["pclass"], z["Ht"], z["Hach"], meta["grid"], sha, z["preach"], z["pedge"])
     import time
     t0 = time.time()
     V, F, TF, faces, _ = _mesh_from_step(step)
@@ -237,9 +282,14 @@ def load(part_dir, rebuild: bool = False, verbose: bool = True) -> Part:
     grid = {"x0": float(lo[0]), "y0": float(lo[1]), "res": res, "nx": nx, "ny": ny}
     # achievable envelope with the smallest ball and smallest flat tool of the library
     Hach = np.full_like(Ht, 1e30)
-    for tn in (4, 8):  # 1.5 mm flat, 1 mm ball
-        row = LIBRARY[tn].row()
-        Hach = np.minimum(Hach, kernel.achievable(Ht, res, int(row[0]), row[1], row[2], row[3], row[4]))
+    Hreach = np.full_like(Ht, 1e30)
+    nofloor = np.full_like(Ht, -1e30)
+    for tn in (4, 8):  # smallest flat and ball tool: geometric limit (tool radius), ignoring holder reach
+        t = LIBRARY[tn]
+        row = t.row()
+        Hach = np.minimum(Hach, kernel.achievable(Ht, res, int(row[0]), row[1], row[2], row[3], row[4], nofloor))
+        zfloor = holder_floor(Ht, res, t.holder_diameter / 2, t.stickout)
+        Hreach = np.minimum(Hreach, kernel.achievable(Ht, res, int(row[0]), row[1], row[2], row[3], row[4], zfloor))
     # classify probe points
     cls = np.zeros(len(P), np.int8)
     datum = (P[:, 2] < 1e-3) & (N[:, 2] < -0.99)
@@ -256,11 +306,14 @@ def load(part_dir, rebuild: bool = False, verbose: bool = True) -> Part:
     ii = np.clip(((Qt[:, 1] - lo[1]) / res - 0.5).round().astype(int), 0, ny - 1)
     lim = (Hach[ii, jj] > Qt[:, 2] + 0.03) & (cls == 0)
     cls[lim] = 3
+    # informational: needs the smallest tools but their holder/stick-out cannot get there (bigger tools may still not fit)
+    reach = (Hreach[ii, jj] > Qt[:, 2] + 0.03) & (cls == 0)
+    edge = edge_band(V, F, TF, P, PF)
     cdir.mkdir(exist_ok=True)
     meta = {"faces": faces, "grid": grid}
-    np.savez_compressed(cfile, V=V, F=F, TF=TF, P=P, N=N, pface=PF, parea=PA, pclass=cls, Ht=Ht, Hach=Hach,
+    np.savez_compressed(cfile, V=V, F=F, TF=TF, P=P, N=N, pface=PF, parea=PA, pclass=cls, Ht=Ht, Hach=Hach, preach=reach, pedge=edge,
                         meta=json.dumps(meta))
     if verbose:
         print(f"[part] {pdir.name}: {len(F)} tris, {len(P)} probes, classes "
               f"{np.bincount(cls, minlength=4).tolist()} in {time.time() - t0:.1f}s")
-    return Part(pdir, stock.get("name", pdir.name), stock, V, F, TF, faces, P, N, PF, PA, cls, Ht, Hach, grid, sha)
+    return Part(pdir, stock.get("name", pdir.name), stock, V, F, TF, faces, P, N, PF, PA, cls, Ht, Hach, grid, sha, reach, edge)

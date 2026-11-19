@@ -303,10 +303,11 @@ def raster_top(V, F, x0, y0, res, nx, ny):
 
 
 @nb.njit(parallel=True, cache=True)
-def achievable(Ht, res, kind, R, cr, tip, cot):
+def achievable(Ht, res, kind, R, cr, tip, cot, zfloor):
     """Lowest material top a single tool can leave without gouging the target height field Ht:
     tip height  zt(c) = max_{|u|<=R} Ht(c+u) - h(|u|)   (drop cutter), then
-    Hach(x)     = min_{|x-c|<=R} zt(c) + h(|x-c|)        (envelope of all gouge-free placements)."""
+    Hach(x)     = min_{|x-c|<=R} zt(c) + h(|x-c|)        (envelope of all gouge-free placements).
+    zfloor: lowest allowed tip height per cell from holder reach (target max under the holder - stick-out)."""
     ny, nx = Ht.shape
     r = int(math.ceil(R / res))
     zt = np.empty_like(Ht)
@@ -327,7 +328,7 @@ def achievable(Ht, res, kind, R, cr, tip, cot):
                     v = Ht[ii, jj] - prof(kind, R, cr, tip, cot, d)
                     if v > best:
                         best = v
-            zt[i, j] = best
+            zt[i, j] = max(best, zfloor[i, j])
     out = np.empty_like(Ht)
     for i in nb.prange(ny):
         for j in range(nx):

@@ -145,7 +145,7 @@ def markdown(part: Part, res: dict, regs: list, iteration=None) -> str:
     st = res["stats"]
     L = []
     L.append(f"# Simulation feedback{f' - iteration {iteration}' if iteration else ''}: {part.name}\n")
-    L.append(f"**Score: {m['machinable_in_tol_pct']:.2f}% of the machinable surface within +-{TOL} mm** "
+    L.append(f"**Score: {m['machinable_in_tol_pct']:.3f}% of the machinable surface within +-{TOL} mm** "
              f"(all non-datum surface: {m['all_in_tol_pct']:.2f}%).  Program valid: **{'YES' if m['valid'] else 'NO'}** "
              f"({m['errors']} errors, {m['warnings']} warnings).\n")
     L.append("| metric | value |\n|---|---|")
@@ -155,7 +155,10 @@ def markdown(part: Part, res: dict, regs: list, iteration=None) -> str:
         L.append(f"| {k} | {m[k]} |")
     L.append("\nGouges (target material removed) scrap the part: fix them first. 'tool_limited' surface needs a tool "
              "smaller than the library has (sharp internal corners); 'undercut' surface cannot be reached from +Z. "
-             "Both are excluded from the score and shown as proud material.\n")
+             "Both are excluded from the score and shown as proud material, as is a 0.03 mm band along face edges "
+             "(normal probing is ill-posed exactly at an edge). gouged_cm3 / remaining_excess_cm3 are height-field "
+             "estimates on the simulation grid (they include wall-cell discretisation and in-tolerance deviations); "
+             "the surface percentages are the exact measure.\n")
     errs = [i for i in res["issues"] if i["severity"] == "error"]
     warns = [i for i in res["issues"] if i["severity"] == "warning"]
     if errs:

@@ -113,7 +113,10 @@ def cmd_evaluate(a):
                         % (str(REPO), str(run), n)], env=env)
     if r.returncode:
         sys.exit("trusted evaluation failed")
-    cmd_report(a)
+    try:
+        cmd_report(a)
+    except Exception as e:  # the evaluation itself is already written
+        print(f"WARNING: report not built ({e!r}); final/evaluation.json is complete")
 
 
 def _trusted_eval(run_dir: str, n: int):

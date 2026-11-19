@@ -13,7 +13,9 @@ You iterate until the part is right.
 ## 0. Setup (once)
 ```bash
 pip install -e <repo>            # repo = this skill's repository (github.com/paristhomas/cnc-llm); needs Python >= 3.10
-python -m cncllm --help
+python -m cncllm --help           # works from any directory after the editable install
+# optional, for the independent cross-check in `evaluate`:
+git clone --depth 1 https://github.com/kulibinai/millbill ~/millbill && export MILLBILL_DIR=~/millbill
 ```
 Your own part: `python -m cncllm init-part my_part.step parts/mine/my_part` (moves the part bottom to Z0, centres it in
 XY, makes a box stock with 2 mm side and 1 mm top allowance; edit `stock.json` if needed).
@@ -42,6 +44,11 @@ numpy, scipy, shapely (2D offsets/booleans), trimesh / cadquery **only to read t
 CAM/toolpath libraries (opencamlib, pycam, FreeCAD Path, pyactp, ...) and importing `cncllm` (the simulator) in your
 generator - the loop below is the only way to use the simulator, so every attempt is recorded. Hand-written G-code is
 also fine for simple features.
+
+Useful: `trimesh.load(part.stl).section(plane_origin=[0,0,z], plane_normal=[0,0,1])` then `.to_planar()[0].polygons_full`
+gives the part's cross-section polygons at height z (needs networkx, installed with the package) - offset them with
+shapely `buffer` for tool-radius paths. Fill holes in your own height map before raster finishing, or the ball will
+dive into them.
 
 Geometry you must handle yourself: tool-radius offsets (no G41/G42), corner radii (an internal corner of radius r needs
 a tool radius <= r, or leaves material), ball-nose 3D finishing (drop the tool on the surface: for each XY on a raster,

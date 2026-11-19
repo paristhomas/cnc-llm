@@ -170,7 +170,13 @@ def run(program_text: str, part: Part, res: float = SIM_RES, verbose: bool = Tru
         k = np.where(flags & bit)[0]
         if len(k):
             lines = sorted(set(int(M[i, 10]) for i in k))
-            issues.append({"severity": "error", "kind": "collision", "msg": msg, "count": int(len(k)),
+            i0 = k[0]
+            where = (f"; first at line {int(M[i0, 10])}: move ({M[i0, 0]:.2f}, {M[i0, 1]:.2f}, {M[i0, 2]:.2f}) -> "
+                     f"({M[i0, 3]:.2f}, {M[i0, 4]:.2f}, {M[i0, 5]:.2f}) with T{int(M[i0, 6])}, removed "
+                     f"{vol[i0]:.3f} mm3, max {thick[i0]:.3f} mm deep")
+            if bit == 4:
+                where += f" (flute length {LIBRARY[int(M[i0, 6])].flute_length:g} mm)"
+            issues.append({"severity": "error", "kind": "collision", "msg": msg + where, "count": int(len(k)),
                            "line": lines[0], "lines": lines[:30],
                            "volume_mm3": round(float(vol[k].sum()), 2)})
     if len(M):
@@ -231,6 +237,7 @@ def cutting_checks(M, vol, thick, stats):
     L = stats["L"]
     cut = (M[:, 7] < 0.5) & (vol > 1e-6)
     groups = {}
+    maxA = {}
     for i in np.where(cut)[0]:
         t = LIBRARY[int(M[i, 6])]
         rpm, f = M[i, 9], M[i, 8]
@@ -248,6 +255,9 @@ def cutting_checks(M, vol, thick, stats):
             A = vol[i] / max(L[i], 1e-9)
             if A > 0.75 * D * D and t.kind != "cone":
                 groups.setdefault(("engagement", t.number), []).append(i)
+                worst = maxA.get(t.number)
+                if worst is None or A > worst[0]:
+                    maxA[t.number] = (A, i)
         if vert > 0.05 and horiz < 0.2 * vert:  # plunge
             if t.kind == "cone" and t.number == 10:
                 continue
@@ -271,7 +281,18 @@ def cutting_checks(M, vol, thick, stats):
         # tiny counts of chip-load or engagement outliers are warnings, not errors
         if sev == "error" and kind in ("engagement",) and len(idx) < 3:
             sev = "warning"
-        out.append({"severity": sev, "kind": "cutting", "msg": msg.format(t=tn), "count": len(idx),
+        msg = msg.format(t=tn)
+        if kind == "engagement":
+            A, i = maxA[tn]
+            D = LIBRARY[tn].diameter
+            msg += (f"; worst {A:.2f} mm2 > limit {0.75 * D * D:.2f} mm2 at line {int(M[i, 10])} "
+                    f"(move to {M[i, 3]:.2f}, {M[i, 4]:.2f}, {M[i, 5]:.2f}, removed column up to {thick[i]:.2f} mm deep)")
+        elif kind.startswith("chipload"):
+            i = idx[0]
+            t = LIBRARY[tn]
+            cl = M[i, 8] / max(M[i, 9] * t.flutes, 1e-9)
+            msg += f"; e.g. line {int(M[i, 10])}: F{M[i, 8]:g} S{M[i, 9]:g} -> {cl:.4f} mm/tooth vs recommended {t.chipload:g}"
+        out.append({"severity": sev, "kind": "cutting", "msg": msg, "count": len(idx),
                     "line": lines[0], "lines": lines[:30]})
     return out
 
@@ -280,8 +301,9 @@ def surface_metrics(part: Part, dev):
     cls = part.pclass
     a = part.parea
     within = np.abs(dev) <= TOL
-    mach = cls == 0
-    nond = cls != 1
+    edge = part.pedge if part.pedge is not None else np.zeros(len(cls), bool)
+    mach = (cls == 0) & ~edge
+    nond = (cls != 1) & ~edge
 
     def pct(mask, sub):
         den = a[mask].sum()
@@ -299,6 +321,7 @@ def surface_metrics(part: Part, dev):
         "surface_area_mm2": round(float(a[nond].sum()), 1),
         "probes": int(nond.sum()),
         "tolerance_mm": TOL,
+        "edge_band_excluded_pct": round(pct(cls != 1, edge), 3),
     }
 
 

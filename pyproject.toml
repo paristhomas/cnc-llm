@@ -3,7 +3,7 @@ name = "cncllm"
 version = "0.1.0"
 description = "LLM-written G-code with a closed-loop machining simulator (3-axis, aluminium)"
 requires-python = ">=3.10"
-dependencies = ["numpy", "numba", "scipy", "trimesh", "rtree", "matplotlib", "cadquery"]
+dependencies = ["numpy", "numba", "scipy", "trimesh", "rtree", "matplotlib", "cadquery", "networkx", "shapely"]
 
 [project.scripts]
 cncllm = "cncllm.cli:main"

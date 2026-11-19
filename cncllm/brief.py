@@ -16,7 +16,10 @@ DIALECT = """\
 - Metric, absolute: start with `G21 G90 G17 G94`. Incremental (G91), inch (G20), cutter compensation (G41/G42),
   G28/G30/G53, work offsets other than G54, macros/variables/O-words and canned cycles other than G81/G82/G83 are
   rejected. Unknown words are errors, never ignored.
-- Tool change: `T<n> M6` then `G43 H<n>` (same n) before cutting. M6 retracts Z to the machine home Z150 first.
+- Tool change: `M5` then `T<n> M6` then `G43 H<n>` (same n) before cutting. M6 retracts Z to the machine home Z150
+  first (and stops the spindle if you forgot M5 - a warning).
+- Accepted: `%` tape markers, `( ... )` and `;` comments, `N` numbers, `G54` alone on a line, full circles
+  (G2/G3 with end point = start point and I/J), `G64 P..`, `G4 P<seconds>`.
 - Spindle: `S<rpm> M3` before cutting (M4 is rejected), `M5` to stop. Feed `F` in mm/min (max 6000).
 - Motion: G0 (rapid), G1, G2/G3 in the XY plane with I/J (incremental centre) or R, helical Z allowed.
   Drilling: `G81/G82/G83 X Y Z R [Q] [P] F` with G98/G99, cancel with G80.
@@ -143,6 +146,13 @@ def write(part: Part, out_dir) -> Path:
 
 ## Machine and G-code dialect
 {DIALECT}
+## Tool model used by the simulator
+Each tool is a solid of revolution along +Z: the cutting profile (flat / ball / bull nose / cone) up to the flute
+length, then the shank (same diameter as the cutter) up to the stick-out, then a holder cylinder of the holder diameter
+from the stick-out upwards. Material touched above the flute length is a shank error, material inside the holder
+cylinder a holder collision. All endmills (T1-T8) are centre-cutting; the chamfer mill T9 is not (cone with a 0.2 mm
+flat tip: radius at height h above the tip = 0.1 + h for its 45 deg flank); the drill T10 has a 118 deg point.
+
 ## Checks applied by the simulator
 {RULES}
 ## Tool library (the only tools available)
