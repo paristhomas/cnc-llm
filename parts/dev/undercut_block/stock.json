@@ -1,0 +1,25 @@
+{
+ "name": "undercut_block",
+ "x": [
+  -42,
+  42
+ ],
+ "y": [
+  -27,
+  27
+ ],
+ "z": [
+  0,
+  32
+ ],
+ "material": "AL6061-T6",
+ "description": "Guide block 80 x 50 x 30 with R3 rounded top edges all round, a T-slot along X (12 wide neck, 20 wide x 6 high head, undercut: not machinable in this setup), a dovetail-free 16 wide x 8 deep slot along Y, 4 countersunk M6 holes (90deg countersink D12), and a 5deg-drafted rectangular pocket 24 x 14 x 10 deep.",
+ "part_bbox": [
+  -40.0,
+  -25.0,
+  0.0,
+  40.0,
+  25.0,
+  30.0
+ ]
+}

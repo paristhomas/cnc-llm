@@ -1,0 +1,25 @@
+{
+ "name": "motor_mount",
+ "x": [
+  -52,
+  52
+ ],
+ "y": [
+  -37,
+  37
+ ],
+ "z": [
+  0,
+  18
+ ],
+ "material": "AL6061-T6",
+ "description": "Motor mount plate 100 x 70 x 16. Outer profile with R8 corners and a 1 mm x 45deg chamfer on the top outer edge. Central counterbore pocket D40 x 6 deep with a D22 through bore. Four D6.6 through holes with D11 x 6.5 deep counterbores. Rectangular pocket 30 x 20 x 8 deep (corner R3) with a D10 island standing 5 mm high. One through slot 8 wide x 25 long (obround).",
+ "part_bbox": [
+  -50.0,
+  -35.0,
+  0.0,
+  50.0,
+  35.0,
+  16.0
+ ]
+}

@@ -1,0 +1,25 @@
+{
+ "name": "mould_cavity",
+ "x": [
+  -47,
+  47
+ ],
+ "y": [
+  -37,
+  37
+ ],
+ "z": [
+  0,
+  31
+ ],
+ "material": "AL6061-T6",
+ "description": "Injection-mould cavity insert 90 x 70 x 30. Elliptical cavity 70 x 50 at the top face, drafted down to a 50 x 30 floor at 14 mm depth (lofted walls), R4 blended floor edge, a spherical dome (R30) rising 6 mm from the floor in the middle. 2 mm x 45deg chamfer around the cavity rim. Four D8 guide-pin holes 12 deep near the corners.",
+ "part_bbox": [
+  -45.0,
+  -35.0,
+  0.0,
+  45.0,
+  35.0,
+  30.0
+ ]
+}

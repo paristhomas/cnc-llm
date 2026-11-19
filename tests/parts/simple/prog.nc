@@ -1,0 +1,59 @@
+%
+G21 G90 G17 G40 G49 G80 G94
+T2 M6
+G43 H2
+S12000 M3
+G0 X-28 Y-20 Z15
+G0 Z0.95
+(face top: stock 11 -> 10 with 6mm flat, stepover 4)
+G1 Z10 F600
+G1 X28 F1500
+G1 Y-16
+G1 X-28
+G1 Y-12
+G1 X28
+G1 Y-8
+G1 X-28
+G1 Y-4
+G1 X28
+G1 Y0
+G1 X-28
+G1 Y4
+G1 X28
+G1 Y8
+G1 X-28
+G1 Y12
+G1 X28
+G1 Y16
+G1 X-28
+G1 Y20
+G1 X28
+G0 Z15
+(outer profile 40x30 to Z0, tool centre offset 3)
+G0 X-23 Y-18
+G1 Z5 F400
+G1 X23 F1200
+G1 Y18
+G1 X-23
+G1 Y-18
+G1 Z0 F400
+G1 X23 F1200
+G1 Y18
+G1 X-23
+G1 Y-18
+G0 Z15
+(pocket 20x10 depth 3, corners r3 = tool r)
+G0 X-7 Y-2
+G1 Z8.5 F300
+G1 X7 F1000
+G1 Y2
+G1 X-7
+G1 Y-2
+G1 Z7 F300
+G1 X7 F1000
+G1 Y2
+G1 X-7
+G1 Y-2
+G0 Z15
+M5
+M30

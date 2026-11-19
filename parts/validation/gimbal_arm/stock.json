@@ -1,0 +1,25 @@
+{
+ "name": "gimbal_arm",
+ "x": [
+  -68,
+  60
+ ],
+ "y": [
+  -23,
+  23
+ ],
+ "z": [
+  0,
+  21
+ ],
+ "material": "AL6061-T6",
+ "description": "Camera gimbal arm 120 long, tapering from 40 wide at the motor end to 24 wide at the clamp end (tangent R arcs). Motor end: D30 boss 20 tall with a spherical-cap (R40) top, D12 through bore with 1 mm chamfer. Arm web 6 thick with three triangular lightening pockets (R2 corners) 4 mm deep, perimeter rib 3 wide at full 10 mm height. Clamp end: 12 thick lug with a D8 through hole and a 1.5 wide clamp slit.",
+ "part_bbox": [
+  -65.0,
+  -20.0,
+  -0.0,
+  56.977,
+  20.0,
+  19.385
+ ]
+}

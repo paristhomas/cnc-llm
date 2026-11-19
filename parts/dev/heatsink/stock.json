@@ -1,0 +1,25 @@
+{
+ "name": "heatsink",
+ "x": [
+  -42,
+  42
+ ],
+ "y": [
+  -32,
+  32
+ ],
+ "z": [
+  0,
+  24
+ ],
+ "material": "AL6061-T6",
+ "description": "Heat sink 80 x 60. 6 mm base, seven 2.5 mm thick fins 6.5 mm apart rising to a crowned (R60 cylindrical) top that peaks at Z22 in the middle of the part, R3 fillets at the fin roots, two end mounting lugs with D5.5 holes.",
+ "part_bbox": [
+  -40.0,
+  -30.0,
+  0.0,
+  40.0,
+  30.0,
+  22.0
+ ]
+}

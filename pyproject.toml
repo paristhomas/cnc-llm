@@ -1,0 +1,19 @@
+[project]
+name = "cncllm"
+version = "0.1.0"
+description = "LLM-written G-code with a closed-loop machining simulator (3-axis, aluminium)"
+requires-python = ">=3.10"
+dependencies = ["numpy", "numba", "scipy", "trimesh", "rtree", "matplotlib", "cadquery"]
+
+[project.scripts]
+cncllm = "cncllm.cli:main"
+
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["cncllm"]
+
+[tool.setuptools.package-data]
+cncllm = ["viewer/*"]

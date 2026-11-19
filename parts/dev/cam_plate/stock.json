@@ -1,0 +1,25 @@
+{
+ "name": "cam_plate",
+ "x": [
+  -37,
+  48
+ ],
+ "y": [
+  -31,
+  33
+ ],
+ "z": [
+  0,
+  13
+ ],
+ "material": "AL6061-T6",
+ "description": "Cam plate, 12 mm thick, outer profile a smooth closed spline cam lobe (no tangent breaks) with a D24 bore and a 6 wide keyway to R16.5, a hexagonal recess (30 mm across flats, 5 deep, R2 corners) around the bore, three kidney-shaped through windows (R1.9 corners), and a 1 mm x 45deg chamfer on the bore edge at the hex recess floor.",
+ "part_bbox": [
+  -33.0,
+  -27.037,
+  -0.0,
+  43.966,
+  28.85,
+  12.0
+ ]
+}
