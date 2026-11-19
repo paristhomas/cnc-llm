@@ -1,21 +1,21 @@
 # Simulation feedback: mould_cavity
 
-**Score: 99.66% of the machinable surface within +-0.1 mm** (all non-datum surface: 99.63%).  Program valid: **YES** (0 errors, 0 warnings).
+**Score: 99.665% of the machinable surface within +-0.1 mm** (all non-datum surface: 99.65%).  Program valid: **YES** (0 errors, 0 warnings).
 
 | metric | value |
 |---|---|
-| machinable_in_tol_pct | 99.657 |
+| machinable_in_tol_pct | 99.665 |
 | machinable_gouge_pct | 0.0 |
-| machinable_proud_pct | 0.343 |
-| max_gouge_mm | 0.0697 |
-| tool_limited_area_pct | 0.026 |
+| machinable_proud_pct | 0.335 |
+| max_gouge_mm | 0.0035 |
+| tool_limited_area_pct | 0.011 |
 | undercut_area_pct | 0.0 |
 | remaining_excess_cm3 | 0.07 |
 | gouged_cm3 | 0.0287 |
 | removed_cm3 | 52.515 |
 | cycle_time_min | 19.31 |
 
-Gouges (target material removed) scrap the part: fix them first. 'tool_limited' surface needs a tool smaller than the library has (sharp internal corners); 'undercut' surface cannot be reached from +Z. Both are excluded from the score and shown as proud material.
+Gouges (target material removed) scrap the part: fix them first. 'tool_limited' surface needs a tool smaller than the library has (sharp internal corners); 'undercut' surface cannot be reached from +Z. Both are excluded from the score and shown as proud material, as is a 0.03 mm band along face edges (normal probing is ill-posed exactly at an edge). gouged_cm3 / remaining_excess_cm3 are height-field estimates on the simulation grid (they include wall-cell discretisation and in-tolerance deviations); the surface percentages are the exact measure.
 
 
 ## Out-of-tolerance regions (largest first)

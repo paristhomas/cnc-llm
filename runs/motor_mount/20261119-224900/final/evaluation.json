@@ -1,17 +1,18 @@
 {
  "iteration": 4,
  "metrics": {
-  "machinable_in_tol_pct": 99.998,
+  "machinable_in_tol_pct": 100.0,
   "machinable_gouge_pct": 0.0,
-  "machinable_proud_pct": 0.002,
-  "all_in_tol_pct": 99.998,
+  "machinable_proud_pct": 0.0,
+  "all_in_tol_pct": 100.0,
   "undercut_area_pct": 0.0,
-  "tool_limited_area_pct": 0.006,
+  "tool_limited_area_pct": 0.0,
   "max_gouge_mm": 0.002,
   "any_gouge_pct": 0.0,
-  "surface_area_mm2": 16262.4,
-  "probes": 108468,
+  "surface_area_mm2": 16124.6,
+  "probes": 107549,
   "tolerance_mm": 0.1,
+  "edge_band_excluded_pct": 0.847,
   "remaining_excess_cm3": 0.05,
   "gouged_cm3": 0.0583,
   "removed_cm3": 50.001,
@@ -22,15 +23,15 @@
  },
  "integrity": {
   "harness": {
-   "sha256": "89ff3a9e19086ce3d59ec95053170d7fc059058016253bf03acb878d66a9e3d4",
-   "git_head": "0bd22e7",
+   "sha256": "945d17f7b0d4559030f63b0314b8887e2ef65c4a1d72c73f293a984ecae92fa9",
+   "git_head": "f4314df",
    "harness_modified": false,
    "modified_files": []
   },
   "part_sha256_now": "b0b9017fecc5e63975fb753d16971720cdfda78ca23f359caa975e7b76748333",
   "part_sha256_at_start": "b0b9017fecc5e63975fb753d16971720cdfda78ca23f359caa975e7b76748333",
   "part_unchanged": true,
-  "harness_unchanged_since_run_start": true,
+  "harness_unchanged_since_run_start": false,
   "generator_scan": {
    "files": [
     "gen.py"
@@ -40,6 +41,65 @@
   }
  },
  "crosscheck_millbill": {
-  "skipped": "MILLBILL_DIR not set"
+  "points": 300000,
+  "disagree": 33,
+  "disagree_beyond_2um": 32,
+  "agreement_pct": 99.98933,
+  "millbill": {
+   "moves": 33503,
+   "warnings": []
+  },
+  "examples": [
+   [
+    -42.2031,
+    -34.9959,
+    0.029
+   ],
+   [
+    43.5762,
+    34.8423,
+    0.4066
+   ],
+   [
+    -43.1925,
+    -23.1884,
+    10.3305
+   ],
+   [
+    2.5755,
+    25.9053,
+    9.6691
+   ],
+   [
+    9.4192,
+    30.3118,
+    11.2405
+   ],
+   [
+    -48.3933,
+    -31.8085,
+    2.5341
+   ],
+   [
+    -42.852,
+    -34.9538,
+    13.8226
+   ],
+   [
+    43.1436,
+    34.9173,
+    2.6334
+   ],
+   [
+    -34.9225,
+    1.7195,
+    15.0886
+   ],
+   [
+    -35.7793,
+    30.03,
+    10.676
+   ]
+  ]
  }
 }

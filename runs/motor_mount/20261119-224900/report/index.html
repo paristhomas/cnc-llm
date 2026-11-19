@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>motor_mount · CNC run report</title>
+<link rel="stylesheet" href="assets/report.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-main">
+      <div class="eyebrow">CNC-LLM run report · 20261119-224900</div>
+      <h1>motor_mount</h1>
+      <p class="desc">Motor mount plate 100 x 70 x 16. Outer profile with R8 corners and a 1 mm x 45deg chamfer on the top outer edge. Central counterbore pocket D40 x 6 deep with a D22 through bore. Four D6.6 through holes with D11 x 6.5 deep counterbores. Rectangular pocket 30 x 20 x 8 deep (corner R3) with a D10 island standing 5 mm high. One through slot 8 wide x 25 long (obround).</p>
+      <dl class="facts">
+        <div><dt>Material</dt><dd>AL6061-T6</dd></div>
+        <div><dt>Stock</dt><dd>104 × 74 × 18 mm</dd></div>
+        <div><dt>Tolerance</dt><dd>±0.1 mm</dd></div>
+        <div><dt>Model / agent</dt><dd>claude-opus-5-5 (Claude Code subagent)</dd></div>
+        <div><dt>Date</dt><dd>2026-11-19 22:49</dd></div>
+        <div><dt>Iterations</dt><dd>4 · final = #4</dd></div>
+      </dl>
+    </div>
+    <div class="hero-score" aria-label="Final score">
+      <div class="score-top">
+        <span class="badge lg valid">VALID</span>
+        <span class="muted">0 errors · 0 warnings</span>
+      </div>
+      <div class="score-num">100.000<span>%</span></div>
+      <div class="score-label">of the machinable surface within ±0.1 mm</div>
+      <div class="meter" aria-hidden="true"><i style="width:100.00%"></i></div>
+      <div class="chips"><span class="chip warn" title="harness sha256 945d17f7b0d4…, git f4314df, uncommitted harness changes: no, unchanged since run start: no, part unchanged: yes"><b aria-hidden="true">!</b> Harness changed · git f4314df</span><span class="chip bad" title="300000 query points, 32 disagree beyond 2 µm"><b aria-hidden="true">✗</b> MillBill cross-check 99.989%</span></div>
+    </div>
+  </div>
+  <div class="wrap"><p class="verdict">The program is <strong>valid</strong> (no crash, collision or overload detected). 100.000% of the machinable surface is within ±0.1 mm; 0.00% is gouged (max 0.00 mm deep) and 0.00% is proud. Largest proud area: <button class="region-btn inline" data-region="1">R1</button> 0.15 mm² on a floor/top (faces up) (up to +5.00 mm).</p></div>
+</header>
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#sim">Simulation</a><a href="#result">Result</a><a href="#problems">Problems</a><a href="#history">History</a>
+  <a href="#metrics">Metrics</a><a href="#images">Images</a><a href="#gcode">G-code</a>
+</div></nav>
+<main class="wrap">
+<section id="sim">
+  <div class="sec-head"><h2>Cutting simulation</h2>
+  <p class="sub">Replay of the evaluated program on a height-field stock (same swept-volume model as the simulator, computed in the browser).
+  Drag to orbit, right-drag / two fingers to pan, wheel / pinch to zoom.</p></div>
+  
+<div class="sim" id="simroot">
+  <div class="viewer-col">
+    <div class="viewport" id="simview"><div class="vp-msg" id="simmsg">Loading 3D viewer…</div></div>
+    <div class="controls" id="simcontrols"></div>
+  </div>
+  <aside class="side" id="simside"></aside>
+</div>
+</section>
+<section id="result">
+  <div class="sec-head"><h2>Final result</h2>
+  <p class="sub">Target part coloured by the signed deviation of the simulated part, or the machined surface coloured by height error.
+  Undercut and tool-limited surfaces are excluded from the score and shown separately, so they are not mistaken for LLM error.</p></div>
+  
+<div class="result">
+  <div class="viewport tall" id="resview"><div class="vp-msg">Loading…</div></div>
+  <div class="res-bar" id="resbar"></div>
+</div>
+</section>
+<section id="problems">
+  <div class="sec-head"><h2>Problems</h2><p class="sub">Click a line number to jump the G-code listing and the animation there; click a region to locate it in the result view.</p></div>
+  <div class="stack">
+    <div><h3>Safety &amp; plausibility issues <span class="count">0</span></h3><p class="ok-note">No safety or plausibility issues.</p></div>
+    <div><h3>Out-of-tolerance regions <span class="count">2</span></h3><div class="tablewrap"><table class="regions"><thead><tr><th>Region</th><th>Type</th><th class="num">Area mm²</th><th class="num">Worst mm</th><th>Surface</th><th>Where (bounding box, mm)</th><th>G-code lines</th></tr></thead><tbody><tr><td data-l="Region"><button class="region-btn" data-region="1" title="Show in the 3D result view">R1</button></td><td data-l="Type"><span class="pill proud">proud</span></td><td class="num" data-l="Area mm²">0.15</td><td class="num" data-l="Worst mm">+5.000</td><td data-l="Surface">floor/top (faces up)</td><td class="where" data-l="Where">X -22.1…-22.1 · Y 18.7…18.7 · Z 10.0…10.0</td><td class="lines" data-l="G-code"><span class=muted>last cut by</span> <button class="gl" data-gline="91">91</button></td></tr><tr><td data-l="Region"><button class="region-btn" data-region="2" title="Show in the 3D result view">R2</button></td><td data-l="Type"><span class="pill proud">proud</span></td><td class="num" data-l="Area mm²">0.15</td><td class="num" data-l="Worst mm">+5.000</td><td data-l="Surface">floor/top (faces up)</td><td class="where" data-l="Where">X -1.4…-1.4 · Y 14.7…14.7 · Z 10.0…10.0</td><td class="lines" data-l="G-code"><span class=muted>last cut by</span> <button class="gl" data-gline="91">91</button></td></tr></tbody></table></div></div>
+  </div>
+</section>
+<section id="history">
+  <div class="sec-head"><h2>Iteration history</h2><p class="sub">Score per simulated iteration and the LLM's own notes on what it changed.</p></div>
+  <div class="card chart-card"><div class="legend"><span class="lg"><i style="background:var(--s1)"></i>Score (in tolerance)</span><span class="lg"><i style="background:var(--s-gouge)"></i>Gouge</span><span class="lg"><i style="background:var(--s-proud)"></i>Proud</span><span class="lg"><i class="dash"></i>evaluated iteration</span></div><div class="chart-box"><div class="ylab"><span style="top:202.0px">0%</span><span style="top:154.0px">25%</span><span style="top:106.0px">50%</span><span style="top:58.0px">75%</span><span style="top:10.0px">100%</span></div><svg class="chart" width="100%" height="240" role="img" aria-label="Score, gouge and proud percentage per iteration"><line class="grid" x1="0" x2="100%" y1="210.0" y2="210.0"/><line class="grid" x1="0" x2="100%" y1="162.0" y2="162.0"/><line class="grid" x1="0" x2="100%" y1="114.0" y2="114.0"/><line class="grid" x1="0" x2="100%" y1="66.0" y2="66.0"/><line class="grid" x1="0" x2="100%" y1="18.0" y2="18.0"/><text class="tick" x="4.00%" y="230" text-anchor="middle">#1</text><text class="tick" x="34.67%" y="230" text-anchor="middle">#2</text><text class="tick" x="65.33%" y="230" text-anchor="middle">#3</text><text class="tick" x="96.00%" y="230" text-anchor="middle">#4</text><line class="final" x1="96.00%" x2="96.00%" y1="12" y2="210"/><line x1="4.00%" y1="18.0" x2="34.67%" y2="18.0" stroke="var(--s1)" stroke-width="2" stroke-linecap="round"/><line x1="34.67%" y1="18.0" x2="65.33%" y2="18.0" stroke="var(--s1)" stroke-width="2" stroke-linecap="round"/><line x1="65.33%" y1="18.0" x2="96.00%" y2="18.0" stroke="var(--s1)" stroke-width="2" stroke-linecap="round"/><g class="pt"><circle cx="4.00%" cy="18.0" r="11" fill="transparent"/><circle cx="4.00%" cy="18.0" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 1: Score (in tolerance) 99.998%</title></g><text class="vlab" x="4.00%" y="8.0" text-anchor="start">100.00%</text><g class="pt"><circle cx="34.67%" cy="18.0" r="11" fill="transparent"/><circle cx="34.67%" cy="18.0" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 2: Score (in tolerance) 99.998%</title></g><text class="vlab" x="34.67%" y="8.0" text-anchor="middle">100.00%</text><g class="pt"><circle cx="65.33%" cy="18.0" r="11" fill="transparent"/><circle cx="65.33%" cy="18.0" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 3: Score (in tolerance) 99.996%</title></g><text class="vlab" x="65.33%" y="8.0" text-anchor="middle">100.00%</text><g class="pt"><circle cx="96.00%" cy="18.0" r="11" fill="transparent"/><circle cx="96.00%" cy="18.0" r="4.5" fill="var(--s1)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 4: Score (in tolerance) 99.998%</title></g><text class="vlab" x="96.00%" y="8.0" text-anchor="end">100.00%</text><line x1="4.00%" y1="210.0" x2="34.67%" y2="210.0" stroke="var(--s-gouge)" stroke-width="2" stroke-linecap="round"/><line x1="34.67%" y1="210.0" x2="65.33%" y2="210.0" stroke="var(--s-gouge)" stroke-width="2" stroke-linecap="round"/><line x1="65.33%" y1="210.0" x2="96.00%" y2="210.0" stroke="var(--s-gouge)" stroke-width="2" stroke-linecap="round"/><g class="pt"><circle cx="4.00%" cy="210.0" r="11" fill="transparent"/><circle cx="4.00%" cy="210.0" r="4.5" fill="var(--s-gouge)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 1: Gouge 0.002%</title></g><g class="pt"><circle cx="34.67%" cy="210.0" r="11" fill="transparent"/><circle cx="34.67%" cy="210.0" r="4.5" fill="var(--s-gouge)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 2: Gouge 0.002%</title></g><g class="pt"><circle cx="65.33%" cy="210.0" r="11" fill="transparent"/><circle cx="65.33%" cy="210.0" r="4.5" fill="var(--s-gouge)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 3: Gouge 0.000%</title></g><g class="pt"><circle cx="96.00%" cy="210.0" r="11" fill="transparent"/><circle cx="96.00%" cy="210.0" r="4.5" fill="var(--s-gouge)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 4: Gouge 0.000%</title></g><line x1="4.00%" y1="210.0" x2="34.67%" y2="210.0" stroke="var(--s-proud)" stroke-width="2" stroke-linecap="round"/><line x1="34.67%" y1="210.0" x2="65.33%" y2="210.0" stroke="var(--s-proud)" stroke-width="2" stroke-linecap="round"/><line x1="65.33%" y1="210.0" x2="96.00%" y2="210.0" stroke="var(--s-proud)" stroke-width="2" stroke-linecap="round"/><g class="pt"><circle cx="4.00%" cy="210.0" r="11" fill="transparent"/><circle cx="4.00%" cy="210.0" r="4.5" fill="var(--s-proud)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 1: Proud 0.000%</title></g><g class="pt"><circle cx="34.67%" cy="210.0" r="11" fill="transparent"/><circle cx="34.67%" cy="210.0" r="4.5" fill="var(--s-proud)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 2: Proud 0.000%</title></g><g class="pt"><circle cx="65.33%" cy="210.0" r="11" fill="transparent"/><circle cx="65.33%" cy="210.0" r="4.5" fill="var(--s-proud)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 3: Proud 0.004%</title></g><g class="pt"><circle cx="96.00%" cy="210.0" r="11" fill="transparent"/><circle cx="96.00%" cy="210.0" r="4.5" fill="var(--s-proud)" stroke="var(--surface)" stroke-width="2"/><title>Iteration 4: Proud 0.002%</title></g></svg></div></div>
+  <div class="iters">
+<article class="iter-card is-final" id="iter-4">
+  <header><h3>Iteration 4</h3><span class="badge sm valid">valid</span><span class="badge sm final">evaluated</span><span class="muted when">2026-11-19 22:57:57</span></header>
+  <div class="iter-body">
+    <div class="iter-stats">
+      <div class="big">99.998%<span class="delta up">+0.00 pts</span></div>
+      <dl>
+        <dt>gouge</dt><dd>0.00%</dd>
+        <dt>proud</dt><dd>0.00%</dd>
+        <dt>max gouge</dt><dd>0.00 mm</dd>
+        <dt>errors</dt><dd>0</dd>
+        <dt>warnings</dt><dd>0</dd>
+        <dt>cycle</dt><dd>6.7 min</dd>
+        <dt>lines / moves</dt><dd>11757 / 22579</dd>
+      </dl>
+      <a class="thumb" href="iter/04/deviation_top.png" target="_blank"><img loading="lazy" src="iter/04/deviation_top.png" alt="Deviation map, iteration 4"></a>
+    </div>
+    <div class="notes"><p>Iteration 4: D40 wall finish radius 14.997 (iter 3&#x27;s 0.01 undersize produced +5 mm single-probe &#x27;proud&#x27; flags at the floor/wall root; iter 2&#x27;s nominal gave -5 mm single-probe gouges at the top edge).</p></div>
+  </div>
+  <footer class="links"><a href="iter/04/program.txt" target="_blank">G-code</a><a href="iter/04/program.nc" download>download .nc</a><a href="iter/04/feedback.txt" target="_blank">feedback</a><a href="iter/04/deviation_top.png" target="_blank">deviation map</a><a href="iter/04/height_error_top.png" target="_blank">height error</a></footer>
+</article>
+<article class="iter-card" id="iter-3">
+  <header><h3>Iteration 3</h3><span class="badge sm valid">valid</span><span class="muted when">2026-11-19 22:57:36</span></header>
+  <div class="iter-body">
+    <div class="iter-stats">
+      <div class="big">99.996%<span class="delta down">-0.00 pts</span></div>
+      <dl>
+        <dt>gouge</dt><dd>0.00%</dd>
+        <dt>proud</dt><dd>0.00%</dd>
+        <dt>max gouge</dt><dd>0.00 mm</dd>
+        <dt>errors</dt><dd>0</dd>
+        <dt>warnings</dt><dd>0</dd>
+        <dt>cycle</dt><dd>6.7 min</dd>
+        <dt>lines / moves</dt><dd>11757 / 22579</dd>
+      </dl>
+      <a class="thumb" href="iter/03/deviation_top.png" target="_blank"><img loading="lazy" src="iter/03/deviation_top.png" alt="Deviation map, iteration 3"></a>
+    </div>
+    <div class="notes"><p>Iteration 3: pre-drill the D6.6 holes with T10 (G83) so T3 only helixes the annulus (saves the slow r1.0 helix); hole and D40 finish radii 0.005-0.01 mm under nominal to test whether the two single-probe edge gouges are artifacts.</p></div>
+  </div>
+  <footer class="links"><a href="iter/03/program.txt" target="_blank">G-code</a><a href="iter/03/program.nc" download>download .nc</a><a href="iter/03/feedback.txt" target="_blank">feedback</a><a href="iter/03/deviation_top.png" target="_blank">deviation map</a><a href="iter/03/height_error_top.png" target="_blank">height error</a></footer>
+</article>
+<article class="iter-card" id="iter-2">
+  <header><h3>Iteration 2</h3><span class="badge sm valid">valid</span><span class="muted when">2026-11-19 22:56:52</span></header>
+  <div class="iter-body">
+    <div class="iter-stats">
+      <div class="big">99.998%<span class="delta up">+0.00 pts</span></div>
+      <dl>
+        <dt>gouge</dt><dd>0.00%</dd>
+        <dt>proud</dt><dd>0.00%</dd>
+        <dt>max gouge</dt><dd>5.00 mm</dd>
+        <dt>errors</dt><dd>0</dd>
+        <dt>warnings</dt><dd>0</dd>
+        <dt>cycle</dt><dd>8.6 min</dd>
+        <dt>lines / moves</dt><dd>11846 / 26729</dd>
+      </dl>
+      <a class="thumb" href="iter/02/deviation_top.png" target="_blank"><img loading="lazy" src="iter/02/deviation_top.png" alt="Deviation map, iteration 2"></a>
+    </div>
+    <div class="notes"><p>Iteration 2: fixed rapid into T3 rest entry (approach point + no retract between levels), tangential arc lead-in/out on all finish passes (hole finish was overloaded by a radial entry), M5 before tool changes.</p></div>
+  </div>
+  <footer class="links"><a href="iter/02/program.txt" target="_blank">G-code</a><a href="iter/02/program.nc" download>download .nc</a><a href="iter/02/feedback.txt" target="_blank">feedback</a><a href="iter/02/deviation_top.png" target="_blank">deviation map</a><a href="iter/02/height_error_top.png" target="_blank">height error</a></footer>
+</article>
+<article class="iter-card" id="iter-1">
+  <header><h3>Iteration 1</h3><span class="badge sm invalid">invalid · 2 err</span><span class="muted when">2026-11-19 22:55:13</span></header>
+  <div class="iter-body">
+    <div class="iter-stats">
+      <div class="big">99.998%</div>
+      <dl>
+        <dt>gouge</dt><dd>0.00%</dd>
+        <dt>proud</dt><dd>0.00%</dd>
+        <dt>max gouge</dt><dd>5.00 mm</dd>
+        <dt>errors</dt><dd>2</dd>
+        <dt>warnings</dt><dd>4</dd>
+        <dt>cycle</dt><dd>8.6 min</dd>
+        <dt>lines / moves</dt><dd>11745 / 26661</dd>
+      </dl>
+      <a class="thumb" href="iter/01/deviation_top.png" target="_blank"><img loading="lazy" src="iter/01/deviation_top.png" alt="Deviation map, iteration 1"></a>
+    </div>
+    <div class="notes"><p>Iteration 1: first full program. T1 face/D40/D22, T2 rect pocket rings + slot + counterbores, T3 rest/finish + through holes, T1 profile, T9 chamfer.</p></div>
+  </div>
+  <footer class="links"><a href="iter/01/program.txt" target="_blank">G-code</a><a href="iter/01/program.nc" download>download .nc</a><a href="iter/01/feedback.txt" target="_blank">feedback</a><a href="iter/01/deviation_top.png" target="_blank">deviation map</a><a href="iter/01/height_error_top.png" target="_blank">height error</a></footer>
+</article></div>
+</section>
+<section id="metrics">
+  <div class="sec-head"><h2>Metrics &amp; tools</h2></div>
+  <div class="two">
+    <div><h3>Metrics</h3><div class="tablewrap"><table class="metrics"><tbody><tr><th>Machinable surface in tolerance</th><td class="num">100.00 %</td></tr><tr><th>Machinable surface gouged (too deep)</th><td class="num">0.00 %</td></tr><tr><th>Machinable surface proud (material left)</th><td class="num">0.00 %</td></tr><tr><th>All non-datum surface in tolerance</th><td class="num">100.00 %</td></tr><tr><th>Max gouge depth</th><td class="num">0.00 mm</td></tr><tr><th>Any surface gouged (incl. tool-limited)</th><td class="num">0.00 %</td></tr><tr><th>Face-boundary band (0.03 mm, excluded)</th><td class="num">0.85 %</td></tr><tr><th>Undercut area (not reachable from +Z, excluded)</th><td class="num">0.00 %</td></tr><tr><th>Tool-limited area (needs a smaller tool, excluded)</th><td class="num">0.00 %</td></tr><tr><th>Excess material left</th><td class="num">0.05 cm³</td></tr><tr><th>Gouged volume</th><td class="num">0.06 cm³</td></tr><tr><th>Material removed</th><td class="num">50.00 cm³</td></tr><tr><th>Surface area evaluated</th><td class="num">16124.60 mm²</td></tr><tr><th>Surface probe points</th><td class="num">107549</td></tr><tr><th>Estimated cycle time</th><td class="num">6.69 min</td></tr><tr><th>Errors</th><td class="num">0</td></tr><tr><th>Warnings</th><td class="num">0</td></tr></tbody></table></div></div>
+    <div><h3>Tools used</h3><div class="tablewrap"><table class="tools"><thead><tr><th>Tool</th><th>Name</th><th>Type</th><th class="num">Ø mm</th><th class="num">Stick-out</th><th class="num">Time min</th><th class="num">Cut m</th><th class="num">Removed cm³</th></tr></thead><tbody><tr><td><span class="swatch" data-tool="1"></span>T1</td><td>10 mm 3-flute flat endmill</td><td>flat</td><td class="num">10</td><td class="num">40</td><td class="num">1.9</td><td class="num">5.37</td><td class="num">38.74</td></tr><tr><td><span class="swatch" data-tool="2"></span>T2</td><td>6 mm 3-flute flat endmill</td><td>flat</td><td class="num">6</td><td class="num">30</td><td class="num">1.4</td><td class="num">2.02</td><td class="num">9.37</td></tr><tr><td><span class="swatch" data-tool="3"></span>T3</td><td>3 mm 2-flute flat endmill</td><td>flat</td><td class="num">3</td><td class="num">22</td><td class="num">2.2</td><td class="num">1.43</td><td class="num">1.03</td></tr><tr><td><span class="swatch" data-tool="9"></span>T9</td><td>6 mm 90deg chamfer mill</td><td>cone 90°</td><td class="num">6</td><td class="num">25</td><td class="num">0.4</td><td class="num">0.34</td><td class="num">0.16</td></tr><tr><td><span class="swatch" data-tool="10"></span>T10</td><td>5 mm drill 118deg</td><td>cone 118°</td><td class="num">5</td><td class="num">40</td><td class="num">0.1</td><td class="num">0.05</td><td class="num">0.70</td></tr></tbody></table></div>
+      <p class="muted small">Estimated cycle time <strong>6.7 min</strong> (feeds as programmed, rapids at 15000 mm/min, 8 s per tool change).</p>
+    </div>
+  </div>
+</section>
+<section id="images">
+  <div class="sec-head"><h2>Images</h2></div>
+  <div class="gallery"><figure><a href="img/deviation_top.png" target="_blank"><img loading="lazy" src="img/deviation_top.png" alt="Surface deviation (top view)"></a><figcaption>Surface deviation (top view)</figcaption></figure><figure><a href="img/height_error_top.png" target="_blank"><img loading="lazy" src="img/height_error_top.png" alt="Height error (top view)"></a><figcaption>Height error (top view)</figcaption></figure><figure><a href="img/machined_top.png" target="_blank"><img loading="lazy" src="img/machined_top.png" alt="Machined height map"></a><figcaption>Machined height map</figcaption></figure><figure><a href="img/section_x.png" target="_blank"><img loading="lazy" src="img/section_x.png" alt="Section along X"></a><figcaption>Section along X</figcaption></figure><figure><a href="img/section_y.png" target="_blank"><img loading="lazy" src="img/section_y.png" alt="Section along Y"></a><figcaption>Section along Y</figcaption></figure><figure><a href="img/target_iso.png" target="_blank"><img loading="lazy" src="img/target_iso.png" alt="Target part (iso)"></a><figcaption>Target part (iso)</figcaption></figure><figure><a href="img/target_top.png" target="_blank"><img loading="lazy" src="img/target_top.png" alt="Target part (top)"></a><figcaption>Target part (top)</figcaption></figure></div>
+</section>
+<section id="gcode">
+  <div class="sec-head"><h2>G-code</h2><p class="sub">The full listing is in the simulation panel above (search and click to jump).</p></div>
+  <div class="dl-row">
+    <a class="btn primary" href="gcode/final.nc" download="motor_mount_final.nc">Download final program (.nc)</a><a class="btn" href="gcode/final.txt" target="_blank">Open as text</a>
+    <a class="btn ghost" href="iter/01/program.nc" download="motor_mount_iter01.nc">Iteration 1</a><a class="btn ghost" href="iter/02/program.nc" download="motor_mount_iter02.nc">Iteration 2</a><a class="btn ghost" href="iter/03/program.nc" download="motor_mount_iter03.nc">Iteration 3</a><a class="btn ghost" href="iter/04/program.nc" download="motor_mount_iter04.nc">Iteration 4</a>
+  </div>
+</section>
+</main>
+<footer class="foot"><div class="wrap">
+  <span>Harness sha256 <code>945d17f7b0d45590</code> · git <code>f4314df</code></span>
+  <span>Part b0b9017fecc5 · generated 2026-11-19 23:12</span>
+</div></footer>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="assets/data.js"></script>
+<script src="assets/viewer.js"></script>
+</body>
+</html>

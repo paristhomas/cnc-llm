@@ -1,17 +1,18 @@
 {
  "iteration": 2,
  "metrics": {
-  "machinable_in_tol_pct": 99.657,
+  "machinable_in_tol_pct": 99.665,
   "machinable_gouge_pct": 0.0,
-  "machinable_proud_pct": 0.343,
-  "all_in_tol_pct": 99.634,
+  "machinable_proud_pct": 0.335,
+  "all_in_tol_pct": 99.654,
   "undercut_area_pct": 0.0,
-  "tool_limited_area_pct": 0.026,
-  "max_gouge_mm": 0.0697,
+  "tool_limited_area_pct": 0.011,
+  "max_gouge_mm": 0.0035,
   "any_gouge_pct": 0.0,
-  "surface_area_mm2": 18225.0,
-  "probes": 121483,
+  "surface_area_mm2": 18133.2,
+  "probes": 120871,
   "tolerance_mm": 0.1,
+  "edge_band_excluded_pct": 0.504,
   "remaining_excess_cm3": 0.07,
   "gouged_cm3": 0.0287,
   "removed_cm3": 52.515,
@@ -22,15 +23,15 @@
  },
  "integrity": {
   "harness": {
-   "sha256": "89ff3a9e19086ce3d59ec95053170d7fc059058016253bf03acb878d66a9e3d4",
-   "git_head": "0bd22e7",
+   "sha256": "945d17f7b0d4559030f63b0314b8887e2ef65c4a1d72c73f293a984ecae92fa9",
+   "git_head": "f4314df",
    "harness_modified": false,
    "modified_files": []
   },
   "part_sha256_now": "449c20c43481fda271c7465c781fab4adf46956914945f9239ec1268e4c4b099",
   "part_sha256_at_start": "449c20c43481fda271c7465c781fab4adf46956914945f9239ec1268e4c4b099",
   "part_unchanged": true,
-  "harness_unchanged_since_run_start": true,
+  "harness_unchanged_since_run_start": false,
   "generator_scan": {
    "files": [
     "gen.py"
@@ -40,6 +41,45 @@
   }
  },
  "crosscheck_millbill": {
-  "skipped": "MILLBILL_DIR not set"
+  "points": 300000,
+  "disagree": 6,
+  "disagree_beyond_2um": 6,
+  "agreement_pct": 99.998,
+  "millbill": {
+   "moves": 48386,
+   "warnings": []
+  },
+  "examples": [
+   [
+    -34.0738,
+    -28.7627,
+    26.5965
+   ],
+   [
+    34.9116,
+    -25.4586,
+    19.1935
+   ],
+   [
+    -38.4555,
+    -31.9732,
+    25.8416
+   ],
+   [
+    38.1206,
+    -31.9975,
+    24.0036
+   ],
+   [
+    39.5048,
+    24.2939,
+    20.7368
+   ],
+   [
+    40.2792,
+    24.7135,
+    21.2762
+   ]
+  ]
  }
 }
