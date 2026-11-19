@@ -22,17 +22,21 @@ PKG = Path(__file__).resolve().parent
 REPO = PKG.parent
 
 
+# modules that decide the score (the report/viewer code is not part of the trust boundary)
+CORE = ["gcode.py", "kernel.py", "part.py", "sim.py", "tools.py", "feedback.py", "crosscheck.py"]
+
+
 def harness_fingerprint() -> dict:
     h = hashlib.sha256()
-    for p in sorted(PKG.rglob("*")):
-        if p.is_file() and p.suffix in (".py", ".js", ".html", ".css") and "__pycache__" not in p.parts:
-            h.update(p.relative_to(PKG).as_posix().encode())
-            h.update(p.read_bytes())
+    for name in CORE:
+        p = PKG / name
+        h.update(name.encode())
+        h.update(p.read_bytes())
     info = {"sha256": h.hexdigest()}
     try:
         info["git_head"] = subprocess.run(["git", "-C", str(REPO), "rev-parse", "--short", "HEAD"], capture_output=True,
                                           text=True, timeout=10).stdout.strip()
-        st = subprocess.run(["git", "-C", str(REPO), "status", "--porcelain", "--", "cncllm"], capture_output=True,
+        st = subprocess.run(["git", "-C", str(REPO), "status", "--porcelain", "--"] + [f"cncllm/{c}" for c in CORE], capture_output=True,
                             text=True, timeout=10).stdout.strip()
         info["harness_modified"] = bool(st)
         info["modified_files"] = st.splitlines()[:20]
@@ -122,6 +126,7 @@ def _trusted_eval(run_dir: str, n: int):
                  "part_sha256_at_start": meta["part_sha256"]}
     integrity["part_unchanged"] = p.sha == meta["part_sha256"]
     integrity["harness_unchanged_since_run_start"] = integrity["harness"]["sha256"] == meta["harness"]["sha256"]
+    integrity["generator_scan"] = scan_generator(run / "work")
     final = run / "final"
     res = sim.run((final / "program.nc").read_text(), p)
     feedback.write(p, res, final)
@@ -139,6 +144,46 @@ def _trusted_eval(run_dir: str, n: int):
     from . import report
     report.export_data(p, res, final)
     print(json.dumps({k: ev[k] for k in ("iteration", "metrics")}, indent=1))
+
+
+FORBIDDEN = ["cncllm", "opencamlib", "ocl", "pycam", "Path.Op", "PathScripts", "pyactp", "freecad"]
+
+
+def scan_generator(work: Path) -> dict:
+    """Flag imports of the simulator or of CAM libraries in the LLM's own toolpath code."""
+    import re
+
+    hits = []
+    files = sorted(work.rglob("*.py")) if work.exists() else []
+    pat = re.compile(r"^\s*(?:import|from)\s+([\w\.]+)", re.M)
+    for f in files:
+        for mod in pat.findall(f.read_text(errors="replace")):
+            root = mod.split(".")[0].lower()
+            if any(root == b.lower() or mod.startswith(b) for b in FORBIDDEN):
+                hits.append(f"{f.name}: {mod}")
+    return {"files": [f.name for f in files], "forbidden_imports": hits, "ok": not hits}
+
+
+def cmd_init_part(a):
+    """Import a user's STEP: bottom -> Z0, XY centred, box stock with allowances."""
+    import cadquery as cq
+
+    shape = cq.importers.importStep(a.step)
+    solids = shape.solids().vals()
+    if len(solids) != 1:
+        sys.exit(f"expected one solid, found {len(solids)}")
+    bb = shape.val().BoundingBox()
+    shape = shape.translate((-(bb.xmin + bb.xmax) / 2, -(bb.ymin + bb.ymax) / 2, -bb.zmin))
+    bb = shape.val().BoundingBox()
+    out = Path(a.out_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    cq.exporters.export(shape, str(out / "part.step"))
+    m, t = a.margin, a.top
+    stock = {"name": out.name, "x": [round(bb.xmin - m, 3), round(bb.xmax + m, 3)], "y": [round(bb.ymin - m, 3), round(bb.ymax + m, 3)],
+             "z": [0.0, round(bb.zmax + t, 3)], "material": a.material, "description": a.description or f"User part {out.name}",
+             "part_bbox": [round(v, 3) for v in (bb.xmin, bb.ymin, bb.zmin, bb.xmax, bb.ymax, bb.zmax)]}
+    (out / "stock.json").write_text(json.dumps(stock, indent=1))
+    print(out)
 
 
 def cmd_report(a):
@@ -167,6 +212,10 @@ def main(argv=None):
     s.set_defaults(f=cmd_sim)
     s = sub.add_parser("evaluate"); s.add_argument("run_dir"); s.add_argument("--iter", type=int); s.set_defaults(f=cmd_evaluate)
     s = sub.add_parser("report"); s.add_argument("run_dir"); s.set_defaults(f=cmd_report)
+    s = sub.add_parser("init-part"); s.add_argument("step"); s.add_argument("out_dir")
+    s.add_argument("--margin", type=float, default=2.0); s.add_argument("--top", type=float, default=1.0)
+    s.add_argument("--material", default="AL6061-T6"); s.add_argument("--description", default="")
+    s.set_defaults(f=cmd_init_part)
     s = sub.add_parser("check"); s.add_argument("part_dir"); s.add_argument("program"); s.set_defaults(f=cmd_check)
     a = ap.parse_args(argv)
     a.f(a)
