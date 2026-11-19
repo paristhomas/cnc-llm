@@ -20,3 +20,4 @@ Autonomous overnight run. Newest entries at the bottom.
   paristhomas/cnc-llm). Committing locally at each milestone; push retried each time. **User action needed.**
 - 23:05 Subagents launched: viewer/report builder (Opus), analytic test suite (Sonnet), LLM runs on motor_mount and
   mould_cavity (Opus, following skills/cnc-gcode/SKILL.md). Packaging: plugin + marketplace manifests, README.
+- 22:50 Test suite: tests/test_sim.py, 41 analytic + safety tests, all pass (~2 s). No simulator bugs found. Holder test needs a taller stock (T4 stickout 14 > 11 mm stock).
