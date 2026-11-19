@@ -43,10 +43,13 @@ Write `$RUN/work/gen.py` (or several) that prints G-code to `$RUN/work/program.n
 numpy, scipy, shapely (2D offsets/booleans), trimesh / cadquery **only to read the part geometry**. **Not allowed:**
 CAM/toolpath libraries (opencamlib, pycam, FreeCAD Path, pyactp, ...) and importing `cncllm` (the simulator) in your
 generator - the loop below is the only way to use the simulator, so every attempt is recorded. Hand-written G-code is
-also fine for simple features.
+also fine for simple features. Full-circle helices (G2/G3 with end XY = start XY, I/J and a Z change) are accepted.
+The shank may pass through space the cutter has already cleared: only material touched above the flute length counts,
+so a 10 mm-flute tool can finish a 12 mm deep through wall if earlier levels cleared it.
 
-Useful: `trimesh.load(part.stl).section(plane_origin=[0,0,z], plane_normal=[0,0,1])` then `.to_planar()[0].polygons_full`
-gives the part's cross-section polygons at height z (needs networkx, installed with the package) - offset them with
+Useful: `sec = trimesh.load(part.stl).section(plane_origin=[0,0,z], plane_normal=[0,0,1])` then
+`sec.to_2D(to_2D=np.eye(4))[0].polygons_full` gives the part's cross-section polygons at height z **in model XY**
+(plain `to_2D()`/`to_planar()` re-centres them - wrong coordinates) (needs networkx, installed with the package) - offset them with
 shapely `buffer` for tool-radius paths. Fill holes in your own height map before raster finishing, or the ball will
 dive into them.
 

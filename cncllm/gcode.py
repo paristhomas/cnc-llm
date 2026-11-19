@@ -66,7 +66,7 @@ def _strip(line: str) -> str:
     return "".join(out).strip()
 
 
-def parse(text: str, arc_tol: float = 0.002, max_moves: int = 20_000_000) -> Program:
+def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000) -> Program:
     rows: list[tuple] = []
     errors: list[dict] = []
     warnings: list[dict] = []

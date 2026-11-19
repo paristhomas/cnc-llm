@@ -67,7 +67,7 @@ def run(part_dir, program, millbill_dir, n_random=200000, seed=7) -> dict:
     noisy = np.zeros(len(Q), bool)
     if dis.any():
         idx = np.where(dis)[0]
-        for d in ([0, 0, 2e-3], [0, 0, -2e-3]):
+        for d in ([0, 0, 2e-3], [0, 0, -2e-3], [2e-3, 0, 0], [-2e-3, 0, 0], [0, 2e-3, 0], [0, -2e-3, 0]):
             a = wp.inside(Q[idx] + d)
             noisy[idx] |= a != ours[idx]
     real = dis & ~noisy

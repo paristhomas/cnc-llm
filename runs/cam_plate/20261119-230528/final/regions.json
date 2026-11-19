@@ -1,0 +1,74 @@
+[
+ {
+  "type": "proud",
+  "area_mm2": 5.1,
+  "points": 34,
+  "bbox": [
+   -3.0,
+   16.14,
+   1.18,
+   -2.65,
+   16.5,
+   11.82
+  ],
+  "dev_mean": 0.166,
+  "dev_extreme": 0.238,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 5 (plane)",
+   "face 8 (plane)"
+  ],
+  "last_cut_by_lines": [
+   27
+  ],
+  "id": 1
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.6,
+  "points": 24,
+  "bbox": [
+   2.65,
+   16.14,
+   0.48,
+   3.0,
+   16.5,
+   7.78
+  ],
+  "dev_mean": 0.168,
+  "dev_extreme": 0.238,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 5 (plane)",
+   "face 0 (plane)"
+  ],
+  "last_cut_by_lines": [
+   27
+  ],
+  "id": 2
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.35,
+  "points": 9,
+  "bbox": [
+   2.67,
+   16.16,
+   9.5,
+   3.0,
+   16.5,
+   11.9
+  ],
+  "dev_mean": 0.167,
+  "dev_extreme": 0.238,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 5 (plane)",
+   "face 0 (plane)"
+  ],
+  "last_cut_by_lines": [
+   27
+  ],
+  "id": 3
+ }
+]

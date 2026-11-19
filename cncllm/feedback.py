@@ -22,6 +22,38 @@ def _normal_class(n):
     return "faces down"
 
 
+def nearest_moves(M, P, N, dev, nsamp=40, top=4):
+    """Cutting moves whose tool came closest (in XY, tool edge to point) to the region, at a tip height that could have
+    cut it. Tells the programmer which pass to extend and by how much."""
+    from .tools import LIBRARY
+
+    cut = np.where((M[:, 7] < 0.5) & (M[:, 6] > 0))[0]
+    if not len(cut):
+        return []
+    rng = np.random.default_rng(0)
+    s = rng.choice(len(P), size=min(nsamp, len(P)), replace=False)
+    Q = P[s] + N[s] * np.minimum(dev[s], 1.0)[:, None] * 0.5   # a point inside the excess material
+    A, B = M[cut, 0:2], M[cut, 3:5]
+    zlo = np.minimum(M[cut, 2], M[cut, 5])
+    R = np.array([LIBRARY[int(t)].R for t in M[cut, 6]])
+    best = {}
+    for q in Q:
+        ab = B - A
+        L2 = np.maximum((ab ** 2).sum(1), 1e-12)
+        t = np.clip(((q[:2] - A) * ab).sum(1) / L2, 0, 1)
+        dxy = np.linalg.norm(A + ab * t[:, None] - q[:2], axis=1)
+        gap = dxy - R
+        ok = zlo <= q[2] + 0.05          # tip low enough to have cut this height
+        gap = np.where(ok, gap, np.inf)
+        for i in np.argsort(gap)[:top]:
+            if not np.isfinite(gap[i]):
+                break
+            ln = int(M[cut[i], 10])
+            if ln not in best or gap[i] < best[ln]["gap_mm"]:
+                best[ln] = {"line": ln, "tool": int(M[cut[i], 6]), "gap_mm": round(float(max(gap[i], 0.0)), 3)}
+    return sorted(best.values(), key=lambda b: b["gap_mm"])[:top]
+
+
 def regions(part: Part, res: dict, voxel: float = 1.0, max_regions: int = 40) -> list[dict]:
     dev, cls, P, N = res["dev"], part.pclass, part.P, part.N
     M = res["moves"]
@@ -74,18 +106,11 @@ def regions(part: Part, res: dict, voxel: float = 1.0, max_regions: int = 40) ->
                     r["gcode_lines"] = lines[o].tolist()
                     r["tools"] = sorted(set(int(M[w, 6]) for w in who))
             elif kind == "proud" and len(M):
-                g = res["grid"]
-                jj = np.clip(((P[k, 0] - g["x0"]) / g["res"]).astype(int), 0, g["nx"] - 1)
-                ii = np.clip(((P[k, 1] - g["y0"]) / g["res"]).astype(int), 0, g["ny"] - 1)
-                ow = res["owner"][ii, jj]
-                ow = ow[ow >= 0]
-                if len(ow):
-                    lines, cnt = np.unique(M[ow, 10].astype(int), return_counts=True)
-                    o = np.argsort(cnt)[::-1][:6]
-                    r["last_cut_by_lines"] = lines[o].tolist()
-                else:
-                    r["last_cut_by_lines"] = []
-                    r["note"] = "no move ever cut here (stock surface untouched)"
+                near = nearest_moves(M, P[k], N[k], d)
+                r["last_cut_by_lines"] = [n["line"] for n in near]
+                r["nearest_passes"] = near
+                if not near:
+                    r["note"] = "no cutting move came near this region"
             out.append(r)
     out.sort(key=lambda r: -r["area_mm2"])
     for i, r in enumerate(out[:max_regions]):
@@ -178,11 +203,16 @@ def markdown(part: Part, res: dict, regs: list, iteration=None) -> str:
     if not regs:
         L.append("None.\n")
     else:
-        L.append("| id | type | area mm2 | surface | bbox (xmin ymin zmin xmax ymax zmax) | mean dev | extreme | faces | G-code lines |")
+        L.append("| id | type | area mm2 | surface | bbox (xmin ymin zmin xmax ymax zmax) | mean dev | extreme | faces | G-code lines (gouge: lines that cut it; proud: closest passes that could have reached it) |")
         L.append("|---|---|---|---|---|---|---|---|---|")
         for r in regs[:30]:
             lines = r.get("gcode_lines") or r.get("last_cut_by_lines") or []
-            lab = ("cut by " if r["type"] == "gouge" else "last cut by ") + ", ".join(map(str, lines)) if lines else r.get("note", "")
+            if r["type"] == "gouge":
+                lab = ("cut by " + ", ".join(map(str, lines))) if lines else ""
+            elif r.get("nearest_passes"):
+                lab = "nearest passes: " + ", ".join(f"line {n['line']} T{n['tool']} missed by {n['gap_mm']:g} mm" for n in r["nearest_passes"][:3])
+            else:
+                lab = r.get("note", "")
             L.append(f"| R{r['id']} | {r['type']} | {r['area_mm2']} | {r['surface']} | {' '.join(f'{v:g}' for v in r['bbox'])} | "
                      f"{r['dev_mean']:+.3f} | {r['dev_extreme']:+.3f} | {'; '.join(r['faces'])} | {lab} |")
     L.append("\n## Tools\n")

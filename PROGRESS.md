@@ -28,3 +28,8 @@ Autonomous overnight run. Newest entries at the bottom.
   Tried "reach-limited" classification from holder geometry: too noisy (flags areas the long tools reach) -> dropped,
   documented holder model instead.
 - 00:05 Dev runs on v2 launched: heatsink, cam_plate, undercut_block.
+- 00:30 cam_plate (dev): 99.87% valid, 2 iters, 12.5 min. MillBill cross-check showed 3/270k disagreements: traced to
+  points within 3 um of a bore wall + different arc chord tolerances (ours 2 um, MillBill 0.5 um) -> our arc_tol is now
+  0.5 um and the noise test nudges in XY too -> 100% agreement. Proud regions now name the nearest passes and by how
+  much they missed (was: last move that lowered the column, often the facing pass). Skill: fixed trimesh section tip
+  (to_2D(to_2D=eye(4)) keeps model XY), shank-through-cleared-space rule, full-circle helices.
