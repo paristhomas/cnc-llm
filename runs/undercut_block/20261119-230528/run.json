@@ -1,0 +1,14 @@
+{
+ "part": "undercut_block",
+ "part_dir": "/home/user/cnc-llm/parts/dev/undercut_block",
+ "part_sha256": "ff37b0dfc8fe9ed194b4af3d395a19bdafecfcfd49cd06d2164f856a71140f6e",
+ "created": "20261119-230528",
+ "label": "",
+ "harness": {
+  "sha256": "945d17f7b0d4559030f63b0314b8887e2ef65c4a1d72c73f293a984ecae92fa9",
+  "git_head": "8a46718",
+  "harness_modified": false,
+  "modified_files": []
+ },
+ "model": "claude-opus-5-5 (Claude Code subagent)"
+}

@@ -1,0 +1,14 @@
+{
+ "part": "heatsink",
+ "part_dir": "/home/user/cnc-llm/parts/dev/heatsink",
+ "part_sha256": "99fbaf59b1045995c2588a57dde6f404daa22587387b890a590aecdbcb086e51",
+ "created": "20261119-230530",
+ "label": "",
+ "harness": {
+  "sha256": "945d17f7b0d4559030f63b0314b8887e2ef65c4a1d72c73f293a984ecae92fa9",
+  "git_head": "8a46718",
+  "harness_modified": false,
+  "modified_files": []
+ },
+ "model": "claude-opus-5-5 (Claude Code subagent)"
+}
