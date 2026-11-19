@@ -21,3 +21,10 @@ Autonomous overnight run. Newest entries at the bottom.
 - 23:05 Subagents launched: viewer/report builder (Opus), analytic test suite (Sonnet), LLM runs on motor_mount and
   mould_cavity (Opus, following skills/cnc-gcode/SKILL.md). Packaging: plugin + marketplace manifests, README.
 - 22:50 Test suite: tests/test_sim.py, 41 analytic + safety tests, all pass (~2 s). No simulator bugs found. Holder test needs a taller stock (T4 stickout 14 > 11 mm stock).
+- 00:00 Dev runs (harness v1): motor_mount 99.998% valid (4 iters, 6.7 min cycle); mould_cavity 99.66% valid
+  (2 iters, 19.3 min). Both agents' friction lists -> harness v2: edge-band exclusion (probes within 0.03 mm of a face
+  edge read +-5 mm for micron wall offsets), crash/overload messages with numbers and coordinates, holder/shank model +
+  dialect clarifications in the brief, robust `evaluate`, networkx, `pip install -e` works from any directory.
+  Tried "reach-limited" classification from holder geometry: too noisy (flags areas the long tools reach) -> dropped,
+  documented holder model instead.
+- 00:05 Dev runs on v2 launched: heatsink, cam_plate, undercut_block.

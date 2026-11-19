@@ -1,1 +1,54 @@
-[]
+[
+ {
+  "iter": 1,
+  "time": "2026-11-19T22:54:28",
+  "metrics": {
+   "machinable_in_tol_pct": 98.444,
+   "machinable_gouge_pct": 0.002,
+   "machinable_proud_pct": 1.554,
+   "all_in_tol_pct": 98.421,
+   "undercut_area_pct": 0.0,
+   "tool_limited_area_pct": 0.026,
+   "max_gouge_mm": 4.3814,
+   "any_gouge_pct": 0.002,
+   "surface_area_mm2": 18225.0,
+   "probes": 121483,
+   "tolerance_mm": 0.1,
+   "remaining_excess_cm3": 0.163,
+   "gouged_cm3": 0.0285,
+   "removed_cm3": 52.422,
+   "cycle_time_min": 13.63,
+   "errors": 1,
+   "warnings": 5,
+   "valid": false
+  },
+  "lines": 20289,
+  "moves": 25453
+ },
+ {
+  "iter": 2,
+  "time": "2026-11-19T22:56:53",
+  "metrics": {
+   "machinable_in_tol_pct": 99.657,
+   "machinable_gouge_pct": 0.0,
+   "machinable_proud_pct": 0.343,
+   "all_in_tol_pct": 99.634,
+   "undercut_area_pct": 0.0,
+   "tool_limited_area_pct": 0.026,
+   "max_gouge_mm": 0.0697,
+   "any_gouge_pct": 0.0,
+   "surface_area_mm2": 18225.0,
+   "probes": 121483,
+   "tolerance_mm": 0.1,
+   "remaining_excess_cm3": 0.07,
+   "gouged_cm3": 0.0287,
+   "removed_cm3": 52.515,
+   "cycle_time_min": 19.31,
+   "errors": 0,
+   "warnings": 0,
+   "valid": true
+  },
+  "lines": 37950,
+  "moves": 43096
+ }
+]

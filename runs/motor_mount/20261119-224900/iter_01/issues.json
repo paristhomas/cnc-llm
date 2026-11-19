@@ -1,0 +1,50 @@
+[
+ {
+  "severity": "warning",
+  "kind": "gcode",
+  "line": 121,
+  "msg": "tool change with spindle running (stopped automatically)"
+ },
+ {
+  "severity": "warning",
+  "kind": "gcode",
+  "line": 6142,
+  "msg": "tool change with spindle running (stopped automatically)"
+ },
+ {
+  "severity": "warning",
+  "kind": "gcode",
+  "line": 11659,
+  "msg": "tool change with spindle running (stopped automatically)"
+ },
+ {
+  "severity": "warning",
+  "kind": "gcode",
+  "line": 11724,
+  "msg": "tool change with spindle running (stopped automatically)"
+ },
+ {
+  "severity": "error",
+  "kind": "collision",
+  "msg": "rapid (G0) move removes material - crash",
+  "count": 1,
+  "line": 6147,
+  "lines": [
+   6147
+  ],
+  "volume_mm3": 0.28
+ },
+ {
+  "severity": "error",
+  "kind": "cutting",
+  "msg": "cut cross-section > 0.75 D^2 for T3 (overloaded: too deep and too wide)",
+  "count": 4,
+  "line": 11525,
+  "lines": [
+   11525,
+   11568,
+   11611,
+   11654
+  ]
+ }
+]

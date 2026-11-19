@@ -1,0 +1,1 @@
+Iteration 3: pre-drill the D6.6 holes with T10 (G83) so T3 only helixes the annulus (saves the slow r1.0 helix); hole and D40 finish radii 0.005-0.01 mm under nominal to test whether the two single-probe edge gouges are artifacts.

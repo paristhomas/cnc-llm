@@ -1,1 +1,106 @@
-[]
+[
+ {
+  "iter": 1,
+  "time": "2026-11-19T22:55:13",
+  "metrics": {
+   "machinable_in_tol_pct": 99.998,
+   "machinable_gouge_pct": 0.002,
+   "machinable_proud_pct": 0.0,
+   "all_in_tol_pct": 99.998,
+   "undercut_area_pct": 0.0,
+   "tool_limited_area_pct": 0.006,
+   "max_gouge_mm": 5.0,
+   "any_gouge_pct": 0.002,
+   "surface_area_mm2": 16262.4,
+   "probes": 108468,
+   "tolerance_mm": 0.1,
+   "remaining_excess_cm3": 0.044,
+   "gouged_cm3": 0.0617,
+   "removed_cm3": 50.011,
+   "cycle_time_min": 8.62,
+   "errors": 2,
+   "warnings": 4,
+   "valid": false
+  },
+  "lines": 11745,
+  "moves": 26661
+ },
+ {
+  "iter": 2,
+  "time": "2026-11-19T22:56:52",
+  "metrics": {
+   "machinable_in_tol_pct": 99.998,
+   "machinable_gouge_pct": 0.002,
+   "machinable_proud_pct": 0.0,
+   "all_in_tol_pct": 99.998,
+   "undercut_area_pct": 0.0,
+   "tool_limited_area_pct": 0.006,
+   "max_gouge_mm": 5.0,
+   "any_gouge_pct": 0.002,
+   "surface_area_mm2": 16262.4,
+   "probes": 108468,
+   "tolerance_mm": 0.1,
+   "remaining_excess_cm3": 0.044,
+   "gouged_cm3": 0.0617,
+   "removed_cm3": 50.011,
+   "cycle_time_min": 8.56,
+   "errors": 0,
+   "warnings": 0,
+   "valid": true
+  },
+  "lines": 11846,
+  "moves": 26729
+ },
+ {
+  "iter": 3,
+  "time": "2026-11-19T22:57:36",
+  "metrics": {
+   "machinable_in_tol_pct": 99.996,
+   "machinable_gouge_pct": 0.0,
+   "machinable_proud_pct": 0.004,
+   "all_in_tol_pct": 99.995,
+   "undercut_area_pct": 0.0,
+   "tool_limited_area_pct": 0.006,
+   "max_gouge_mm": 0.002,
+   "any_gouge_pct": 0.0,
+   "surface_area_mm2": 16262.4,
+   "probes": 108468,
+   "tolerance_mm": 0.1,
+   "remaining_excess_cm3": 0.053,
+   "gouged_cm3": 0.0572,
+   "removed_cm3": 49.998,
+   "cycle_time_min": 6.69,
+   "errors": 0,
+   "warnings": 0,
+   "valid": true
+  },
+  "lines": 11757,
+  "moves": 22579
+ },
+ {
+  "iter": 4,
+  "time": "2026-11-19T22:57:57",
+  "metrics": {
+   "machinable_in_tol_pct": 99.998,
+   "machinable_gouge_pct": 0.0,
+   "machinable_proud_pct": 0.002,
+   "all_in_tol_pct": 99.998,
+   "undercut_area_pct": 0.0,
+   "tool_limited_area_pct": 0.006,
+   "max_gouge_mm": 0.002,
+   "any_gouge_pct": 0.0,
+   "surface_area_mm2": 16262.4,
+   "probes": 108468,
+   "tolerance_mm": 0.1,
+   "remaining_excess_cm3": 0.05,
+   "gouged_cm3": 0.0583,
+   "removed_cm3": 50.001,
+   "cycle_time_min": 6.69,
+   "errors": 0,
+   "warnings": 0,
+   "valid": true
+  },
+  "lines": 11757,
+  "moves": 22579
+ }
+]

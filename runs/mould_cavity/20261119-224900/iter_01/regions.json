@@ -1,0 +1,110 @@
+[
+ {
+  "type": "proud",
+  "area_mm2": 283.09,
+  "points": 1887,
+  "bbox": [
+   -18.2,
+   -17.26,
+   16.0,
+   18.14,
+   17.04,
+   19.33
+  ],
+  "dev_mean": 0.531,
+  "dev_extreme": 2.078,
+  "surface": "floor/top (faces up)",
+  "faces": [
+   "face 5 (sphere r30)",
+   "face 2 (bspline)",
+   "face 0 (bspline)"
+  ],
+  "last_cut_by_lines": [
+   17849,
+   11354,
+   11535,
+   11560,
+   11764,
+   17929
+  ],
+  "id": 1
+ },
+ {
+  "type": "gouge",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   -40.89,
+   25.22,
+   30.0,
+   -40.89,
+   25.22,
+   30.0
+  ],
+  "dev_mean": -0.165,
+  "dev_extreme": -0.165,
+  "surface": "floor/top (faces up)",
+  "faces": [
+   "face 3 (plane z30)"
+  ],
+  "gcode_lines": [
+   19953
+  ],
+  "tools": [
+   6
+  ],
+  "id": 2
+ },
+ {
+  "type": "gouge",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   33.99,
+   -28.29,
+   30.0,
+   33.99,
+   -28.29,
+   30.0
+  ],
+  "dev_mean": -4.381,
+  "dev_extreme": -4.381,
+  "surface": "floor/top (faces up)",
+  "faces": [
+   "face 3 (plane z30)"
+  ],
+  "gcode_lines": [
+   9263
+  ],
+  "tools": [
+   6
+  ],
+  "id": 3
+ },
+ {
+  "type": "gouge",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   33.97,
+   28.07,
+   30.0,
+   33.97,
+   28.07,
+   30.0
+  ],
+  "dev_mean": -4.053,
+  "dev_extreme": -4.053,
+  "surface": "floor/top (faces up)",
+  "faces": [
+   "face 3 (plane z30)"
+  ],
+  "gcode_lines": [
+   20043
+  ],
+  "tools": [
+   6
+  ],
+  "id": 4
+ }
+]

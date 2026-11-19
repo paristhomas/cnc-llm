@@ -1,0 +1,64 @@
+[
+ {
+  "severity": "warning",
+  "kind": "gcode",
+  "line": 5459,
+  "msg": "tool change with spindle running (stopped automatically)"
+ },
+ {
+  "severity": "warning",
+  "kind": "gcode",
+  "line": 9186,
+  "msg": "tool change with spindle running (stopped automatically)"
+ },
+ {
+  "severity": "warning",
+  "kind": "gcode",
+  "line": 20067,
+  "msg": "tool change with spindle running (stopped automatically)"
+ },
+ {
+  "severity": "warning",
+  "kind": "gcode",
+  "line": 20181,
+  "msg": "tool change with spindle running (stopped automatically)"
+ },
+ {
+  "severity": "error",
+  "kind": "cutting",
+  "msg": "cut cross-section > 0.75 D^2 for T6 (overloaded: too deep and too wide)",
+  "count": 10,
+  "line": 9213,
+  "lines": [
+   9213,
+   9214,
+   9263,
+   9264,
+   19813,
+   19814,
+   19861,
+   19862,
+   19902,
+   19952
+  ]
+ },
+ {
+  "severity": "warning",
+  "kind": "cutting",
+  "msg": "deep plunge (> 0.5 D) at > 50% of the recommended feed for T6; ramp or helix instead",
+  "count": 10,
+  "line": 9213,
+  "lines": [
+   9213,
+   9263,
+   9306,
+   9357,
+   19813,
+   19861,
+   19901,
+   19951,
+   19993,
+   20043
+  ]
+ }
+]

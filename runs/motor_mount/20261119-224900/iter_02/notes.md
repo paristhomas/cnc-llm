@@ -1,0 +1,1 @@
+Iteration 2: fixed rapid into T3 rest entry (approach point + no retract between levels), tangential arc lead-in/out on all finish passes (hole finish was overloaded by a radial entry), M5 before tool changes.
