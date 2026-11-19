@@ -1,0 +1,7 @@
+{
+  "name": "cnc-gcode",
+  "version": "0.1.0",
+  "description": "Claude writes 3-axis milling G-code for your part and refines it against an exact machining simulator; produces a web report with a 3D cutting animation.",
+  "author": {"name": "cnc-llm contributors"},
+  "license": "MIT"
+}

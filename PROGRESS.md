@@ -16,3 +16,7 @@ Autonomous overnight run. Newest entries at the bottom.
   G-code line attribution, images), brief generator, CLI. MillBill cross-check: 100% agreement (beyond 2 um) on a
   program with arcs, helices, G81/G83, ball/bull/cone tools. 7 CadQuery parts (5 dev, 2 validation).
   Acceptance criteria fixed in docs/ACCEPTANCE.md (user asked for independent agent verification; deadline 10:00 UTC).
+- 23:00 GitHub push blocked: 403 "Resource not accessible by integration" (Claude GitHub App not installed on
+  paristhomas/cnc-llm). Committing locally at each milestone; push retried each time. **User action needed.**
+- 23:05 Subagents launched: viewer/report builder (Opus), analytic test suite (Sonnet), LLM runs on motor_mount and
+  mould_cavity (Opus, following skills/cnc-gcode/SKILL.md). Packaging: plugin + marketplace manifests, README.

@@ -1,0 +1,11 @@
+{
+  "name": "cnc-llm",
+  "owner": {"name": "paristhomas"},
+  "plugins": [
+    {
+      "name": "cnc-gcode",
+      "source": "./",
+      "description": "LLM-written G-code with closed-loop machining simulation (3-axis, aluminium)."
+    }
+  ]
+}
