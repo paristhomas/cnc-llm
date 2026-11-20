@@ -121,7 +121,14 @@ Start after the usage limit resets.
    - cutting-data checks as today.
 4. **Machinist review agent** on the final program and fixture plan, as before.
 
-## Candidate parts for the user to download (STEP)
+## Parts found and committed: NIST MBE PMI test models (public domain)
+11 STEP models are in `parts/incoming/nist/`; see its README for the assessment.
+
+Proposed set (3+2 from aluminium billet, scaled to fit a desktop 5-axis machine of about 200 mm):
+- **development:** ftc_10 (native size), ftc_06 (×0.5), ftc_08 (×0.5), ctc_01 (×0.15)
+- **validation (held out):** ctc_04 (×0.2), plus the Autodesk Fusion 3+2 tutorial part if the user downloads it
+
+## Other candidates (the user would need to download them)
 | Part | Why | Where |
 |---|---|---|
 | UNSW Making "Haas 5-axis 3+2 induction" part | Real 3+2 training part with re-registration slots. The download folder includes vise and holder models plus the UMC-350 machine (check the file format). | https://www.making.unsw.edu.au/learn/haas-5-axis-32-induction/ |
