@@ -74,6 +74,10 @@ async function decode(raw) {
   for (let m = 0; m < n; m++) if (firstMove[lines[m]] < 0) firstMove[lines[m]] = m;
   let next = n;
   for (let l = nl - 1; l >= 0; l--) { if (firstMove[l] < 0) firstMove[l] = next; else next = firstMove[l]; }
+  for (const sg of segs) {   // first feed (cutting) move of each setup
+    sg.firstCut = sg.a;
+    for (let m = sg.a; m < sg.b; m++) if (!((A.mv_tool[m] >> 5) & 1)) { sg.firstCut = m; break; }
+  }
   const toolsUsed = [];
   for (let m = 0; m < n; m++) { const t = TL[m] & 31; if (t && !toolsUsed.includes(t)) toolsUsed.push(t); }
   for (const sg of segs) { sg.fixHits = 0; for (let m = sg.a; m < sg.b; m++) if (A.mv_fix[m]) sg.fixHits++; }

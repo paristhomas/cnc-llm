@@ -71,3 +71,4 @@ svg.chart.rig line.lim.po { stroke: var(--warn); }
   table.setups td:nth-child(n+3)::before { content: attr(data-l) ": "; color: var(--ink-3); font-size: 12px; }
   .cur-setup .cs-ico { width: 36px; height: 36px; }
 }
+.x5 .time { min-width: 124px; }

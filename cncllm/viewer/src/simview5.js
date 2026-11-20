@@ -43,6 +43,12 @@ export function axisIcon(d, size = 30, color = 'currentColor') {
     `<path d="M${f(tail)}L${f(tip)}" stroke="${color}" stroke-width="2.2" stroke-linecap="round"/><path d="M${f(tip)}L${f(h1)}L${f(h2)}Z" fill="${color}"/></svg>`;
 }
 
+export function armZoom(stage, el) {
+  stage.controls.enableZoom = false;
+  el.addEventListener('pointerdown', () => { stage.controls.enableZoom = true; });
+  el.addEventListener('pointerleave', () => { stage.controls.enableZoom = false; });
+}
+
 export function setupLabel(s) {
   return `A${Math.round(s.A_deg ?? 0)} C${Math.round(s.C_deg ?? 0)}`;
 }
@@ -93,6 +99,7 @@ export class SimView5 {
     this.N = segs.length;
     const stage = this.stage = new Stage(els.view, meta.stock);
     stage.plate.visible = false;
+    armZoom(stage, els.view);
     // camera fits the stock and the jaws
     const lo = new THREE.Vector3(...meta.stock.lo), hi = new THREE.Vector3(...meta.stock.hi);
     for (const b of meta.vise || []) if (b.kind === 'jaw') { lo.min(new THREE.Vector3(...b.lo)); hi.max(new THREE.Vector3(...b.hi)); }
@@ -353,8 +360,10 @@ export class SimView5 {
     if (!this.toolObj) return;
     this.indexing = this.pose(m, f, this.toolObj.position, this.toolObj.quaternion);
     this.spinning = ((this.D.TL[m] >> 6) & 1) === 1 && !this.indexing;
-    this.arrow.visible = !!this.indexing && pos < n;
-    if (this.indexing) this.placeArrow(this.toolObj.quaternion, this.segOf(m));
+    // tool-axis arrow while indexing and during the approach rapids of a setup
+    const approach = pos < n && m < this.segs[this.segOf(m)].firstCut && this.segOf(m) > 0;
+    this.arrow.visible = (!!this.indexing || approach) && pos < n;
+    if (this.arrow.visible) this.placeArrow(this.toolObj.quaternion, this.segOf(m));
     this.toolObj.visible = this.showTool !== false && pos < n;
     // vise / table contact of the current move: highlight the box and the tool
     const fx = pos < n && f > 0 ? this.D.fix[m] : 0;
@@ -473,12 +482,26 @@ export class SimView5 {
       else if (a === 'fwd') this.setCursor(Math.floor(this.cursor) + 1);
       else if (a === 'pseg' || a === 'nseg') {
         const cur = this.segOf(this.moveAt(this.cursor));
-        const atStart = this.cursor <= segs[cur].a + 1e-9;
+        const atStart = this.cursor <= segs[cur].firstCut + 1e-9;
         const t = a === 'nseg' ? cur + 1 : (atStart ? cur - 1 : cur);
         this.gotoSeg(Math.max(0, Math.min(t, this.N - 1)), a === 'nseg' && cur >= this.N - 1);
       }
     }));
     this.scrub.addEventListener('input', () => { this.setCursor(+this.scrub.value); });
+    // clicks / drags anywhere on the track seek (also over the marks)
+    const wrap = q('.scrub-wrap');
+    const seek = (e) => {
+      const r = this.scrub.getBoundingClientRect(), pad = 8;
+      const f = Math.min(Math.max((e.clientX - r.left - pad) / Math.max(r.width - 2 * pad, 1), 0), 1);
+      this.scrub.value = f * n; this.setCursor(f * n);
+    };
+    wrap.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      e.preventDefault(); stop(); this.scrub.focus({ preventScroll: true });
+      wrap.setPointerCapture(e.pointerId); seek(e);
+      const mv = (ev) => seek(ev), up = () => { wrap.removeEventListener('pointermove', mv); wrap.removeEventListener('pointerup', up); wrap.removeEventListener('pointercancel', up); };
+      wrap.addEventListener('pointermove', mv); wrap.addEventListener('pointerup', up); wrap.addEventListener('pointercancel', up);
+    });
     q('.speed').onchange = (e) => { const v = e.target.value; this.speed = v === 'turbo' ? Math.max(this.total / 12, 1) : +v; };
     q('.colour').onchange = (e) => { this.mat5.setMode(+e.target.value); this.stage.invalidate(); };
     q('.pathmode').onchange = (e) => this.setPathMode(e.target.value);
@@ -571,9 +594,8 @@ export class SimView5 {
   gotoSeg(s, toEnd = false) {
     if (toEnd) { this.setCursor(this.n); return; }
     const sg = this.segs[s];
-    // just after the indexing, at the start of the setup's first move
-    const p = this.D.phi[sg.a];
-    this.setCursor(sg.a + (p > 0 ? p : 0));
+    // at the start of the setup's first feed move (the tool shown at its first cutting position, not parked)
+    this.setCursor(sg.firstCut);
     this.uiT = 0;
     if (this.follow) { this.shownSeg = s; this.view('setup'); }
   }

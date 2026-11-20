@@ -7,7 +7,7 @@ import { Stage } from './scene.js';
 import { devColor, devGradientCSS, hexRgb } from './colors.js';
 import { buildGhost } from './simview.js';
 import { Material5 } from './material5.js';
-import { SETUP_PALETTE, buildVise, setupLabel } from './simview5.js';
+import { SETUP_PALETTE, armZoom, buildVise, setupLabel } from './simview5.js';
 
 export const CLS5 = { parting: '#c9a46c', unreach: '#8e939c' };
 
@@ -28,6 +28,12 @@ export class ResultView5 {
     const meta = D.meta, tol = this.tol = meta.tolerance || 0.1;
     const st = this.stage = new Stage(els.view, meta.stock);
     st.plate.visible = false;
+    armZoom(st, els.view);
+    // frame the whole part when the view first scrolls in (unless the reader already moved the camera)
+    this.touched = false;
+    els.view.addEventListener('pointerdown', () => { this.touched = true; });
+    const io = new IntersectionObserver((e) => { if (e[0].isIntersecting) { if (!this.touched) { st.resize(); this.view('iso', false); } io.disconnect(); } });
+    io.observe(els.view);
     const lo = new THREE.Vector3(...meta.stock.lo), hi = new THREE.Vector3(...meta.stock.hi);
     this.partLo = lo.clone(); this.partHi = hi.clone();
     for (const b of meta.vise || []) if (b.kind === 'jaw') { lo.min(new THREE.Vector3(...b.lo)); hi.max(new THREE.Vector3(...b.hi)); }
@@ -115,13 +121,13 @@ export class ResultView5 {
     this.setGhostMach(this.mode === 'dev' && on);
     this.stage.invalidate();
   }
-  view(name) {
+  view(name, animate = true) {
     const st = this.stage;
     const dirs = { iso: st.camera.aspect < 0.9 ? [-0.6, -1.0, 1.55] : [-0.85, -1.25, 1.05], top: [0, -0.0001, 1], front: [0, -1, 0.28], back: [0.0, 1, 0.28], right: [1, 0.0, 0.28], left: [-1, 0, 0.28], under: [-0.6, -1.0, -0.9] };
     const v = new THREE.Vector3(...(dirs[name] || dirs.iso)).normalize();
     const box = [this.partLo, this.partHi];
     const { pos, target } = st.fitBox(v, box[0], box[1], name === 'top' ? 1.06 : 1.12);
-    st.flyTo(pos, target, true);
+    st.flyTo(pos, target, animate);
   }
   buildBar(bar) {
     this.bar = bar;
@@ -197,6 +203,7 @@ export class ResultView5 {
     const c = new THREE.Vector3((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2);
     const ext = Math.max(b[3] - b[0], b[4] - b[1], b[5] - b[2], 6);
     const dir = new THREE.Vector3(...nn).normalize().add(new THREE.Vector3(-0.3, -0.4, 0.4)).normalize();
+    this.touched = true;
     this.stage.flyTo(c.clone().addScaledVector(dir, ext * 1.6 + this.stage.diag * 0.3), c);
     this.markers.forEach((m) => m.el.classList.toggle('active', m === mk));
   }

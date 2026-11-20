@@ -420,9 +420,11 @@ def _rigidity_chart(rg):
         p.append(f'<g class="bar {cls}"><rect x="{x:.2f}%" y="{y(f):.1f}" width="{bw:.2f}%" height="{max(y(0) - y(f), 1):.1f}" rx="2"/>'
                  f'<title>After setup {c["after_segment"]} (line {c["line"]}): {c["area_mm2"]:g} mm² = {100 * f:.1f}% of the stock section'
                  f'{" · part-off section" if po else ""}</title></g>')
-        if i == 0 or last or abs(f - checks[i - 1]["fraction"]) > 1e-4 or bad:
+        step = max(1, math.ceil(n / 12))   # thin the labels: at most ~12, always the last and failing bars
+        if (n <= 12 and (i == 0 or last or bad or abs(f - checks[i - 1]["fraction"]) > 1e-4)) or last or (n > 12 and i % step == 0 and n - 1 - i >= step):
             p.append(f'<text class="vlab" x="{x + bw / 2:.2f}%" y="{y(f) - 5:.1f}" text-anchor="middle">{100 * f:.0f}%</text>')
-        p.append(f'<text class="tick" x="{x + bw / 2:.2f}%" y="{H - 10}" text-anchor="middle">{c["after_segment"]}</text>')
+        if n <= 16 or i % max(1, math.ceil(n / 14)) == 0 or last:
+            p.append(f'<text class="tick" x="{x + bw / 2:.2f}%" y="{H - 10}" text-anchor="middle">{c["after_segment"]}</text>')
     p.append("</svg>")
     return (f'<div class="legend"><span class="lg"><i class="rig-ok"></i>before the part-off (must stay ≥ {100 * RIGID_MIN:.0f}%)</span>'
             f'<span class="lg"><i class="rig-po"></i>part-off section (must end ≤ {100 * PARTOFF_MAX:.0f}% and ≥ 2 mm²)</span>'
@@ -640,8 +642,9 @@ def build(run_dir) -> Path:
                f"uncommitted harness changes: {'yes' if hv.get('harness_modified') else 'no'}, "
                f"unchanged since run start: {'yes' if integ.get('harness_unchanged_since_run_start') else 'no'}, "
                f"part unchanged: {'yes' if integ.get('part_unchanged') else 'no'}")
-        chips.append(f'<span class="chip {"good" if ok else "warn"}" title="{_esc(tip)}">'
-                     f'<b aria-hidden="true">{"✓" if ok else "!"}</b> Harness {"verified" if ok else "changed since run start"}'
+        hcls = "good" if ok else ("warn" if hv.get("harness_modified") else "neutral")
+        chips.append(f'<span class="chip {hcls}" title="{_esc(tip)}">'
+                     f'<b aria-hidden="true">{"✓" if ok else "!" if hcls == "warn" else "i"}</b> Harness {"verified" if ok else "changed since run start"}'
                      f' · git {_esc(hv.get("git_head", "?"))}</span>')
         if not ok:
             why = []
