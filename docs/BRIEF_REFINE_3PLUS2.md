@@ -24,6 +24,35 @@ Viewer sources are in `cncllm/viewer/src/*5.js`. Rebuild them with esbuild into 
 Branch for this phase: create `claude/3plus2-refine` from `claude/3plus2-indexed-5axis`. Push at every
 milestone. Do not open PRs unless the owner asks.
 
+## 0a. You have full admin access: use it (owner's instruction)
+The owner: "This agent will have full admin access. I suggest you use it". Use that access for these things:
+- **Isolate the LLM from the evaluator.**
+  - Run the generator subagent's work as a separate unprivileged OS user. Its workspace is the run's `work/` directory.
+  - Install the harness (`cncllm/`, `tests/`, the parts and the tool library) read-only, owned by root.
+  - Trusted evaluation runs as another user that the LLM user cannot write to.
+  - This is a much stronger guard against reward hacking (W6) than the current sha256 check. Keep the sha256 check as well.
+- **CI on GitHub.**
+  - Add a GitHub Actions workflow on the work branch that runs `pytest` and re-runs the trusted evaluation of every
+    final program from a clean checkout.
+  - The reported score is the one CI reproduces.
+  - Branch protection on `main` is fine, **but merge to `main` only if the owner asks**.
+- **Install whatever open-source tooling helps.** For example:
+  - node/esbuild for the viewer;
+  - ffmpeg, to record a Machine-view video of the FTC-10 job for the friend demo (W9);
+  - Playwright/Chromium for the reviewer's screenshots;
+  - FreeCAD/OCP for B-rep work;
+  - extra cores for long simulations.
+- **Run long jobs unattended**: tmux or background processes, with logs. Snapshot-commit progress.
+
+Do not use admin access to:
+- force-push or rewrite any branch history;
+- delete branches, runs or reviews;
+- touch other repositories;
+- change billing or org settings;
+- weaken any check.
+
+Ask the owner first for anything irreversible or outward-facing beyond pushing your own branch and publishing artifacts.
+
 ## 1. What the owner said (exact words, typos kept)
 This phase:
 > "I was kinda hoping I would see the +2 axis  and I would see how they moved the work piece."
@@ -236,6 +265,7 @@ a requirement measurable. Rules for PROPOSED rows:
 | W11 | A more critical independent agent verifies against criteria fixed upfront | **OWNER** | `docs/reviews/critical_review_refine.md`, written by an agent that did not do the work and did not see the developer's summary. Criteria = this table plus §5, committed **before** the LLM runs (the git history shows the order). | All OWNER rows PASS with evidence. |
 | W12 | Machinist would run it as is | PROPOSED | Machinist reviewer agent verdict. | "Run as is". |
 | W13 | Cycle time no worse than 86 min without a reason; Machine view loads < 5 s and works on a phone; non-machinist understands it in 60 s | PROPOSED | Report metrics; Playwright timing; phone-viewport screenshot. | As stated. |
+| W15 | Use the full admin access (isolation, CI, tooling) | **OWNER** | `docs/HANDOFF_REFINE.md` lists what was set up; the reviewer verifies that the LLM user cannot write to the harness (it tries and fails) and that CI reproduces the score. | Both verified. |
 | W14 | Watch usage; open-source tools; push at milestones; use subagents | **OWNER** | Usage noted in `PROGRESS.md` for each run; commit history. | Followed. |
 
 ### Questions the owner has not answered
