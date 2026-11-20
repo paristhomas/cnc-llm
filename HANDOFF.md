@@ -27,7 +27,14 @@ _Written 2026-11-20 by the lead agent (Claude Code, autonomous overnight run). L
 | dev | mould_cavity | **99.665%** | VALID | 0.00% | 0.004 | 0.0% / 0.01% | 2 / 2 | 19.3 | 100.0% |
 | dev | undercut_block | **99.957%** | VALID | 0.00% | 0.001 | 19.6% / 0.06% | 2 / 2 | 12.6 | 100.0% |
 
-Published artifact (mould_cavity report): https://claude.ai/artifact/QQG1hjNEzEUt5V9KzT7yb7
+Published report artifacts (private to the owner until shared):
+- mould_cavity: https://claude.ai/artifact/QQG1hjNEzEUt5V9KzT7yb7
+- heatsink: https://claude.ai/artifact/HLsS6HPbCQzJMUedGY879x
+- motor_mount: https://claude.ai/artifact/XTERMGHa919kD3RBrFTRVj
+- cam_plate: https://claude.ai/artifact/7zMRczNHDkJZsfaRsoLBEG
+- undercut_block: https://claude.ai/artifact/8p1ESCVssaKnbtviiNjUxn
+- gimbal_arm (validation): https://claude.ai/artifact/WReobKHDMkX5S1RziRLweg
+- impeller (validation): https://claude.ai/artifact/CpYchaiUiq8b5fYMPZTQhY
 
 ## How it works
 | Piece | File | Notes |
