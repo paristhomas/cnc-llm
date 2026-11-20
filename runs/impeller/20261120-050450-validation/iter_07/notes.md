@@ -1,0 +1,1 @@
+Iter 7: first T8 pencil ring (0.52 from walls) now uses the same 0.04 mm point spacing and no chord simplification as its Z-level passes, so the shank never meets the level-pass cusps beside the hub wall.

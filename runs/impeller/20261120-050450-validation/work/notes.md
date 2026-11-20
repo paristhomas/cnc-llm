@@ -1,1 +1,1 @@
-Iter 6: Z-level corner passes (T3/T4/T8) no longer chord-simplified (0.0003 mm) so every level follows exactly the XY of the final pass - removes the residual shank-contact slivers.
+Iter 7: first T8 pencil ring (0.52 from walls) now uses the same 0.04 mm point spacing and no chord simplification as its Z-level passes, so the shank never meets the level-pass cusps beside the hub wall.

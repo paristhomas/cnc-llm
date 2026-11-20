@@ -1,0 +1,55 @@
+{
+ "iteration": 7,
+ "metrics": {
+  "machinable_in_tol_pct": 99.177,
+  "machinable_gouge_pct": 0.0,
+  "machinable_proud_pct": 0.823,
+  "all_in_tol_pct": 98.554,
+  "undercut_area_pct": 0.0,
+  "tool_limited_area_pct": 0.632,
+  "max_gouge_mm": 0.0432,
+  "any_gouge_pct": 0.0,
+  "surface_area_mm2": 11750.1,
+  "probes": 78363,
+  "tolerance_mm": 0.1,
+  "edge_band_excluded_pct": 0.972,
+  "remaining_excess_cm3": 0.136,
+  "gouged_cm3": 0.0843,
+  "removed_cm3": 114.052,
+  "cycle_time_min": 54.31,
+  "errors": 0,
+  "warnings": 0,
+  "valid": true
+ },
+ "integrity": {
+  "harness": {
+   "sha256": "6c682dc4220e89e3eacc40a1783e57b1056443da83760a6ea38096f998109a33",
+   "git_head": "3f6a731",
+   "harness_modified": false,
+   "modified_files": []
+  },
+  "part_sha256_now": "1b5cad0fff1972a5fa037c12f7ca57b8b351fd38e9795a5e74b15ae5a995d03c",
+  "part_sha256_at_start": "1b5cad0fff1972a5fa037c12f7ca57b8b351fd38e9795a5e74b15ae5a995d03c",
+  "part_unchanged": true,
+  "harness_unchanged_since_run_start": false,
+  "generator_scan": {
+   "files": [
+    "gen.py",
+    "gen_v1.py"
+   ],
+   "forbidden_imports": [],
+   "ok": true
+  }
+ },
+ "crosscheck_millbill": {
+  "points": 300000,
+  "disagree": 0,
+  "disagree_beyond_2um": 0,
+  "agreement_pct": 100.0,
+  "millbill": {
+   "moves": 180644,
+   "warnings": []
+  },
+  "examples": []
+ }
+}

@@ -180,7 +180,7 @@ def gimbal_arm():
       "Open impeller disc D80. Hub D20 (rising to Z22) with a D8 bore. The disc surface between hub and rim is a "
       "concave conical dish falling from Z12 at the hub to Z6 at R36, then flat to the rim. Six backward-curved blades "
       "2.5 mm thick (circular-arc camber) stand on the dish with tops at Z18, R0.8 not required (sharp). Rim edge "
-      "chamfer 1 mm.")
+      "chamfer: intended but not in the CAD.")
 def impeller():
     prof = (cq.Workplane("XZ").moveTo(0, 0).lineTo(40, 0).lineTo(40, 6).lineTo(36, 6).lineTo(10, 12)
             .lineTo(10, 22).lineTo(0, 22).close())

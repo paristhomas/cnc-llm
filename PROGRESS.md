@@ -41,3 +41,9 @@ Autonomous overnight run. Newest entries at the bottom.
   Known: chip-load check uses tool-centre feed (internal small-radius arcs read as "rubbing" warnings);
   holder blocks full-depth small holes deeper than stick-out (counts against score, not tool-limited).
   GitHub push still 403; Google Drive upload blocked by connector size limits (4.2 MB per call).
+- 05:55 Validation (held out, skill frozen): gimbal_arm 100.000% VALID (2 iters, 9.9 min); impeller 99.177% VALID
+  (7 iters; 6 spent clearing shank-contact errors between blades; residual = acute dish/blade corners).
+  Independent reviews: report page A1-A10 (first pass A5 FAIL + defects -> fixed -> re-check PASS);
+  machinist: both reviewed programs "RUN WITH MINOR EDITS" (one wrong claim fact-checked; valid points -> skill).
+  Engagement check now windowed over 0.5 D of travel (0.5 um arc chords had inflated it). runs/index.html added.
+  Artifact (mould_cavity report): https://claude.ai/artifact/QQG1hjNEzEUt5V9KzT7yb7. HANDOFF.md written.

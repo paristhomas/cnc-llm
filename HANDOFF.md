@@ -6,8 +6,9 @@ _Written 2026-11-20 by the lead agent (Claude Code, autonomous overnight run). L
 ## TL;DR
 - A Claude Code subagent, following `skills/cnc-gcode/SKILL.md`, writes its own toolpaths (its own Python, no CAM
   libraries) for non-trivial aluminium parts. It refines them against an exact 3-axis material-removal simulator.
-- **All 7 parts ended with a VALID program and >= 99.66 % of the machinable surface within ±0.1 mm**, using 2–4
-  simulator iterations each. That includes the 2 held-out validation parts.
+- **All 7 parts ended with a VALID program and >= 99.18 % of the machinable surface within ±0.1 mm**, with no
+  gouges. Dev parts took 2–4 simulator iterations; the held-out validation parts scored 100.000 % (gimbal_arm, 2
+  iterations) and 99.18 % (impeller, 7 iterations, needed 6 to clear shank-contact errors between the blades).
 - The simulator agrees exactly with an independent implementation: MillBill's parser + swept-volume kernel, 100 % of
   roughly 270–300k query points per run.
 - Every run has a static web report: header verdict, 3D cutting replay with the G-code listing, a deviation-coloured
@@ -16,7 +17,15 @@ _Written 2026-11-20 by the lead agent (Claude Code, autonomous overnight run). L
   `paristhomas/cnc-llm`. All work is committed on the local branch `claude/llm-cnc-gcode-simulation-y34uu9`.
 
 ## Results (trusted final evaluation, fresh process)
-RESULTS_TABLE
+| Set | Part | Score (machinable in ±0.1) | Program | Gouge | Max gouge mm | Undercut / tool-limited excl. | Iter used / run | Cycle min | MillBill agree |
+|---|---|---|---|---|---|---|---|---|---|
+| validation | gimbal_arm | **100.000%** | VALID | 0.00% | 0.039 | 0.0% / 0.01% | 2 / 2 | 9.9 | 100.0% |
+| validation | impeller | **99.177%** | VALID | 0.00% | 0.043 | 0.0% / 0.63% | 7 / 7 | 54.3 | 100.0% |
+| dev | cam_plate | **99.871%** | VALID | 0.00% | 0.003 | 0.0% / 0.10% | 2 / 2 | 12.5 | 100.0% |
+| dev | heatsink | **100.000%** | VALID | 0.00% | 0.000 | 0.0% / 0.00% | 3 / 3 | 14.4 | 100.0% |
+| dev | motor_mount | **100.000%** | VALID | 0.00% | 0.000 | 0.0% / 0.00% | 3 / 4 | 6.7 | 100.0% |
+| dev | mould_cavity | **99.665%** | VALID | 0.00% | 0.004 | 0.0% / 0.01% | 2 / 2 | 19.3 | 100.0% |
+| dev | undercut_block | **99.957%** | VALID | 0.00% | 0.001 | 19.6% / 0.06% | 2 / 2 | 12.6 | 100.0% |
 
 Published artifact (mould_cavity report): https://claude.ai/artifact/QQG1hjNEzEUt5V9KzT7yb7
 
@@ -51,11 +60,19 @@ Published artifact (mould_cavity report): https://claude.ai/artifact/QQG1hjNEzEU
    source.
 
 ## Independent reviews (agents that did not build the work)
-- Report pages, criteria A: `docs/reviews/report_review.md`. REVIEW_SUMMARY
+- Report pages, criteria A: `docs/reviews/report_review.md`. First pass: 8 of 10 criteria passed outright, A3/A9 with defects and A5 FAILED (false red walls in the machined-surface view, line/move off-by-one, weak overlays). All fixed; the independent re-check marks A3, A5 and A9 PASS, so A1–A10 all pass.
 - Machinist, criteria C4: `docs/reviews/machinist_review.md`. Both reviewed programs were judged **RUN WITH MINOR
   EDITS**: no crash risks, and chip loads at or below the library values. Valid points were folded into the skill:
   profile last, higher retract, slender-tool caution. One finding was wrong and is fact-checked in the file: the
   passes are climb, not conventional.
+
+## Notes from the validation runs
+- impeller: the rim chamfer named in the part description is missing from the CAD (CadQuery chamfer failed silently
+  in the generator). The description is wrong, not the score. The remaining 0.82 % is proud material in the acute
+  (~77°) dish/blade corners; even the 1 mm ball cannot reach it, and the tool-limited exclusion (0.63 %) only partly
+  covers it.
+- The shank-contact check fires on 0.06 mm³ slivers left where two passes' chords differ by about 3 µm. That is
+  physically real but costly to diagnose. Next: report the sliver size and say "chord mismatch" in the feedback.
 
 ## Known gaps / next steps
 - **GitHub push** needs the Claude GitHub App installed on the repo (https://github.com/apps/claude/installations/select_target).
