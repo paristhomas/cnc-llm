@@ -139,7 +139,9 @@ def run(program_text: str, part, verbose=True) -> dict:
     corners = np.array([[x, y, z] for x in (lo[0], hi[0]) for y in (lo[1], hi[1]) for z in (lo[2], hi[2])])
     segs = segments(M)
     seg_info, grids = [], []
+    snapshots = []   # material occupancy at the start of each segment (every 2nd voxel: 0.5 mm) for the viewer
     for si, (a, b, k) in enumerate(segs):
+        snapshots.append(occ[::2, ::2, ::2].copy())
         R, o = frames[k]["R"], frames[k]["origin"]
         c = (corners - o) @ R
         gx0, gy0 = c[:, 0].min() - 2, c[:, 1].min() - 2
@@ -259,7 +261,7 @@ def run(program_text: str, part, verbose=True) -> dict:
               f"errors {metrics['errors']}")
     return {"program": prog, "moves": M, "frames": frames, "vol": vol, "thick": thick, "flags": flags, "dev": dev,
             "metrics": metrics, "issues": issues, "stats": stats, "workpiece": wp, "segments": seg_info,
-            "grids": grids, "rigidity": rigid, "occ": occ, "occ_grid": {"x0": vx0, "y0": vy0, "z0": vz0, "res": vr},
+            "grids": grids, "rigidity": rigid, "occ": occ, "snapshots": snapshots, "occ_grid": {"x0": vx0, "y0": vy0, "z0": vz0, "res": vr},
             "fixture_xyz": (A, B, D)}
 
 
