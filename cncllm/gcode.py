@@ -43,6 +43,7 @@ class Program:
     tool_changes: list = field(default_factory=list)  # (line, tool)
     dwell_s: float = 0.0
     ended: bool = False
+    frames: list = field(default_factory=list)   # tilt mode: [{"R": 3x3, "origin": [x,y,z], "line": n}], 0 = G54
 
     @property
     def ok(self) -> bool:
@@ -66,7 +67,22 @@ def _strip(line: str) -> str:
     return "".join(out).strip()
 
 
-def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000) -> Program:
+def euler_zxz(i_deg, j_deg, k_deg):
+    """Fanuc G68.2 Euler angles (Z, X', Z''): columns of R are the tilted frame axes in work coordinates."""
+    a, b, c = (math.radians(v) for v in (i_deg, j_deg, k_deg))
+    def rz(t):
+        return np.array([[math.cos(t), -math.sin(t), 0], [math.sin(t), math.cos(t), 0], [0, 0, 1]])
+    def rx(t):
+        return np.array([[1, 0, 0], [0, math.cos(t), -math.sin(t)], [0, math.sin(t), math.cos(t)]])
+    return rz(a) @ rx(b) @ rz(c)
+
+
+def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000, tilt: bool = False,
+          max_tilt_deg: float = 110.0) -> Program:
+    """tilt=True: 3+2 dialect. `G68.2 X Y Z I J K` defines a tilted work plane (origin XYZ in G54, Euler ZXZ angles
+    I J K), `G53.1` orients the tool along its +Z (implicit retract to Z150 of the current frame first, the tool is
+    then parked at Z150 above the new frame origin), `G69` cancels (same retract/park). Coordinates are in the
+    active frame; every move row gets the frame index as an extra last column."""
     rows: list[tuple] = []
     errors: list[dict] = []
     warnings: list[dict] = []
@@ -85,13 +101,17 @@ def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000) -> Pr
     dwell = 0.0
     ended = False
     lines = text.splitlines()
+    frames = [{"R": np.eye(3), "origin": np.zeros(3), "line": 0, "ijk": [0.0, 0.0, 0.0]}]
+    frame = 0
+    pending = None    # G68.2 defined, waiting for G53.1
 
     def err(ln, msg):
         errors.append({"line": ln, "msg": msg})
 
     def add(p0, p1, rapid, ln):
-        rows.append((p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], tool, 1.0 if rapid else 0.0,
-                     0.0 if rapid else (feed or 0.0), rpm if spindle else 0.0, ln, 1.0 if spindle else 0.0))
+        row = (p0[0], p0[1], p0[2], p1[0], p1[1], p1[2], tool, 1.0 if rapid else 0.0,
+               0.0 if rapid else (feed or 0.0), rpm if spindle else 0.0, ln, 1.0 if spindle else 0.0)
+        rows.append(row + (float(frame),) if tilt else row)
 
     def check_cut_state(ln) -> bool:
         if tool == 0:
@@ -142,8 +162,11 @@ def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000) -> Pr
                     bad = True
                 w[letter] = v
             elif letter == "K":
-                err(ln, "K word not supported (XY plane only)")
-                bad = True
+                if tilt and any(abs(g - 68.2) < 1e-6 for g in (float(v2) for l2, v2 in words if l2 == "G")):
+                    w["K"] = v
+                else:
+                    err(ln, "K word not supported (XY plane only)" + ("" if not tilt else "; K is only allowed in G68.2"))
+                    bad = True
             else:
                 err(ln, f"word {letter} not supported")
                 bad = True
@@ -156,8 +179,12 @@ def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000) -> Pr
             if abs(g - gi) > 1e-6:
                 if round(g, 1) in ALLOWED_G_FRAC:
                     continue
+                if tilt and round(g, 1) in (68.2, 53.1):
+                    continue
                 err(ln, f"G{g:g} not supported")
                 bad = True
+                continue
+            if tilt and gi == 69:
                 continue
             if gi not in ALLOWED_G:
                 hint = {20: "inch units", 91: "incremental mode", 41: "cutter compensation", 42: "cutter compensation",
@@ -236,6 +263,46 @@ def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000) -> Pr
                 spindle = False
             elif m in (2, 30):
                 ended = True
+        if tilt:
+            gset = {round(g, 1) for g in g_codes}
+            if 68.2 in gset:
+                need = [k for k in "XYZIJK" if k not in w]
+                if need:
+                    err(ln, f"G68.2 needs X Y Z I J K (missing {' '.join(need)})")
+                    continue
+                if frame != 0 or pending is not None:
+                    err(ln, "G68.2 while a tilted plane is active: cancel with G69 first")
+                    continue
+                R = euler_zxz(w["I"], w["J"], w["K"])
+                tiltdeg = math.degrees(math.acos(max(-1.0, min(1.0, R[2, 2]))))
+                if tiltdeg > max_tilt_deg + 1e-6:
+                    err(ln, f"G68.2 tool axis is {tiltdeg:.1f} deg from +Z, beyond the A-axis limit of {max_tilt_deg:g} deg")
+                    continue
+                pending = {"R": R, "origin": np.array([w["X"], w["Y"], w["Z"]]), "line": ln,
+                           "ijk": [w["I"], w["J"], w["K"]]}
+                continue
+            if 53.1 in gset or 69.0 in gset:
+                if 53.1 in gset and pending is None:
+                    err(ln, "G53.1 without a preceding G68.2")
+                    continue
+                if spindle:
+                    warnings.append({"line": ln, "msg": "rotary indexing with the spindle running"})
+                p1 = [pos[0], pos[1], MACHINE.home[2]]
+                if p1 != pos:
+                    add(pos, p1, True, ln)
+                if 53.1 in gset:
+                    frames.append(pending)
+                    frame = len(frames) - 1
+                    pending = None
+                else:
+                    frame = 0
+                    pending = None
+                pos = [0.0, 0.0, MACHINE.home[2]]
+                motion = None
+                continue
+            if pending is not None and (any(k in w for k in "XYZ") or new_motion is not None):
+                err(ln, "motion after G68.2 before G53.1 (orient the tool first)")
+                continue
         if new_motion is not None:
             motion = new_motion
             if motion in (81, 82, 83):
@@ -251,6 +318,8 @@ def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000) -> Pr
             continue
         tgt = [w.get("X", pos[0]), w.get("Y", pos[1]), w.get("Z", pos[2])]
         for i, (lo, hi) in enumerate([MACHINE.x_travel, MACHINE.y_travel, MACHINE.z_travel]):
+            if tilt and frame:
+                break
             if not (lo - 1e-9 <= tgt[i] <= hi + 1e-9):
                 err(ln, f"{'XYZ'[i]}{tgt[i]:g} outside machine travel [{lo:g}, {hi:g}]")
                 bad = True
@@ -340,8 +409,10 @@ def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000) -> Pr
             break
     if not ended:
         warnings.append({"line": len(lines), "msg": "program has no M30/M2 end"})
-    M = np.asarray(rows, np.float64).reshape(-1, len(COLS))
-    return Program(M, errors, warnings, tools_used, len(lines), tchanges, dwell, ended)
+    if tilt and frame:
+        warnings.append({"line": len(lines), "msg": "program ends with a tilted plane active (G69 missing)"})
+    M = np.asarray(rows, np.float64).reshape(-1, len(COLS) + (1 if tilt else 0))
+    return Program(M, errors, warnings, tools_used, len(lines), tchanges, dwell, ended, frames if tilt else [])
 
 
 def _arc(p0, p1, w, cw, tol, ln, err):

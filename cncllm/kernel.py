@@ -274,9 +274,9 @@ def column_heights(PX, PY, M, T, tool_rows, start, idx, zmin, bx0, by0, cs, nx, 
 
 # ------------------------------------------------------------------ target height field (mesh rasteriser)
 @nb.njit(cache=True)
-def raster_top(V, F, x0, y0, res, nx, ny):
+def raster_top(V, F, x0, y0, res, nx, ny, fill=0.0):
     """Highest mesh surface over every cell centre (0 where the mesh is absent)."""
-    Ht = np.zeros((ny, nx))
+    Ht = np.full((ny, nx), fill)
     for f in range(F.shape[0]):
         a, b, c = V[F[f, 0]], V[F[f, 1]], V[F[f, 2]]
         den = (b[1] - c[1]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[1] - c[1])
