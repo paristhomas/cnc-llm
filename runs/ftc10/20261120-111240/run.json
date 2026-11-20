@@ -1,0 +1,16 @@
+{
+ "part": "ftc10",
+ "part_dir": "/home/user/cnc-llm/runs/ftc10/20261120-111240/part",
+ "source_step": "/home/user/cnc-llm/parts/incoming/nist/nist_ftc_10_asme1_rb.stp",
+ "part_sha256": "5dfc6082a8fa0f0d3c21b257e5a929d59b34b347322c89932390b1083f140e4f",
+ "created": "20261120-111240",
+ "label": "",
+ "model": "claude-opus-5-5 (Claude Code subagent)",
+ "mode": "3+2",
+ "harness": {
+  "sha256": "85453d8f45965177fff9302d6f3e5d68d3222413e7fa943b4b84450009cd32c4",
+  "git_head": "27c5c7e",
+  "harness_modified": false,
+  "modified_files": []
+ }
+}

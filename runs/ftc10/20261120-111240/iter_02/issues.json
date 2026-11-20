@@ -1,0 +1,136 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 1,
+  "line": 56418,
+  "lines": [
+   56418
+  ],
+  "volume_mm3": 2.49,
+  "msg": "rapid (G0) move removes material - crash; first at line 56418 (frame 4, T1), removed column up to 0.50 mm"
+ },
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 49,
+  "line": 15823,
+  "lines": [
+   15823,
+   22331,
+   22333,
+   22350,
+   22412,
+   22474,
+   22505,
+   22598,
+   22616,
+   22620,
+   22623,
+   22627,
+   22630,
+   22634,
+   22637,
+   22641,
+   22648,
+   22649,
+   22650,
+   22655,
+   22656,
+   22657,
+   22662,
+   22663,
+   22664,
+   22669,
+   22670,
+   22671,
+   34840,
+   34841
+  ],
+  "volume_mm3": 2367.82,
+  "msg": "material contact above the flute length (shank rubbing / tool too short); first at line 15823 (frame 1, T1), removed column up to 27.00 mm"
+ },
+ {
+  "severity": "error",
+  "kind": "fixture",
+  "count": 74,
+  "line": 32720,
+  "lines": [
+   32720,
+   32721,
+   32722,
+   32985,
+   32986,
+   32987,
+   33116,
+   33117,
+   33118,
+   33379,
+   33380,
+   33381,
+   33495,
+   33496,
+   33497,
+   33760,
+   33761,
+   33762,
+   47398,
+   47399,
+   47400,
+   47626,
+   47627,
+   47628,
+   47740,
+   47741,
+   47742,
+   47971,
+   47972,
+   47973
+  ],
+  "msg": "tool or holder hits the vise / table (check the tool axis, stick-out and the stub gap)"
+ },
+ {
+  "severity": "warning",
+  "kind": "cutting",
+  "msg": "cut cross-section > 0.75 D^2 for T7 (overloaded: too deep and too wide); worst 12.63 mm2 > limit 6.75 mm2 at line 22331 (move to -23.00, 18.00, 44.00, removed column up to 11.00 mm deep)",
+  "count": 1,
+  "line": 22331,
+  "lines": [
+   22331
+  ]
+ },
+ {
+  "severity": "warning",
+  "kind": "cutting",
+  "msg": "deep plunge (> 0.5 D) at > 50% of the recommended feed for T1; ramp or helix instead",
+  "count": 8,
+  "line": 56699,
+  "lines": [
+   56699,
+   56709,
+   56719,
+   56729,
+   56829,
+   56839,
+   56849,
+   56859
+  ]
+ },
+ {
+  "severity": "error",
+  "kind": "cutting",
+  "msg": "cut cross-section > 0.75 D^2 for T1 (overloaded: too deep and too wide); worst 226.51 mm2 > limit 75.00 mm2 at line 56721 (move to 1.00, -5.05, 2.50, removed column up to 25.13 mm deep)",
+  "count": 8,
+  "line": 56701,
+  "lines": [
+   56701,
+   56711,
+   56721,
+   56731,
+   56831,
+   56841,
+   56851,
+   56861
+  ]
+ }
+]
