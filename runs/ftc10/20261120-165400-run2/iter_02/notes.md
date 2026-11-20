@@ -1,0 +1,1 @@
+Iter 2: fixed T4 helix core (pin crushed), part-off at Zc-5.5 with +-Y end cuts (holder clear of vise), contours at fillet-top levels (X-8.5, X6.5, pocket X0.5) and R-0.08 contour maps (walls were ~0.1 off), tube top edges ball pass, deeper bores.

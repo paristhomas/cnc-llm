@@ -1,1 +1,1 @@
-Iter 1: +Z up (rot 90). Frames TOP (+Z face, profile to Z50.5, slots, cbores), MX (tool from -X: tubes/plateau, T1 rough, T2 contours, T6 ball raster, T4 holes), PX (tool from +X: face, pocket, flange outline, holes). Part-off: horizontal T1 slot Z-13..-3 from both sides, 2 tabs 1x3 mm at Y+-40.
+Iter 4: stub obstacle shrunk 1 mm inside the part footprint so side tools can finish the r1 bottom-edge fillets (cuts only stub, rigidity still >30%).

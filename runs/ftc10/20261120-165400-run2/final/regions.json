@@ -1,0 +1,1493 @@
+[
+ {
+  "type": "proud",
+  "area_mm2": 855.9,
+  "bbox": [
+   -15.36,
+   -78.82,
+   0.0,
+   15.46,
+   78.82,
+   74.91
+  ],
+  "dev_mean": 0.561,
+  "dev_extreme": 4.881,
+  "normal": [
+   -0.87,
+   -0.21,
+   -0.45
+  ],
+  "faces": [
+   "face 41 (cylinder r1)",
+   "face 69 (cylinder r1)",
+   "face 98 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 220903,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 220837,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 220902,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 220838,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 1
+ },
+ {
+  "type": "proud",
+  "area_mm2": 155.41,
+  "bbox": [
+   -5.25,
+   48.51,
+   58.25,
+   0.25,
+   62.47,
+   63.75
+  ],
+  "dev_mean": 4.974,
+  "dev_extreme": 5.0,
+  "normal": [
+   1.0,
+   0.0,
+   -0.02
+  ],
+  "faces": [
+   "face 177 (cylinder r2.75)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 245478,
+    "tool": 4,
+    "frame": 1,
+    "gap_mm": 0.258
+   },
+   {
+    "line": 245476,
+    "tool": 4,
+    "frame": 1,
+    "gap_mm": 0.258
+   },
+   {
+    "line": 245379,
+    "tool": 4,
+    "frame": 1,
+    "gap_mm": 0.56
+   },
+   {
+    "line": 30443,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.755
+   }
+  ],
+  "id": 2
+ },
+ {
+  "type": "proud",
+  "area_mm2": 104.32,
+  "bbox": [
+   -2.25,
+   54.8,
+   9.75,
+   3.25,
+   62.46,
+   18.22
+  ],
+  "dev_mean": 4.865,
+  "dev_extreme": 5.0,
+  "normal": [
+   -0.98,
+   0.0,
+   0.19
+  ],
+  "faces": [
+   "face 175 (cylinder r2.75)",
+   "face 198 (cone)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 154355,
+    "tool": 1,
+    "frame": 1,
+    "gap_mm": 0.057
+   },
+   {
+    "line": 230691,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.067
+   },
+   {
+    "line": 230685,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.089
+   },
+   {
+    "line": 230690,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.167
+   }
+  ],
+  "id": 3
+ },
+ {
+  "type": "proud",
+  "area_mm2": 63.72,
+  "bbox": [
+   -13.64,
+   19.14,
+   24.7,
+   -7.5,
+   30.14,
+   45.97
+  ],
+  "dev_mean": 0.326,
+  "dev_extreme": 0.877,
+  "normal": [
+   -0.83,
+   0.55,
+   -0.12
+  ],
+  "faces": [
+   "face 183 (bspline)",
+   "face 94 (cylinder r6)",
+   "face 105 (cylinder r8)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 237002,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 237003,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 237004,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 237005,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 4
+ },
+ {
+  "type": "proud",
+  "area_mm2": 45.07,
+  "bbox": [
+   7.59,
+   69.42,
+   30.16,
+   15.46,
+   78.26,
+   63.42
+  ],
+  "dev_mean": 0.298,
+  "dev_extreme": 0.755,
+  "normal": [
+   -0.5,
+   0.79,
+   -0.35
+  ],
+  "faces": [
+   "face 71 (cylinder r1)",
+   "face 89 (cylinder r1)",
+   "face 129 (plane)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 252353,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.051
+   },
+   {
+    "line": 252354,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.054
+   },
+   {
+    "line": 30442,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.074
+   },
+   {
+    "line": 251797,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.078
+   }
+  ],
+  "id": 5
+ },
+ {
+  "type": "proud",
+  "area_mm2": 19.43,
+  "bbox": [
+   -10.33,
+   31.25,
+   30.6,
+   -7.36,
+   62.04,
+   32.21
+  ],
+  "dev_mean": 0.121,
+  "dev_extreme": 0.166,
+  "normal": [
+   -0.63,
+   0.01,
+   -0.78
+  ],
+  "faces": [
+   "face 94 (cylinder r6)",
+   "face 95 (cylinder r1)",
+   "face 87 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 234709,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 234708,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 234707,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 234706,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 6
+ },
+ {
+  "type": "proud",
+  "area_mm2": 18.65,
+  "bbox": [
+   -7.52,
+   27.12,
+   5.86,
+   -7.5,
+   28.7,
+   18.95
+  ],
+  "dev_mean": 0.118,
+  "dev_extreme": 0.12,
+  "normal": [
+   -1.0,
+   -0.02,
+   0.0
+  ],
+  "faces": [
+   "face 24 (plane)",
+   "face 15 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 227780,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 227647,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 227779,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 227648,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 7
+ },
+ {
+  "type": "proud",
+  "area_mm2": 15.54,
+  "bbox": [
+   -7.65,
+   22.42,
+   2.4,
+   -7.5,
+   23.99,
+   20.87
+  ],
+  "dev_mean": 0.117,
+  "dev_extreme": 0.12,
+  "normal": [
+   -1.0,
+   0.06,
+   0.0
+  ],
+  "faces": [
+   "face 24 (plane)",
+   "face 96 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 230358,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 229844,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 230357,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 229845,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 8
+ },
+ {
+  "type": "proud",
+  "area_mm2": 11.46,
+  "bbox": [
+   -1.5,
+   14.52,
+   12.64,
+   0.39,
+   19.96,
+   17.0
+  ],
+  "dev_mean": 0.286,
+  "dev_extreme": 0.505,
+  "normal": [
+   0.8,
+   -0.41,
+   0.43
+  ],
+  "faces": [
+   "face 151 (sphere r2)",
+   "face 157 (cylinder r2)",
+   "face 152 (cylinder r2)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 253441,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253442,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253433,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253432,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 9
+ },
+ {
+  "type": "proud",
+  "area_mm2": 11.27,
+  "bbox": [
+   -1.5,
+   15.79,
+   59.55,
+   0.3,
+   19.87,
+   62.48
+  ],
+  "dev_mean": 0.317,
+  "dev_extreme": 0.499,
+  "normal": [
+   0.75,
+   -0.41,
+   -0.53
+  ],
+  "faces": [
+   "face 150 (sphere r2)",
+   "face 158 (cylinder r2)",
+   "face 152 (cylinder r2)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 253519,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253520,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253440,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.014
+   },
+   {
+    "line": 253441,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.014
+   }
+  ],
+  "id": 10
+ },
+ {
+  "type": "proud",
+  "area_mm2": 10.68,
+  "bbox": [
+   -1.5,
+   -57.99,
+   12.51,
+   0.43,
+   -54.33,
+   16.99
+  ],
+  "dev_mean": 0.298,
+  "dev_extreme": 0.485,
+  "normal": [
+   0.73,
+   0.47,
+   0.5
+  ],
+  "faces": [
+   "face 154 (sphere r2)",
+   "face 157 (cylinder r2)",
+   "face 155 (cylinder r2)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 253485,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253486,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253442,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.016
+   },
+   {
+    "line": 253443,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.016
+   }
+  ],
+  "id": 11
+ },
+ {
+  "type": "proud",
+  "area_mm2": 10.3,
+  "bbox": [
+   -1.46,
+   -57.96,
+   58.71,
+   0.46,
+   -54.51,
+   62.44
+  ],
+  "dev_mean": 0.282,
+  "dev_extreme": 0.503,
+  "normal": [
+   0.72,
+   0.49,
+   -0.49
+  ],
+  "faces": [
+   "face 153 (sphere r2)",
+   "face 155 (cylinder r2)",
+   "face 158 (cylinder r2)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 253545,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253546,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253527,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253528,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 12
+ },
+ {
+  "type": "proud",
+  "area_mm2": 6.41,
+  "bbox": [
+   2.6,
+   43.79,
+   10.79,
+   3.25,
+   45.44,
+   14.27
+  ],
+  "dev_mean": 4.959,
+  "dev_extreme": 5.0,
+  "normal": [
+   -0.99,
+   0.0,
+   -0.11
+  ],
+  "faces": [
+   "face 175 (cylinder r2.75)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 253862,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 11.601
+   },
+   {
+    "line": 253868,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 11.601
+   },
+   {
+    "line": 253863,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 11.701
+   },
+   {
+    "line": 253867,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 11.701
+   }
+  ],
+  "id": 13
+ },
+ {
+  "type": "proud",
+  "area_mm2": 6.22,
+  "bbox": [
+   -2.38,
+   -31.16,
+   20.75,
+   -1.54,
+   -28.76,
+   23.25
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "normal": [
+   0.0,
+   -0.69,
+   0.73
+  ],
+  "faces": [
+   "face 4 (cylinder r1.25)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 251718,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 251666,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 1.236
+   },
+   {
+    "line": 251769,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 1.764
+   },
+   {
+    "line": 253433,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 2.336
+   }
+  ],
+  "id": 14
+ },
+ {
+  "type": "proud",
+  "area_mm2": 6.02,
+  "bbox": [
+   -0.3,
+   39.64,
+   59.35,
+   0.25,
+   41.47,
+   62.62
+  ],
+  "dev_mean": 4.948,
+  "dev_extreme": 5.0,
+  "normal": [
+   -1.0,
+   -0.0,
+   0.1
+  ],
+  "faces": [
+   "face 177 (cylinder r2.75)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 30616,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 10.066
+   },
+   {
+    "line": 30615,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 10.066
+   },
+   {
+    "line": 18450,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 10.61
+   },
+   {
+    "line": 20782,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 10.61
+   }
+  ],
+  "id": 15
+ },
+ {
+  "type": "proud",
+  "area_mm2": 4.27,
+  "bbox": [
+   -2.47,
+   -9.25,
+   20.76,
+   -1.57,
+   -6.76,
+   23.04
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "normal": [
+   0.0,
+   -0.06,
+   1.0
+  ],
+  "faces": [
+   "face 2 (cylinder r1.25)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 253825,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 21.754
+   },
+   {
+    "line": 253815,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 21.754
+   },
+   {
+    "line": 253809,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 21.754
+   },
+   {
+    "line": 253816,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 31.42
+   }
+  ],
+  "id": 16
+ },
+ {
+  "type": "proud",
+  "area_mm2": 4.08,
+  "bbox": [
+   2.59,
+   32.6,
+   10.72,
+   3.25,
+   34.36,
+   14.26
+  ],
+  "dev_mean": 4.979,
+  "dev_extreme": 5.0,
+  "normal": [
+   -1.0,
+   -0.0,
+   0.05
+  ],
+  "faces": [
+   "face 175 (cylinder r2.75)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 253869,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 11.545
+   },
+   {
+    "line": 253861,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 11.545
+   },
+   {
+    "line": 253862,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 11.546
+   },
+   {
+    "line": 253868,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 11.546
+   }
+  ],
+  "id": 17
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.89,
+  "bbox": [
+   -11.0,
+   -54.85,
+   44.88,
+   -4.02,
+   -48.5,
+   45.29
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "normal": [
+   0.8,
+   -0.59,
+   -0.0
+  ],
+  "faces": [
+   "face 147 (cylinder r3.5)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 45484,
+    "tool": 2,
+    "frame": 0,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 45483,
+    "tool": 2,
+    "frame": 0,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 219110,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 4.46
+   },
+   {
+    "line": 217451,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 4.473
+   }
+  ],
+  "id": 18
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.89,
+  "bbox": [
+   -0.31,
+   46.86,
+   59.33,
+   0.25,
+   48.28,
+   62.6
+  ],
+  "dev_mean": 4.95,
+  "dev_extreme": 5.0,
+  "normal": [
+   -1.0,
+   0.0,
+   -0.0
+  ],
+  "faces": [
+   "face 177 (cylinder r2.75)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 163295,
+    "tool": 2,
+    "frame": 1,
+    "gap_mm": 11.388
+   },
+   {
+    "line": 163296,
+    "tool": 2,
+    "frame": 1,
+    "gap_mm": 11.388
+   },
+   {
+    "line": 163090,
+    "tool": 2,
+    "frame": 1,
+    "gap_mm": 11.388
+   },
+   {
+    "line": 163091,
+    "tool": 2,
+    "frame": 1,
+    "gap_mm": 11.388
+   }
+  ],
+  "id": 19
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.69,
+  "bbox": [
+   -10.98,
+   12.0,
+   44.89,
+   -7.52,
+   17.5,
+   45.3
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "normal": [
+   0.87,
+   -0.49,
+   -0.0
+  ],
+  "faces": [
+   "face 149 (cylinder r3.5)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 45670,
+    "tool": 2,
+    "frame": 0,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 236879,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 4.381
+   },
+   {
+    "line": 237001,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 4.415
+   },
+   {
+    "line": 218288,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 4.417
+   }
+  ],
+  "id": 20
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.69,
+  "bbox": [
+   7.59,
+   -76.64,
+   71.48,
+   8.03,
+   -73.13,
+   74.31
+  ],
+  "dev_mean": 0.181,
+  "dev_extreme": 0.343,
+  "normal": [
+   -0.72,
+   -0.39,
+   0.57
+  ],
+  "faces": [
+   "face 36 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 29609,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 29606,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.006
+   },
+   {
+    "line": 29577,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.024
+   },
+   {
+    "line": 29579,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.026
+   }
+  ],
+  "id": 21
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.11,
+  "bbox": [
+   -10.07,
+   53.36,
+   42.92,
+   -7.5,
+   60.17,
+   44.37
+  ],
+  "dev_mean": 0.109,
+  "dev_extreme": 0.118,
+  "normal": [
+   -0.71,
+   -0.0,
+   0.71
+  ],
+  "faces": [
+   "face 94 (cylinder r6)",
+   "face 93 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 236766,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 236767,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 236768,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 236863,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 22
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.91,
+  "bbox": [
+   0.6,
+   34.13,
+   16.69,
+   0.9,
+   36.15,
+   18.46
+  ],
+  "dev_mean": 0.251,
+  "dev_extreme": 0.469,
+  "normal": [
+   -1.0,
+   -0.08,
+   0.03
+  ],
+  "faces": [
+   "face 194 (cone)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 244799,
+    "tool": 4,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253574,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 14.172
+   },
+   {
+    "line": 253583,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 14.172
+   },
+   {
+    "line": 253592,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 14.172
+   }
+  ],
+  "id": 23
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.91,
+  "bbox": [
+   0.6,
+   42.0,
+   6.5,
+   0.87,
+   43.81,
+   8.31
+  ],
+  "dev_mean": 0.26,
+  "dev_extreme": 0.434,
+  "normal": [
+   -0.96,
+   0.09,
+   0.26
+  ],
+  "faces": [
+   "face 190 (cone)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 244691,
+    "tool": 4,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253828,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 7.515
+   },
+   {
+    "line": 253863,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 7.515
+   },
+   {
+    "line": 253867,
+    "tool": 1,
+    "frame": 6,
+    "gap_mm": 7.515
+   }
+  ],
+  "id": 24
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.72,
+  "bbox": [
+   -10.78,
+   -6.77,
+   44.87,
+   -4.92,
+   -4.58,
+   45.25
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "normal": [
+   0.41,
+   -0.91,
+   -0.0
+  ],
+  "faces": [
+   "face 146 (cylinder r3.5)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 45608,
+    "tool": 2,
+    "frame": 0,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 236999,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 26.384
+   },
+   {
+    "line": 237002,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 26.393
+   },
+   {
+    "line": 237102,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 26.416
+   }
+  ],
+  "id": 25
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.53,
+  "bbox": [
+   -10.07,
+   44.68,
+   42.92,
+   -7.5,
+   51.79,
+   44.38
+  ],
+  "dev_mean": 0.107,
+  "dev_extreme": 0.119,
+  "normal": [
+   -0.55,
+   -0.0,
+   0.84
+  ],
+  "faces": [
+   "face 94 (cylinder r6)",
+   "face 93 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 236760,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 236868,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 237005,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 236761,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 26
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.53,
+  "bbox": [
+   -1.93,
+   -31.25,
+   51.81,
+   -1.61,
+   -28.82,
+   54.24
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "normal": [
+   0.0,
+   0.88,
+   0.48
+  ],
+  "faces": [
+   "face 6 (cylinder r1.25)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 45536,
+    "tool": 2,
+    "frame": 0,
+    "gap_mm": 2.082
+   },
+   {
+    "line": 45532,
+    "tool": 2,
+    "frame": 0,
+    "gap_mm": 2.082
+   },
+   {
+    "line": 45533,
+    "tool": 2,
+    "frame": 0,
+    "gap_mm": 2.082
+   },
+   {
+    "line": 45529,
+    "tool": 2,
+    "frame": 0,
+    "gap_mm": 2.196
+   }
+  ],
+  "id": 27
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.53,
+  "bbox": [
+   0.59,
+   30.84,
+   6.68,
+   0.85,
+   32.58,
+   8.24
+  ],
+  "dev_mean": 0.253,
+  "dev_extreme": 0.406,
+  "normal": [
+   -0.97,
+   0.26,
+   0.03
+  ],
+  "faces": [
+   "face 192 (cone)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 244637,
+    "tool": 4,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 244636,
+    "tool": 4,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 244638,
+    "tool": 4,
+    "frame": 1,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 253825,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 7.224
+   }
+  ],
+  "id": 28
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.14,
+  "bbox": [
+   -1.9,
+   -53.22,
+   20.8,
+   -1.55,
+   -50.76,
+   23.23
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "normal": [
+   0.0,
+   -0.45,
+   0.89
+  ],
+  "faces": [
+   "face 3 (cylinder r1.25)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 253434,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 251718,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 251719,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 251666,
+    "tool": 2,
+    "frame": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 29
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.94,
+  "bbox": [
+   -7.27,
+   32.24,
+   74.64,
+   -6.92,
+   36.59,
+   74.91
+  ],
+  "dev_mean": 0.139,
+  "dev_extreme": 0.224,
+  "normal": [
+   -0.65,
+   0.0,
+   0.76
+  ],
+  "faces": [
+   "face 54 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 29945,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 30057,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 29951,
+    "tool": 1,
+    "frame": 0,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 244409,
+    "tool": 6,
+    "frame": 1,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 30
+ }
+]

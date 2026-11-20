@@ -48,10 +48,13 @@ def get_H(name, g=0.1):
     if os.path.exists(fn):
         return G, np.load(fn)
     m = mesh()
-    tris = to_frame(name, m.triangles.reshape(-1, 3)).reshape(-1, 3, 3)
+    T0 = m.triangles
+    if name in ('MX', 'PX'):
+        T0 = T0[T0[:, :, 2].max(1) > 0.03]
+    tris = to_frame(name, T0.reshape(-1, 3)).reshape(-1, 3, 3)
     H = heightmap(tris, G)
     if name in ('MX', 'PX'):
-        sec = section0()
+        sec = section0().buffer(-1.0)
         sgn = -1 if name == 'MX' else 1
         # u = -Y (MX) / Y (PX); v = Z
         for i, u in enumerate(G.u):

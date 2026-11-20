@@ -1,0 +1,55 @@
+{
+ "iteration": 3,
+ "metrics": {
+  "machinable_in_tol_pct": 96.285,
+  "machinable_gouge_pct": 0.01,
+  "machinable_proud_pct": 3.705,
+  "all_in_tol_pct": 84.802,
+  "unreachable_area_pct": 12.527,
+  "unreachable_in_tol_pct": 4.621,
+  "max_gouge_mm": 5.0,
+  "any_gouge_pct": 0.009,
+  "parting_face_pct": 6.244,
+  "edge_band_excluded_pct": 0.874,
+  "surface_area_mm2": 45102.5,
+  "probes": 232178,
+  "tolerance_mm": 0.1,
+  "cycle_time_min": 85.84,
+  "setups": 7,
+  "distinct_orientations": 5,
+  "final_connection_mm2": 13.0,
+  "errors": 0,
+  "warnings": 0,
+  "valid": true
+ },
+ "integrity": {
+  "harness": {
+   "sha256": "29692a9908ce8118b3f2b00bf15d11a44f6e2407be9fca8072b42c87f89ab884",
+   "git_head": "b63cd8f",
+   "harness_modified": false,
+   "modified_files": []
+  },
+  "part_sha256_now": "8520399d0bc2365a03c2c5ef093b83d0108db28b8de3e4c5499b1c883c21eda9",
+  "part_unchanged": true,
+  "harness_unchanged_since_run_start": true,
+  "generator_scan": {
+   "files": [
+    "est.py",
+    "frames.py",
+    "gen.py",
+    "hm.py"
+   ],
+   "forbidden_imports": [],
+   "ok": true
+  }
+ },
+ "crosscheck_millbill": {
+  "points": 250000,
+  "disagree": 0,
+  "disagree_beyond_2um": 0,
+  "agreement_pct": 100.0,
+  "frames": 7,
+  "note": "moves from our G68.2 parser; material classification by MillBill's kernel",
+  "examples": []
+ }
+}

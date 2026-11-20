@@ -1,0 +1,22 @@
+{
+ "machinable_in_tol_pct": 96.285,
+ "machinable_gouge_pct": 0.01,
+ "machinable_proud_pct": 3.705,
+ "all_in_tol_pct": 84.802,
+ "unreachable_area_pct": 12.527,
+ "unreachable_in_tol_pct": 4.621,
+ "max_gouge_mm": 5.0,
+ "any_gouge_pct": 0.009,
+ "parting_face_pct": 6.244,
+ "edge_band_excluded_pct": 0.874,
+ "surface_area_mm2": 45102.5,
+ "probes": 232178,
+ "tolerance_mm": 0.1,
+ "cycle_time_min": 85.84,
+ "setups": 7,
+ "distinct_orientations": 5,
+ "final_connection_mm2": 13.0,
+ "errors": 0,
+ "warnings": 0,
+ "valid": true
+}

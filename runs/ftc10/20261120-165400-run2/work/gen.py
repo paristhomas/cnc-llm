@@ -16,7 +16,7 @@ TOOLS = {
     6: dict(kind='ball', R=3.0, fl=14, so=32, rpm=24000, f=1440),
     7: dict(kind='ball', R=1.5, fl=8, so=22, rpm=24000, f=960),
 }
-SAFE = {'TOP': 80.0, 'MX': 24.0, 'PX': 24.0}
+SAFE = {'TOP': 80.0, 'MX': 24.0, 'PX': 24.0, 'PY': 120.0, 'MY': 120.0}
 STOCKW = {'TOP': 76.5, 'MX': 18.5, 'PX': 18.5}
 
 
@@ -292,6 +292,8 @@ def rough(pr, fr, n, allow, levels, u0, u1, vrows, stock_fn, region):
 
 def helix(pr, n, u, v, r, wtop, wbot, pitch, wclear):
     t = TOOLS[n]
+    if r > 0.9 * t['R']:
+        helix(pr, n, u, v, 0.8 * t['R'], wtop, wbot, pitch, wclear)
     pr.goto_safe(u + r, v)
     pr.g0((u + r, v, wclear))
     pr.g1((u + r, v, wtop), t['f'] // 3)
@@ -302,7 +304,7 @@ def helix(pr, n, u, v, r, wtop, wbot, pitch, wclear):
         pr.o('G3 X%.3f Y%.3f Z%.3f I%.3f J0 F%d' % (u + r, v, w, -r, F)); pr.F = F
     pr.o('G3 X%.3f Y%.3f Z%.3f I%.3f J0' % (u + r, v, wbot, -r))
     pr.pos = np.array([u + r, v, wbot])
-    if r > 0.2:
+    if 0.2 < r <= 0.9 * t['R']:
         pr.g1((u, v, wbot), F)
     pr.up_safe(True)
 
@@ -323,19 +325,23 @@ def main():
     pr.o('(TOP: finish raster T1)')
     raster(pr, fr, 1, fr.tip(1), -25, 25, frange(-88, 88, 7), entry_air=True)
     pr.o('(TOP: finish contour T1 Z50.5)')
-    contour(pr, fr, 1, fr.tip(1), 50.5, (-25, 25, -90, 90))
+    contour(pr, fr, 1, fr.tip(1, -0.08), 50.5, (-25, 25, -90, 90))
     pr.o('(TOP: slots T3)'); pr.set_tool(3)
     C0 = fr.C.copy(); fr.C[:] = 71.95
     T3 = fr.tip(3)
     for L in (73.5, 72.0):
         raster(pr, fr, 3, T3, -25, 25, frange(38.5, 56.5, 1.2), L=L, entry_air=True)
     for L in (74.0, 72.0):
-        contour(pr, fr, 3, T3, L, (-25, 25, 37, 58))
+        contour(pr, fr, 3, fr.tip(3, -0.08), L, (-25, 25, 37, 58))
     fr.C = C0
+    pr.o('(TOP: tube top edges ball T6)'); pr.set_tool(6)
+    fr.C[:] = 70.0
+    raster(pr, fr, 6, fr.tip(6), -21, -4, frange(-64, 24, 0.5), entry_air=False)
+    fr.C[:] = 50.5
     pr.o('(TOP: counterbores and bores T2)'); pr.set_tool(2)
     for Y in (-52, -30, -8, 14):
         helix(pr, 2, -7.5, Y, 2.0, 75.0, 65.0, 1.0, 76.0)
-        helix(pr, 2, -7.5, Y, 0.5, 65.0, 46.0, 0.5, 66.0)
+        helix(pr, 2, -7.5, Y, 0.5, 65.0, 45.3, 0.5, 66.0)
 
     # ---------------- MX (tool from -X): u=-Y, v=Z, w=-X ----------------
     fr = Frame('MX'); fr.C[:] = -7.5
@@ -345,13 +351,17 @@ def main():
     levels = frange(-7.5, 16.5, 2.0)[::-1]
     rough(pr, fr, 1, 0.3, levels, -88, 88, frange(0.5, 75.5, 5), stock_s, (-88, 88, 0.5, 80))
     pr.o('(MX: contour T1 flange backs)')
-    contour(pr, fr, 1, fr.tip(1), -7.5, (-88, 88, 0.5, 80))
+    for L in (-6.5, -7.5):
+        contour(pr, fr, 1, fr.tip(1, -0.08), L, (-88, 88, 0.5, 80))
     pr.o('(MX: contours T2)'); pr.set_tool(2)
-    T2 = fr.tip(2)
-    for L in (15.5, 11.5, 7.5):
+    T2 = fr.tip(2, -0.08)
+    for L in (11.5, 8.5, 7.5):
         contour(pr, fr, 2, T2, L, (-88, 88, 0.5, 80))
-    for reg in ((-88, 88, 0.5, 29), (-88, 88, 46, 80)):
-        contour(pr, fr, 2, T2, -7.5, reg)
+    for h in np.arange(0.12, 0.95, 0.12):
+        contour(pr, fr, 2, T2, 7.5 + h, (-66, -18, 0.5, 80))
+    for L in (-6.5, -7.5):
+        for reg in ((-88, 88, 0.5, 29), (-88, 88, 46, 80)):
+            contour(pr, fr, 2, T2, L, reg)
     pr.o('(MX: ball T6 raster)'); pr.set_tool(6)
     T6 = fr.tip(6)
     raster(pr, fr, 6, T6, -24, 66, frange(0.5, 51.0, 0.7))
@@ -385,24 +395,46 @@ def main():
     T2 = fr.tip(2)
     raster(pr, fr, 2, T2, -88, 88, frange(0.5, 75.5, 4.5), entry_air=True)
     pr.o('(PX: contours T2)')
-    for L in (7.5, -1.5):
-        contour(pr, fr, 2, T2, L, (-88, 88, 0.5, 80))
+    T2c = fr.tip(2, -0.08)
+    for L in (7.5, 0.5, -1.5):
+        contour(pr, fr, 2, T2c, L, (-88, 88, 0.5, 80))
+    for h in np.arange(0.1, 1.95, 0.12):
+        contour(pr, fr, 2, T2c, -1.5 + h, (-60, 22, 10, 65))
     pr.o('(PX: flange holes T2)')
     for (Y, Z) in ((70, 9), (-70, 9), (70, 66), (-70, 66)):
         pr.goto_safe(Y, Z); pr.g0((Y, Z, 16.5)); pr.g1((Y, Z, 9.3), 960); pr.up_safe(True)
     pr.o('(PX: pocket corners T3)'); pr.set_tool(3)
-    T3 = fr.tip(3)
+    T3 = fr.tip(3, -0.08)
     for (cy, cz) in ((-58, 12.5), (20, 12.5), (-58, 62.5), (20, 62.5)):
         reg = (cy - 5, cy + 5, cz - 5, cz + 5)
         contour(pr, fr, 3, T3, 6.0, reg, minlen=0.5)
-        contour(pr, fr, 3, T3, -1.5, reg, extra=0.06, minlen=0.5)
+        contour(pr, fr, 3, T3, 0.5, reg, extra=0.06, minlen=0.5)
 
     # ---------------- PART-OFF ----------------
     pr.o('(PART-OFF)')
+    ZC = -5.5
+    from frames import FR as FRD, R_of
+    FRD['PY'] = (180, 55, 0); FRD['MY'] = (0, 55, 0)
+    for name, sg in (('PY', 1), ('MY', -1)):
+        pr.set_frame(name); pr.set_tool(1)
+        R = R_of(name)
+        ax = R[:, 2]
+        c35, s35 = np.cos(np.radians(35)), np.sin(np.radians(35))
+        first = True
+        svals = list(np.arange(1.5, 19.5, 2.0)) + [19.5]
+        for k, sd in enumerate(svals):
+            xs = np.array([-25.0, 25.0]) if k % 2 == 0 else np.array([25.0, -25.0])
+            Pg = np.column_stack([xs, np.full(2, sg * (82 - c35 * sd)), np.full(2, -0.5 - s35 * sd)])
+            P = Pg @ R
+            if first:
+                Q = (np.array([xs[0], sg * (82 + c35 * 3), -0.5 + s35 * 3])) @ R
+                pr.goto_safe(Q[0], Q[1]); pr.g0(Q); first = False
+            pr.g1(P[0], 1080); pr.g1(P[1], 3240)
+        pr.up_safe(True)
     tabs = (-40.0, 40.0)
     for name, wt, wtab in (('MX', -1.0, 1.0), ('PX', -1.0, 1.0)):
         pr.set_frame(name); pr.set_tool(1)
-        us = np.arange(-88, 88.01, 0.5)
+        us = np.arange(-62, 62.01, 0.5)
         inwin = np.zeros(len(us), bool)
         for tb in tabs:
             inwin |= np.abs(us - tb) < 6.6
@@ -413,9 +445,9 @@ def main():
             z = np.maximum(L, np.where(inwin, wtab, wt))
             uu = us if k % 2 == 0 else us[::-1]
             zz = z if k % 2 == 0 else z[::-1]
-            P = simplify(np.column_stack([uu, np.full(len(uu), -8.0), zz]))
+            P = simplify(np.column_stack([uu, np.full(len(uu), ZC), zz]))
             if first:
-                pr.goto_safe(P[0, 0], -8.0); pr.g0((P[0, 0], -8.0, 19.5)); first = False
+                pr.goto_safe(P[0, 0], ZC); pr.g0((P[0, 0], ZC, 19.5)); first = False
             pr.g1(P[0], 1080)
             pr.path(P[1:], 3240, 1080)
         pr.up_safe(True)

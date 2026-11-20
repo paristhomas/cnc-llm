@@ -1,0 +1,32 @@
+[
+ {
+  "severity": "error",
+  "kind": "fixture",
+  "count": 5,
+  "line": 247716,
+  "lines": [
+   247716,
+   247717,
+   247718,
+   247719,
+   247720
+  ],
+  "box": "fixed vise jaw (-Y)",
+  "msg": "tool holder (D32) of T1 hits the fixed vise jaw (-Y) (first at line 247716, frame 4; vise boxes are in setup.json; holder is a cylinder from the stick-out to 50 mm above it)"
+ },
+ {
+  "severity": "error",
+  "kind": "fixture",
+  "count": 5,
+  "line": 247691,
+  "lines": [
+   247691,
+   247692,
+   247693,
+   247694,
+   247695
+  ],
+  "box": "moving vise jaw (+Y)",
+  "msg": "tool holder (D32) of T1 hits the moving vise jaw (+Y) (first at line 247691, frame 3; vise boxes are in setup.json; holder is a cylinder from the stick-out to 50 mm above it)"
+ }
+]

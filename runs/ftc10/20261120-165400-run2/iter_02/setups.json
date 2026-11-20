@@ -1,0 +1,293 @@
+{
+ "segments": [
+  {
+   "segment": 1,
+   "frame": 0,
+   "first_line": 11,
+   "last_line": 45675,
+   "moves": 61943,
+   "tools": [
+    1,
+    2,
+    3,
+    6
+   ],
+   "A_deg": 0.0,
+   "C_deg": 0.0,
+   "tool_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "removed_cm3": 74.21
+  },
+  {
+   "segment": 2,
+   "frame": 1,
+   "first_line": 45681,
+   "last_line": 239630,
+   "moves": 261110,
+   "tools": [
+    1,
+    2,
+    3,
+    4,
+    6
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 102.713
+  },
+  {
+   "segment": 3,
+   "frame": 2,
+   "first_line": 239638,
+   "last_line": 247669,
+   "moves": 7739,
+   "tools": [
+    1,
+    2,
+    3
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 106.003
+  },
+  {
+   "segment": 4,
+   "frame": 3,
+   "first_line": 247676,
+   "last_line": 247697,
+   "moves": 21,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": 90.0,
+   "tool_axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    180.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 4.038
+  },
+  {
+   "segment": 5,
+   "frame": 4,
+   "first_line": 247701,
+   "last_line": 247722,
+   "moves": 21,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -90.0,
+   "tool_axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 4.017
+  },
+  {
+   "segment": 6,
+   "frame": 5,
+   "first_line": 247726,
+   "last_line": 247767,
+   "moves": 41,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 22.204
+  },
+  {
+   "segment": 7,
+   "frame": 6,
+   "first_line": 247771,
+   "last_line": 247812,
+   "moves": 41,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 24.14
+  }
+ ],
+ "rigidity": {
+  "stock_section_mm2": 6068.0,
+  "part_off_line": 247667,
+  "checks": [
+   {
+    "after_segment": 1,
+    "line": 45675,
+    "area_mm2": 6068.0,
+    "weakest_z": -15.7,
+    "fraction": 1.0,
+    "islands": [
+     6068.0
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 2,
+    "line": 239630,
+    "area_mm2": 4201.06,
+    "weakest_z": -0.1,
+    "fraction": 0.6923,
+    "islands": [
+     4201.06
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 3,
+    "line": 247669,
+    "area_mm2": 3606.44,
+    "weakest_z": -0.1,
+    "fraction": 0.5943,
+    "islands": [
+     3606.44
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 4,
+    "line": 247697,
+    "area_mm2": 3606.44,
+    "weakest_z": -0.1,
+    "fraction": 0.5943,
+    "islands": [
+     3606.44
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 5,
+    "line": 247722,
+    "area_mm2": 3606.44,
+    "weakest_z": -0.1,
+    "fraction": 0.5943,
+    "islands": [
+     3606.44
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 6,
+    "line": 247767,
+    "area_mm2": 1939.88,
+    "weakest_z": -2.7,
+    "fraction": 0.3197,
+    "islands": [
+     1939.88
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 7,
+    "line": 247812,
+    "area_mm2": 13.0,
+    "weakest_z": -5.3,
+    "fraction": 0.0021,
+    "islands": [
+     6.5,
+     6.5
+    ],
+    "part_off": true
+   }
+  ]
+ }
+}
