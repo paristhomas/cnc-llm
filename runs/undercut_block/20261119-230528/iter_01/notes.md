@@ -1,0 +1,1 @@
+Iter 1: first full program - face, rough/finish prismatic features with T1, drill+helical bore holes, T2/T4 Z-level drafted pocket walls, T3 opening corners, T6 waterline round-overs, T9 countersinks.

@@ -58,7 +58,8 @@ def regions(part: Part, res: dict, voxel: float = 1.0, max_regions: int = 40) ->
     dev, cls, P, N = res["dev"], part.pclass, part.P, part.N
     M = res["moves"]
     out = []
-    for kind, mask in (("gouge", (cls != 1) & (cls != 2) & (dev < -TOL)), ("proud", (cls == 0) & (dev > TOL))):
+    edge = part.pedge if part.pedge is not None else np.zeros(len(cls), bool)
+    for kind, mask in (("gouge", (cls != 1) & (cls != 2) & ~edge & (dev < -TOL)), ("proud", (cls == 0) & ~edge & (dev > TOL))):
         idx = np.where(mask)[0]
         if not len(idx):
             continue

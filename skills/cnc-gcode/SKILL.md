@@ -69,6 +69,10 @@ python -m cncllm sim $RUN $RUN/work/program.nc --note $RUN/work/notes.md
 - Then **proud regions** (material left): bbox, surface type and B-rep faces tell you which feature.
 - Tool-limited and undercut surface cannot be fixed; do not chase it.
 Do at most ~8 iterations; stop when >= 99% in tolerance with 0 errors, or when two iterations in a row give no gain.
+Once accurate you may spend 1-2 iterations on cycle time (air cutting, feeds): `evaluate` takes the best score
+(gouges weigh 5x) and breaks ties within 0.01 points by shorter cycle time; `evaluate --iter N` forces one.
+Hints: a ball nose on a slope touches off-centre (contact point R*sin(slope) from the tip axis), so extend raster
+passes past the edges of sloped faces; deep plunges (> 0.5 D at > 50 % of the feed) are warned - ramp or helix.
 Never edit anything under `cncllm/`, `parts/` or another run - the final evaluation re-runs from the repository code
 in a fresh process, records a hash of the harness and the git status, and scans `work/` for forbidden imports.
 

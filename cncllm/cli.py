@@ -93,7 +93,11 @@ def cmd_sim(a):
 def pick_iteration(hist: list) -> int:
     valid = [h for h in hist if h["metrics"]["valid"]]
     pool = valid or hist
-    best = max(pool, key=lambda h: (h["metrics"]["machinable_in_tol_pct"] - 5 * h["metrics"]["machinable_gouge_pct"]))
+    # best score (gouges weigh 5x); ties (within 0.01 pts) go to the shorter cycle time
+    def key(h):
+        m = h["metrics"]
+        return (round(m["machinable_in_tol_pct"] - 5 * m["machinable_gouge_pct"], 2), -m["cycle_time_min"])
+    best = max(pool, key=key)
     return best["iter"]
 
 

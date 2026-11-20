@@ -1,0 +1,80 @@
+[
+ {
+  "type": "gouge",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   -25.75,
+   -10.74,
+   16.19,
+   -25.75,
+   -10.74,
+   16.19
+  ],
+  "dev_mean": -5.0,
+  "dev_extreme": -5.0,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 36 (plane)"
+  ],
+  "gcode_lines": [
+   10899
+  ],
+  "tools": [
+   6
+  ],
+  "id": 1
+ },
+ {
+  "type": "gouge",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   -25.75,
+   19.86,
+   16.19,
+   -25.75,
+   19.86,
+   16.19
+  ],
+  "dev_mean": -5.0,
+  "dev_extreme": -5.0,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 38 (cylinder r60)"
+  ],
+  "gcode_lines": [
+   10736
+  ],
+  "tools": [
+   2
+  ],
+  "id": 2
+ },
+ {
+  "type": "gouge",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   -7.75,
+   -9.77,
+   21.5,
+   -7.75,
+   -9.77,
+   21.5
+  ],
+  "dev_mean": -5.0,
+  "dev_extreme": -5.0,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 42 (plane)"
+  ],
+  "gcode_lines": [
+   10933
+  ],
+  "tools": [
+   6
+  ],
+  "id": 3
+ }
+]

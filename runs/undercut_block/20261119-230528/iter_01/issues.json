@@ -1,0 +1,52 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "msg": "rapid (G0) move removes material - crash; first at line 220: move (15.79, 0.00, 35.00) -> (15.79, 0.00, 17.00) with T1, removed 1.925 mm3, max 4.010 mm deep",
+  "count": 1,
+  "line": 220,
+  "lines": [
+   220
+  ],
+  "volume_mm3": 1.92
+ },
+ {
+  "severity": "warning",
+  "kind": "cutting",
+  "msg": "feed per tooth < 0.2x recommended for T2 (rubbing); e.g. line 346: F200 S24000 -> 0.0028 mm/tooth vs recommended 0.04",
+  "count": 5640,
+  "line": 346,
+  "lines": [
+   346,
+   347,
+   348,
+   349,
+   350,
+   351,
+   352,
+   353,
+   354,
+   355,
+   356,
+   357,
+   358,
+   359,
+   360,
+   361,
+   362,
+   363,
+   364,
+   365,
+   366,
+   367,
+   368,
+   369,
+   370,
+   371,
+   372,
+   373,
+   374,
+   375
+  ]
+ }
+]

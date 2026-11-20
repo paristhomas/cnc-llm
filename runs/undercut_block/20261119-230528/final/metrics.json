@@ -1,0 +1,21 @@
+{
+ "machinable_in_tol_pct": 99.957,
+ "machinable_gouge_pct": 0.0,
+ "machinable_proud_pct": 0.043,
+ "all_in_tol_pct": 80.29,
+ "undercut_area_pct": 19.623,
+ "tool_limited_area_pct": 0.056,
+ "max_gouge_mm": 0.0012,
+ "any_gouge_pct": 0.0,
+ "surface_area_mm2": 18239.4,
+ "probes": 121633,
+ "tolerance_mm": 0.1,
+ "edge_band_excluded_pct": 0.687,
+ "remaining_excess_cm3": 0.068,
+ "gouged_cm3": 0.0271,
+ "removed_cm3": 45.169,
+ "cycle_time_min": 12.63,
+ "errors": 0,
+ "warnings": 1,
+ "valid": true
+}
