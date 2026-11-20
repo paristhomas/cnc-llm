@@ -47,3 +47,22 @@ Autonomous overnight run. Newest entries at the bottom.
   machinist: both reviewed programs "RUN WITH MINOR EDITS" (one wrong claim fact-checked; valid points -> skill).
   Engagement check now windowed over 0.5 D of travel (0.5 um arc chords had inflated it). runs/index.html added.
   Artifact (mould_cavity report): https://claude.ai/artifact/QQG1hjNEzEUt5V9KzT7yb7. HANDOFF.md written.
+
+## 3+2 indexed 5-axis (branch claude/3plus2-indexed-5axis)
+- 2026-11-20 ~10:30 Start. User decisions: G68.2 tilted work planes; single vise; rigid stub until a final
+  part-off that leaves tabs for the operator; fixture placement chosen from the geometry; NIST MBE PMI models as
+  parts (public domain; found on GitHub mirrors); FTC-10 is the showcase part at native scale.
+- 11:30 Core done:
+  - parser: `G68.2` / `G53.1` / `G69` with a tilt limit;
+  - `part5`: fixture placement with rigid rotation, plus the vise and table model;
+  - reachability classes: smallest tools from 26 directions plus feature axes, with the vise as an obstacle;
+  - `sim5`: exact per-frame metric; each segment's crash replay seeded from 0.25 mm voxels; vise and table
+    collisions; rigidity and part-off checks;
+  - `x5` CLI: fixture-suggest, new-run, sim, evaluate;
+  - brief and feedback;
+  - MillBill cross-check per frame: 100 % agreement on a 4-frame test;
+  - 10 new tests, all passing.
+- Fixture-suggest on FTC-10: raw reachability prefers standing it up on its end (99.98 %), but that is slender
+  (158 mm tall). A slenderness penalty was added; lying flat ("-Y") reaches 96.2 %.
+- Launched: the 3+2 viewer/report agent; LLM runs on FTC-10 (showcase, native) and FTC-08 (×0.5).
+  Acceptance criteria: `docs/ACCEPTANCE_3PLUS2.md`.
