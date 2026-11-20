@@ -80,5 +80,61 @@ _Status: plan only. Nothing here is implemented yet. Answers to the open questio
 
 Start after the usage limit resets.
 
-## Open questions → answers
-(recorded below once answered)
+## Open questions → answers (2026-11-20)
+- **Parts:** a real impeller is probably too complex and not the right target. Use recognised 3+2 / 5-axis
+  benchmark or training parts instead; the user downloads the STEP files (candidates below).
+- **Dialect:** the Fanuc-style tilted work plane, `G68.2 X Y Z I J K` + `G53.1`, cancelled with `G69`.
+- **Workholding:** a single fixture, a 5-axis vise.
+  - The part must stay rigidly connected to the vise-held stock until the end.
+  - The program finishes with a part-off op that removes most of the connection. It leaves small tabs or a thin web
+    the operator can break or saw by hand outside the machine.
+  - Where to fixture (part orientation in the stock, stub location) is chosen from the geometry.
+- **Eval:** left to the agent (design below).
+
+## Fixturing and part-off design
+- **Stock:** a box or round bar with extra length below the part, giving a grip stub of 6–10 mm in the vise jaws plus
+  a clearance gap so the tool and holder clear the jaws.
+- **Choosing the fixture:** the LLM proposes the part orientation and the grip side in a `fixture.json`. The harness
+  scores the proposal for:
+  - reachable surface over the candidate 3+2 directions;
+  - jaw and holder clearance;
+  - the stub cross-section left after all ops.
+- **Placement tool:** the harness also offers a `cncllm fixture-suggest` that ranks orientations by reachable surface
+  and stub size, so the LLM can start from a good placement.
+- **Rigidity:** after each op, compute the minimum material cross-section linking the part to the gripped stub, and
+  its slenderness. If it falls below a threshold, while cutting continues on the part side, that is an error ("part
+  flexes / chatters").
+- **Part-off op:** must leave a web or tabs of at most about 1 mm and at most about 15 % of the original connection
+  area. Their location is reported for the operator (it must sit on a non-critical face).
+- **Score:** web and tab material on the declared parting face is excluded, like the datum face today. Everything
+  else is scored.
+
+## Evaluation design (proposed)
+1. **Headline:** the share of the **3+2-reachable** surface within ±0.1 mm. Reachable means some library tool
+   reaches the point from some direction within the A ±110° tilt range, without the tool or holder hitting the
+   part, stock, vise or table.
+2. **Also reported:** a whole-surface score, and the area that needs simultaneous 5-axis or a smaller tool.
+3. **Validity (pass/fail):**
+   - no crash, including the vise, the table and the indexing sweeps;
+   - rigid connection maintained;
+   - part-off leaves the specified web or tabs;
+   - cutting-data checks as today.
+4. **Machinist review agent** on the final program and fixture plan, as before.
+
+## Candidate parts for the user to download (STEP)
+| Part | Why | Where |
+|---|---|---|
+| UNSW Making "Haas 5-axis 3+2 induction" part | Real 3+2 training part with re-registration slots. The download folder includes vise and holder models plus the UMC-350 machine (check the file format). | https://www.making.unsw.edu.au/learn/haas-5-axis-32-induction/ |
+| Autodesk Fusion "3+2 machining" tutorial part | Two features on tilted planes in one setup; a clean first 3+2 case. | https://help.autodesk.com/cloudhelp/ENU/Fusion-CAM/files/GUIDE3719BFB-5D75-46B6-9161-11A560C2D884.htm |
+| Cal Poly 5-axis demo part (thesis) | Designed for an indexed-machining course (Haas). Geometry is in the thesis; the CAD may need to be requested or remodelled. | https://core.ac.uk/download/77510587.pdf |
+| GrabCAD "5 axis" / "3+2" demo parts | Many community demo parts (pick 2–3 non-trivial ones with angled holes, pockets and chamfers on several faces). | grabcad.com library search "5 axis demo part", "3+2" |
+| NAS 979 cone frustum / NIST truncated square pyramid | Accuracy artifacts; geometry is simple to model ourselves; simultaneous-5-axis oriented, so a secondary choice. | https://www.nist.gov/node/594146 |
+| ISO 10791-7 S-shaped test piece | Simultaneous flank milling; not a 3+2 target. Skip unless simultaneous 5-axis is added later. | https://www.iso.org/standard/73814.html |
+| Zenodo 10 multi-feature models | Single-setup 3-axis benchmark; useful to check the current harness on third-party parts. | https://zenodo.org/records/17035762 |
+
+**Suggested set:**
+- development: the Autodesk 3+2 tutorial part, the UNSW part, and one or two GrabCAD demo parts;
+- validation: one GrabCAD demo part kept unseen.
+
+**Drop zone:** put files in `parts/incoming/<name>/` (STEP plus any drawing), commit or upload them to the
+session, and say which are held out.
