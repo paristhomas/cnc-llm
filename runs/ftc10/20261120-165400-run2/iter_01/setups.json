@@ -1,0 +1,214 @@
+{
+ "segments": [
+  {
+   "segment": 1,
+   "frame": 0,
+   "first_line": 11,
+   "last_line": 32414,
+   "moves": 48478,
+   "tools": [
+    1,
+    2,
+    3
+   ],
+   "A_deg": 0.0,
+   "C_deg": 0.0,
+   "tool_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "removed_cm3": 73.271
+  },
+  {
+   "segment": 2,
+   "frame": 1,
+   "first_line": 32420,
+   "last_line": 224882,
+   "moves": 240017,
+   "tools": [
+    1,
+    2,
+    3,
+    4,
+    6
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 102.415
+  },
+  {
+   "segment": 3,
+   "frame": 2,
+   "first_line": 224890,
+   "last_line": 232755,
+   "moves": 7572,
+   "tools": [
+    1,
+    2,
+    3
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 105.623
+  },
+  {
+   "segment": 4,
+   "frame": 3,
+   "first_line": 232762,
+   "last_line": 232803,
+   "moves": 41,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 29.929
+  },
+  {
+   "segment": 5,
+   "frame": 4,
+   "first_line": 232807,
+   "last_line": 232848,
+   "moves": 41,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 31.515
+  }
+ ],
+ "rigidity": {
+  "stock_section_mm2": 6068.0,
+  "part_off_line": 232753,
+  "checks": [
+   {
+    "after_segment": 1,
+    "line": 32414,
+    "area_mm2": 6068.0,
+    "weakest_z": -15.7,
+    "fraction": 1.0,
+    "islands": [
+     6068.0
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 2,
+    "line": 224882,
+    "area_mm2": 4201.88,
+    "weakest_z": -0.1,
+    "fraction": 0.6925,
+    "islands": [
+     4201.88
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 3,
+    "line": 232755,
+    "area_mm2": 3607.25,
+    "weakest_z": -0.1,
+    "fraction": 0.5945,
+    "islands": [
+     3607.25
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 4,
+    "line": 232803,
+    "area_mm2": 2884.0,
+    "weakest_z": -7.9,
+    "fraction": 0.4753,
+    "islands": [
+     2884.0
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 5,
+    "line": 232848,
+    "area_mm2": 13.0,
+    "weakest_z": -7.9,
+    "fraction": 0.0021,
+    "islands": [
+     6.5,
+     6.5
+    ],
+    "part_off": true
+   }
+  ]
+ }
+}

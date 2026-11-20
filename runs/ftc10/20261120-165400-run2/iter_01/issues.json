@@ -1,0 +1,64 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 6,
+  "line": 224591,
+  "lines": [
+   224591,
+   224637,
+   224683,
+   224733,
+   224783,
+   224833
+  ],
+  "volume_mm3": 9.59,
+  "msg": "material contact above the flute length (shank rubbing / tool too short); first at line 224591 (frame 1, T4, move ends at G54 (-1.62, 33.50, 12.50)), removed column up to 9.43 mm (material left by earlier setups counts too)"
+ },
+ {
+  "severity": "error",
+  "kind": "fixture",
+  "count": 7,
+  "line": 232790,
+  "lines": [
+   232790,
+   232791,
+   232792,
+   232826,
+   232827,
+   232845,
+   232846
+  ],
+  "box": "fixed vise jaw (-Y)",
+  "msg": "tool holder (D32) of T1 hits the fixed vise jaw (-Y) (first at line 232790, frame 3; vise boxes are in setup.json; holder is a cylinder from the stick-out to 50 mm above it)"
+ },
+ {
+  "severity": "error",
+  "kind": "fixture",
+  "count": 7,
+  "line": 232781,
+  "lines": [
+   232781,
+   232782,
+   232800,
+   232801,
+   232835,
+   232836,
+   232837
+  ],
+  "box": "moving vise jaw (+Y)",
+  "msg": "tool holder (D32) of T1 hits the moving vise jaw (+Y) (first at line 232781, frame 3; vise boxes are in setup.json; holder is a cylinder from the stick-out to 50 mm above it)"
+ },
+ {
+  "severity": "error",
+  "kind": "cutting",
+  "msg": "cut cross-section > 0.75 D^2 for T4 (overloaded: too deep and too wide); worst 1.69 mm2 > limit 1.69 mm2 at line 224733 (move to -40.50, 61.00, 4.62, removed column up to 10.57 mm deep)",
+  "count": 3,
+  "line": 224733,
+  "lines": [
+   224733,
+   224783,
+   224833
+  ]
+ }
+]
