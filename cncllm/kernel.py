@@ -187,7 +187,7 @@ def simulate_grid(M, T, tool_rows, H, owner, x0, y0, res, flute_len, stickout, h
                     flags[m] |= 1
                 if M[m, 11] < 0.5:
                     flags[m] |= 2
-            if tk > fl + eps:
+            if tk > fl + abs(bz - az) + eps:
                 flags[m] |= 4
             # refresh the coarse max over touched blocks
             for ci in range(i0 // cblock, i1 // cblock + 1):

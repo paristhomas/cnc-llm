@@ -94,7 +94,7 @@ def faces_digest(part: Part) -> str:
         L.append(f"\n### Vertical flat walls: {len(walls)} faces\n")
         for f in walls[:40]:
             b = f["bbox"]
-            L.append(f"- face {f['id']}: normal ({f['normal'][0]:g}, {f['normal'][1]:g}), from ({b[0]:g},{b[1]:g}) to ({b[3]:g},{b[4]:g}), Z {b[2]:g}..{b[5]:g}")
+            L.append(f"- face {f['id']}: normal ({f['normal'][0]:g}, {f['normal'][1]:g}), bbox X {b[0]:g}..{b[3]:g}, Y {b[1]:g}..{b[4]:g}, Z {b[2]:g}..{b[5]:g}")
     sloped = [f for f in F if f["type"] == "plane" and 1e-3 <= abs(f.get("normal", [0, 0, 1])[2]) <= 0.99]
     if sloped:
         L.append("\n### Inclined flat faces\n")
@@ -110,7 +110,7 @@ def write(part: Part, out_dir) -> Path:
     # STL for the LLM's own geometry code
     import trimesh
 
-    trimesh.Trimesh(part.V, part.F, process=False).export(out / "part.stl")
+    trimesh.Trimesh(part.V, part.F, process=True).export(out / "part.stl")   # welded (watertight)
     g = part.grid
     np.save(out / "target_height.npy", part.Ht.astype(np.float32))
     (out / "target_height.json").write_text(json.dumps({**g, "note": "Ht[i, j] = highest target surface at x = x0 + (j + 0.5) res, "

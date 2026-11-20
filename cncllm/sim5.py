@@ -202,12 +202,19 @@ def run(program_text: str, part, verbose=True) -> dict:
         hrs = np.array([LIBRARY[t].holder_diameter / 2 for t in tn])
         boxes = np.array(part.meta["vise"], float)
         hits = kernel5.fixture_hits(A[act], B[act], D[act], rad, sos, hrs, 50.0, boxes)
-        kk = np.where(act)[0][hits > 0]
-        if len(kk):
+        names_b = ["fixed vise jaw (-Y)", "moving vise jaw (+Y)", "vise body", "machine table"]
+        idx_all = np.where(act)[0]
+        for code in sorted(set(hits[hits > 0].tolist())):
+            kk = idx_all[hits == code]
+            b, holder = (code - 1) // 2, (code - 1) % 2
             lines = sorted(set(int(M[i, 10]) for i in kk))
+            i0 = kk[0]
             issues.append({"severity": "error", "kind": "fixture", "count": int(len(kk)), "line": lines[0],
-                           "lines": lines[:30], "msg": "tool or holder hits the vise / table (check the tool axis, "
-                                                       "stick-out and the stub gap)"})
+                           "lines": lines[:30], "box": names_b[b] if b < len(names_b) else f"box {b}",
+                           "msg": f"{'tool holder (D%g)' % LIBRARY[int(M[i0, 6])].holder_diameter if holder else 'tool / shank'} "
+                                  f"of T{int(M[i0, 6])} hits the {names_b[b] if b < len(names_b) else 'fixture'} "
+                                  f"(first at line {int(M[i0, 10])}, frame {int(M[i0, 12])}; vise boxes are in setup.json; "
+                                  f"holder is a cylinder from the stick-out to 50 mm above it)"})
     stats = move_stats(M[:, :12], vol, thick) if n else move_stats(M, vol, thick)
     n_index = sum(1 for s in segs if s[2] != 0) + 0
     stats["cycle_time_s"] += INDEX_TIME_S * len([1 for i in range(1, len(segs)) if segs[i][2] != segs[i - 1][2]])

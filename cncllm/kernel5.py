@@ -77,6 +77,7 @@ def fixture_hits(A, B, D, rad, so, hr, hl, boxes):
         L = math.sqrt((B[m, 0] - A[m, 0]) ** 2 + (B[m, 1] - A[m, 1]) ** 2 + (B[m, 2] - A[m, 2]) ** 2)
         ns = int(L / max(min(rad[m], 2.0), 0.5)) + 1
         hit = False
+        code = 0
         for s in range(ns + 1):
             t = s / ns
             tx = A[m, 0] + (B[m, 0] - A[m, 0]) * t
@@ -93,11 +94,12 @@ def fixture_hits(A, B, D, rad, so, hr, hl, boxes):
                 for b in range(boxes.shape[0]):
                     if _pt_box_d2(px, py, pz, boxes[b, 0], boxes[b, 1]) < r * r:
                         hit = True
+                        code = 1 + b * 2 + (1 if h > so[m] else 0)
                         break
                 if hit:
                     break
             if hit:
                 break
         if hit:
-            out[m] = 1
+            out[m] = code
     return out

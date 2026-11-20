@@ -66,3 +66,15 @@ Autonomous overnight run. Newest entries at the bottom.
   (158 mm tall). A slenderness penalty was added; lying flat ("-Y") reaches 96.2 %.
 - Launched: the 3+2 viewer/report agent; LLM runs on FTC-10 (showcase, native) and FTC-08 (×0.5).
   Acceptance criteria: `docs/ACCEPTANCE_3PLUS2.md`.
+- 12:00 3+2 viewer/report done (report5.py, viewer5 bundle; each setup's exact cut surface is clipped in the shader,
+  so material removal is exact at grid resolution; replay matched the simulator on 100% of cells).
+  FTC-08 (×0.5, dev): VALID, 99.803% of the reachable surface in tolerance (98.35% of the whole surface), 28
+  segments over 13 orientations, 40.5 min, MillBill 100%. The part-off left 14% (two webs to saw; the 156 mm
+  footprint is beyond side-tool reach). It used about 300k tokens.
+  Harness v5.1 from its frictions:
+  - machine travel no longer checked in 3+2 mode, since the stub gap sits below G54 Z0;
+  - the shank check allows an inclined move's own vertical travel;
+  - vise-hit messages name the box and say whether the tool or the holder hit it;
+  - the exported STL is welded;
+  - the brief's face bounding boxes are worded clearly;
+  - skill notes added: M5 before indexing, 0.3 mm shank clearance on 0.25 mm voxels, part-off reach.

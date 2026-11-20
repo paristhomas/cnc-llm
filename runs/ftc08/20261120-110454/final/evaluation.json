@@ -1,0 +1,54 @@
+{
+ "iteration": 7,
+ "metrics": {
+  "machinable_in_tol_pct": 99.803,
+  "machinable_gouge_pct": 0.001,
+  "machinable_proud_pct": 0.196,
+  "all_in_tol_pct": 98.354,
+  "unreachable_area_pct": 1.467,
+  "unreachable_in_tol_pct": 1.054,
+  "max_gouge_mm": 5.0,
+  "any_gouge_pct": 0.001,
+  "parting_face_pct": 18.962,
+  "edge_band_excluded_pct": 1.106,
+  "surface_area_mm2": 38405.3,
+  "probes": 200486,
+  "tolerance_mm": 0.1,
+  "cycle_time_min": 40.53,
+  "setups": 28,
+  "distinct_orientations": 13,
+  "final_connection_mm2": 2660.06,
+  "errors": 0,
+  "warnings": 0,
+  "valid": true
+ },
+ "integrity": {
+  "harness": {
+   "sha256": "85453d8f45965177fff9302d6f3e5d68d3222413e7fa943b4b84450009cd32c4",
+   "git_head": "62b2911",
+   "harness_modified": false,
+   "modified_files": []
+  },
+  "part_sha256_now": "5340075f80385ce2f279b0b570836f58aaa4dd838ca055c2cd48dce9d3945b62",
+  "part_unchanged": true,
+  "harness_unchanged_since_run_start": true,
+  "generator_scan": {
+   "files": [
+    "gen.py",
+    "geo.py",
+    "geo2.py"
+   ],
+   "forbidden_imports": [],
+   "ok": true
+  }
+ },
+ "crosscheck_millbill": {
+  "points": 250000,
+  "disagree": 0,
+  "disagree_beyond_2um": 0,
+  "agreement_pct": 100.0,
+  "frames": 28,
+  "note": "moves from our G68.2 parser; material classification by MillBill's kernel",
+  "examples": []
+ }
+}

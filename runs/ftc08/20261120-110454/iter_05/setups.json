@@ -1,0 +1,1081 @@
+{
+ "segments": [
+  {
+   "segment": 1,
+   "frame": 0,
+   "first_line": 11,
+   "last_line": 38743,
+   "moves": 57706,
+   "tools": [
+    1,
+    2,
+    3,
+    4,
+    5
+   ],
+   "A_deg": 0.0,
+   "C_deg": 0.0,
+   "tool_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "removed_cm3": 343.957
+  },
+  {
+   "segment": 2,
+   "frame": 1,
+   "first_line": 38751,
+   "last_line": 38804,
+   "moves": 54,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    -51.229,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 33.84
+  },
+  {
+   "segment": 3,
+   "frame": 2,
+   "first_line": 38813,
+   "last_line": 38866,
+   "moves": 54,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    51.229,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 34.871
+  },
+  {
+   "segment": 4,
+   "frame": 3,
+   "first_line": 38875,
+   "last_line": 38938,
+   "moves": 64,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -90.0,
+   "tool_axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    -73.009,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 22.998
+  },
+  {
+   "segment": 5,
+   "frame": 4,
+   "first_line": 38947,
+   "last_line": 39010,
+   "moves": 64,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": 90.0,
+   "tool_axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    73.009,
+    0.0
+   ],
+   "ijk": [
+    180.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 23.341
+  },
+  {
+   "segment": 6,
+   "frame": 5,
+   "first_line": 39019,
+   "last_line": 39082,
+   "moves": 64,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -135.0,
+   "tool_axis": [
+    -0.7071,
+    -0.7071,
+    0.0
+   ],
+   "origin": [
+    -45.5264,
+    -67.2814,
+    0.0
+   ],
+   "ijk": [
+    -45.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 1.916
+  },
+  {
+   "segment": 7,
+   "frame": 6,
+   "first_line": 39091,
+   "last_line": 39154,
+   "moves": 64,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": 135.0,
+   "tool_axis": [
+    -0.7071,
+    0.7071,
+    0.0
+   ],
+   "origin": [
+    -45.5264,
+    67.2814,
+    0.0
+   ],
+   "ijk": [
+    -135.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 1.904
+  },
+  {
+   "segment": 8,
+   "frame": 7,
+   "first_line": 39163,
+   "last_line": 39226,
+   "moves": 64,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -45.0,
+   "tool_axis": [
+    0.7071,
+    -0.7071,
+    0.0
+   ],
+   "origin": [
+    45.5264,
+    -67.2814,
+    0.0
+   ],
+   "ijk": [
+    45.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 1.89
+  },
+  {
+   "segment": 9,
+   "frame": 8,
+   "first_line": 39235,
+   "last_line": 39298,
+   "moves": 64,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": 45.0,
+   "tool_axis": [
+    0.7071,
+    0.7071,
+    0.0
+   ],
+   "origin": [
+    45.5264,
+    67.2814,
+    0.0
+   ],
+   "ijk": [
+    135.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 1.871
+  },
+  {
+   "segment": 10,
+   "frame": 9,
+   "first_line": 39312,
+   "last_line": 39346,
+   "moves": 35,
+   "tools": [
+    5
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    -51.229,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 2.89
+  },
+  {
+   "segment": 11,
+   "frame": 10,
+   "first_line": 39355,
+   "last_line": 39389,
+   "moves": 35,
+   "tools": [
+    5
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    51.229,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 2.887
+  },
+  {
+   "segment": 12,
+   "frame": 11,
+   "first_line": 39398,
+   "last_line": 39432,
+   "moves": 35,
+   "tools": [
+    5
+   ],
+   "A_deg": 90.0,
+   "C_deg": -90.0,
+   "tool_axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    -73.009,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 1.989
+  },
+  {
+   "segment": 13,
+   "frame": 12,
+   "first_line": 39441,
+   "last_line": 39475,
+   "moves": 35,
+   "tools": [
+    5
+   ],
+   "A_deg": 90.0,
+   "C_deg": 90.0,
+   "tool_axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    73.009,
+    0.0
+   ],
+   "ijk": [
+    180.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 1.857
+  },
+  {
+   "segment": 14,
+   "frame": 13,
+   "first_line": 39484,
+   "last_line": 39501,
+   "moves": 18,
+   "tools": [
+    5
+   ],
+   "A_deg": 90.0,
+   "C_deg": -135.0,
+   "tool_axis": [
+    -0.7071,
+    -0.7071,
+    0.0
+   ],
+   "origin": [
+    -45.5264,
+    -67.2814,
+    0.0
+   ],
+   "ijk": [
+    -45.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.256
+  },
+  {
+   "segment": 15,
+   "frame": 14,
+   "first_line": 39510,
+   "last_line": 39527,
+   "moves": 18,
+   "tools": [
+    5
+   ],
+   "A_deg": 90.0,
+   "C_deg": 135.0,
+   "tool_axis": [
+    -0.7071,
+    0.7071,
+    0.0
+   ],
+   "origin": [
+    -45.5264,
+    67.2814,
+    0.0
+   ],
+   "ijk": [
+    -135.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.262
+  },
+  {
+   "segment": 16,
+   "frame": 15,
+   "first_line": 39536,
+   "last_line": 39553,
+   "moves": 18,
+   "tools": [
+    5
+   ],
+   "A_deg": 90.0,
+   "C_deg": -45.0,
+   "tool_axis": [
+    0.7071,
+    -0.7071,
+    0.0
+   ],
+   "origin": [
+    45.5264,
+    -67.2814,
+    0.0
+   ],
+   "ijk": [
+    45.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.264
+  },
+  {
+   "segment": 17,
+   "frame": 16,
+   "first_line": 39562,
+   "last_line": 39579,
+   "moves": 18,
+   "tools": [
+    5
+   ],
+   "A_deg": 90.0,
+   "C_deg": 45.0,
+   "tool_axis": [
+    0.7071,
+    0.7071,
+    0.0
+   ],
+   "origin": [
+    45.5264,
+    67.2814,
+    0.0
+   ],
+   "ijk": [
+    135.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.259
+  },
+  {
+   "segment": 18,
+   "frame": 17,
+   "first_line": 39593,
+   "last_line": 40079,
+   "moves": 485,
+   "tools": [
+    8
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    -51.229,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.065
+  },
+  {
+   "segment": 19,
+   "frame": 18,
+   "first_line": 40088,
+   "last_line": 40574,
+   "moves": 485,
+   "tools": [
+    8
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    51.229,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.065
+  },
+  {
+   "segment": 20,
+   "frame": 19,
+   "first_line": 40583,
+   "last_line": 41037,
+   "moves": 453,
+   "tools": [
+    8
+   ],
+   "A_deg": 90.0,
+   "C_deg": -90.0,
+   "tool_axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    -73.009,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.057
+  },
+  {
+   "segment": 21,
+   "frame": 20,
+   "first_line": 41046,
+   "last_line": 41500,
+   "moves": 453,
+   "tools": [
+    8
+   ],
+   "A_deg": 90.0,
+   "C_deg": 90.0,
+   "tool_axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    73.009,
+    0.0
+   ],
+   "ijk": [
+    180.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.047
+  },
+  {
+   "segment": 22,
+   "frame": 21,
+   "first_line": 41514,
+   "last_line": 49279,
+   "moves": 7761,
+   "tools": [
+    4
+   ],
+   "A_deg": 90.0,
+   "C_deg": 90.0,
+   "tool_axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    73.009,
+    0.0
+   ],
+   "ijk": [
+    180.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 0.141
+  },
+  {
+   "segment": 23,
+   "frame": 22,
+   "first_line": 49294,
+   "last_line": 74986,
+   "moves": 25693,
+   "tools": [
+    1
+   ],
+   "A_deg": 0.0,
+   "C_deg": 0.0,
+   "tool_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    -20.0
+   ],
+   "ijk": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "removed_cm3": 56.862
+  },
+  {
+   "segment": 24,
+   "frame": 23,
+   "first_line": 75000,
+   "last_line": 115986,
+   "moves": 40987,
+   "tools": [
+    2
+   ],
+   "A_deg": 0.0,
+   "C_deg": 0.0,
+   "tool_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    -20.0
+   ],
+   "ijk": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "removed_cm3": 1.652
+  },
+  {
+   "segment": 25,
+   "frame": 24,
+   "first_line": 116000,
+   "last_line": 116043,
+   "moves": 44,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    -51.229,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 49.689
+  },
+  {
+   "segment": 26,
+   "frame": 25,
+   "first_line": 116052,
+   "last_line": 116095,
+   "moves": 44,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    51.229,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 49.924
+  },
+  {
+   "segment": 27,
+   "frame": 26,
+   "first_line": 116104,
+   "last_line": 116121,
+   "moves": 18,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -90.0,
+   "tool_axis": [
+    0.0,
+    -1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    -73.009,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 11.81
+  },
+  {
+   "segment": 28,
+   "frame": 27,
+   "first_line": 116130,
+   "last_line": 116147,
+   "moves": 18,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": 90.0,
+   "tool_axis": [
+    0.0,
+    1.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    73.009,
+    0.0
+   ],
+   "ijk": [
+    180.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 11.889
+  }
+ ],
+ "rigidity": {
+  "stock_section_mm2": 18986.5,
+  "part_off_line": 49283,
+  "checks": [
+   {
+    "after_segment": 1,
+    "line": 38743,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 2,
+    "line": 38804,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 3,
+    "line": 38866,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 4,
+    "line": 38938,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 5,
+    "line": 39010,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 6,
+    "line": 39082,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 7,
+    "line": 39154,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 8,
+    "line": 39226,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 9,
+    "line": 39298,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 10,
+    "line": 39346,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 11,
+    "line": 39389,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 12,
+    "line": 39432,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 13,
+    "line": 39475,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 14,
+    "line": 39501,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 15,
+    "line": 39527,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 16,
+    "line": 39553,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 17,
+    "line": 39579,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 18,
+    "line": 40079,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 19,
+    "line": 40574,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 20,
+    "line": 41037,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 21,
+    "line": 41500,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 22,
+    "line": 49279,
+    "area_mm2": 18965.19,
+    "fraction": 0.9989,
+    "islands": [
+     18965.19
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 23,
+    "line": 74986,
+    "area_mm2": 15440.0,
+    "fraction": 0.8132,
+    "islands": [
+     15440.0
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 24,
+    "line": 115986,
+    "area_mm2": 15340.69,
+    "fraction": 0.808,
+    "islands": [
+     15340.69
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 25,
+    "line": 116043,
+    "area_mm2": 10473.38,
+    "fraction": 0.5516,
+    "islands": [
+     10473.38
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 26,
+    "line": 116095,
+    "area_mm2": 5609.81,
+    "fraction": 0.2955,
+    "islands": [
+     3524.25,
+     2085.56
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 27,
+    "line": 116121,
+    "area_mm2": 4125.06,
+    "fraction": 0.2173,
+    "islands": [
+     3524.25,
+     600.81
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 28,
+    "line": 116147,
+    "area_mm2": 2660.06,
+    "fraction": 0.1401,
+    "islands": [
+     2059.25,
+     600.81
+    ],
+    "part_off": true
+   }
+  ]
+ }
+}

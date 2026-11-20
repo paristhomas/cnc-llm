@@ -1,0 +1,60 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 246,
+  "line": 39746,
+  "lines": [
+   39746,
+   39747,
+   39751,
+   39752,
+   39755,
+   39756,
+   39757,
+   39758,
+   39759,
+   39760,
+   39761,
+   39762,
+   39763,
+   39764,
+   39765,
+   39766,
+   39767,
+   39768,
+   39769,
+   39770,
+   39771,
+   39772,
+   39773,
+   39774,
+   39775,
+   39776,
+   39777,
+   39778,
+   39779,
+   39780
+  ],
+  "volume_mm3": 39.89,
+  "msg": "material contact above the flute length (shank rubbing / tool too short); first at line 39746 (frame 17, T8), removed column up to 4.14 mm"
+ },
+ {
+  "severity": "error",
+  "kind": "cutting",
+  "msg": "cut cross-section > 0.75 D^2 for T8 (overloaded: too deep and too wide); worst 1.11 mm2 > limit 0.75 mm2 at line 40927 (move to 46.15, 18.51, -5.96, removed column up to 9.09 mm deep)",
+  "count": 9,
+  "line": 40705,
+  "lines": [
+   40705,
+   40706,
+   40707,
+   40926,
+   40927,
+   40928,
+   41169,
+   41390,
+   41391
+  ]
+ }
+]

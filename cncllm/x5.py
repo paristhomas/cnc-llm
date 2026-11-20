@@ -104,7 +104,7 @@ def write_brief(part, run: Path):
     shutil.copy(part.dir / "part.step", b / "part.step")
     shutil.copy(part.dir / "setup.json", b / "setup.json")
     import trimesh
-    trimesh.Trimesh(part.V, part.F, process=False).export(b / "part.stl")
+    trimesh.Trimesh(part.V, part.F, process=True).export(b / "part.stl")   # welded (watertight)
     (b / "faces.json").write_text(json.dumps(part.faces, indent=1))
     render.iso_png(part.V, part.F, b / "target_iso.png", f"{part.name}: in the fixture frame (Z0 = parting plane)")
     _views_png(part.P, None, part.pclass, b / "reachability.png", "Grey = not reachable in 3+2 (excluded); "

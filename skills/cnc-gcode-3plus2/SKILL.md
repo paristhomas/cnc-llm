@@ -81,6 +81,17 @@ python -m cncllm.x5 sim $RUN $RUN/work/program.nc --note $RUN/work/notes.md
 
 `deviation_views.png` shows four views.
 
+Practical notes:
+- Put `M5` before every `G68.2` / `G69`: indexing with the spindle on is flagged.
+- In tilted setups the material state is tracked on 0.25 mm voxels. Keep shanks and holders at least 0.3 mm off
+  finished faces, and keep rapids at least 0.5 mm clear.
+- Machine travel limits are not applied in 3+2 mode: the vise and table model bounds the work, so G54 Z below zero
+  (the stub gap) is fine.
+- `part.stl` is welded. If you offset sections with shapely, clean them (`buffer(0)`, drop tiny rings) to avoid
+  phantom islands.
+- Part-off reach: side tools reach about their stick-out (T1 40 mm). On large footprints, open the middle from +Z
+  first (inside windows) so the remaining webs are within reach.
+
 Fix the problems in this order:
 1. vise or holder collisions;
 2. other crashes;

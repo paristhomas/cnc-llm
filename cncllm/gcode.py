@@ -318,7 +318,7 @@ def parse(text: str, arc_tol: float = 0.0005, max_moves: int = 20_000_000, tilt:
             continue
         tgt = [w.get("X", pos[0]), w.get("Y", pos[1]), w.get("Z", pos[2])]
         for i, (lo, hi) in enumerate([MACHINE.x_travel, MACHINE.y_travel, MACHINE.z_travel]):
-            if tilt and frame:
+            if tilt:
                 break
             if not (lo - 1e-9 <= tgt[i] <= hi + 1e-9):
                 err(ln, f"{'XYZ'[i]}{tgt[i]:g} outside machine travel [{lo:g}, {hi:g}]")
