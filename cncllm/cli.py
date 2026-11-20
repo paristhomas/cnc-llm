@@ -200,6 +200,51 @@ def cmd_report(a):
     print(f"report: {out}")
 
 
+def cmd_index(a):
+    """runs/index.html: one row per run (latest evaluated run per part first)."""
+    import html as H
+
+    root = Path(a.runs)
+    rows = []
+    for rj in sorted(root.glob("*/*/run.json")):
+        run = rj.parent
+        meta = json.loads(rj.read_text())
+        ev = run / "final" / "evaluation.json"
+        if not ev.exists():
+            continue
+        e = json.loads(ev.read_text())
+        m = e["metrics"]
+        hist = json.loads((run / "history.json").read_text())
+        cc = e.get("crosscheck_millbill", {}).get("agreement_pct")
+        kind = "validation" if "validation" in run.name or "/validation/" in meta.get("part_dir", "") else "development"
+        rows.append((kind, meta["part"], run, m, len(hist), e.get("iteration"), cc))
+    rows.sort(key=lambda r: (r[0] != "validation", r[1]))
+    tr = []
+    for kind, part, run, m, nit, it, cc in rows:
+        rel = run.relative_to(root).as_posix()
+        tr.append(f"<tr><td>{H.escape(kind)}</td><td><a href='{rel}/report/index.html'>{H.escape(part)}</a></td>"
+                  f"<td class=n>{m['machinable_in_tol_pct']:.3f}%</td><td>{'VALID' if m['valid'] else 'INVALID'}</td>"
+                  f"<td class=n>{m['machinable_gouge_pct']:.2f}%</td><td class=n>{m['cycle_time_min']:.1f}</td>"
+                  f"<td class=n>{it} / {nit}</td><td class=n>{'' if cc is None else f'{cc:.3f}%'}</td>"
+                  f"<td>{H.escape(run.name)}</td></tr>")
+    page = f"""<!doctype html><html lang=en><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<title>CNC-LLM runs</title><style>
+:root{{--bg:#f6f6f4;--fg:#111;--mut:#666;--line:#ddd;--card:#fff}}
+@media (prefers-color-scheme:dark){{:root{{--bg:#111214;--fg:#eee;--mut:#aaa;--line:#333;--card:#1a1b1e}}}}
+body{{font:15px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--fg);margin:0;padding:24px 16px}}
+main{{max-width:1100px;margin:auto}} .w{{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}}
+table{{border-collapse:collapse;width:100%}} th,td{{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}}
+th{{font-size:12px;text-transform:uppercase;color:var(--mut)}} .n{{text-align:right;font-variant-numeric:tabular-nums}} a{{color:#2a78d6}}
+</style></head><body><main><h1>CNC-LLM runs</h1>
+<p>Each row is one LLM run (Claude Code subagent writing its own G-code, refined against the simulator). Score = share of the
+machinable surface within ±0.1 mm in the trusted final evaluation. Validation parts were held out while the harness and skill were refined.</p>
+<div class=w><table><thead><tr><th>Set</th><th>Part (report)</th><th class=n>Score</th><th>Program</th><th class=n>Gouge</th>
+<th class=n>Cycle min</th><th class=n>Iter used / run</th><th class=n>MillBill agree</th><th>Run</th></tr></thead><tbody>
+{''.join(tr)}</tbody></table></div></main></body></html>"""
+    (root / "index.html").write_text(page)
+    print(root / "index.html")
+
+
 def cmd_check(a):
     from . import part, sim
 
@@ -223,6 +268,7 @@ def main(argv=None):
     s.add_argument("--margin", type=float, default=2.0); s.add_argument("--top", type=float, default=1.0)
     s.add_argument("--material", default="AL6061-T6"); s.add_argument("--description", default="")
     s.set_defaults(f=cmd_init_part)
+    s = sub.add_parser("index"); s.add_argument("--runs", default=str(REPO / "runs")); s.set_defaults(f=cmd_index)
     s = sub.add_parser("check"); s.add_argument("part_dir"); s.add_argument("program"); s.set_defaults(f=cmd_check)
     a = ap.parse_args(argv)
     a.f(a)

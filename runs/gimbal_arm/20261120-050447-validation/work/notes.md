@@ -1,0 +1,1 @@
+Iteration 2 (cycle time): iter 1 was 100% in tolerance. Fewer T1 roughing levels below Z10 (5.3 mm step-down, still < 0.75 D^2 section), Z10 floor raster step 7.5, ball spiral pitch 0.4 (scallop < 0.01 mm).

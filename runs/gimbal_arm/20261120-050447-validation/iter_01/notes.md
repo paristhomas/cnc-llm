@@ -1,0 +1,1 @@
+Iteration 1: first full program. T1 Y-raster roughing from outside the stock + dome rest rings, T1 floor/wall finishing, T2 helical bore/hole, T3 pockets, T4 slit, T6 ball spiral on the cap, T9 bore chamfer.

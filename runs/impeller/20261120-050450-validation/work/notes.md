@@ -1,0 +1,1 @@
+Iter 1: Z-level offset-ring roughing T1 + T2 rest, T2 bore helix + flat drop-cutter wall contour, T3 corner contour, T6 ball drop-cutter raster, T7/T8 ball pencils along wall/dish corner, T1 outer profile.
