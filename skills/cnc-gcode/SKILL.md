@@ -36,6 +36,10 @@ face the top -> rough everything with the biggest tool that fits (leave 0.2-0.3 
 gaps with smaller tools -> finish floors -> finish walls at full depth (one or two light spring passes) -> 3D surfaces
 with a ball (or bull) nose -> chamfers with the chamfer mill -> holes (helical interpolation with an endmill, or drill)
 -> outer profile last (cut through to Z-0.2 or so).
+Shop practice the simulator does not score but a machinist will check: cut the outer profile LAST (a part freed
+early is held by vacuum alone while the rest is cut); clearance plane >= 5 mm above the stock top; climb milling
+(M3: clockwise around outside profiles, counter-clockwise (G3) inside pockets/holes); slender tools (L/D > 4) get
+small step-downs, reduced feed and chip-clearing retracts; keep step-overs no finer than the finish needs.
 Speeds: max rpm of each tool; feed = chipload x flutes x rpm (stay within 0.5-1.5x); plunge/ramp at about a third.
 
 ## 3. Write the program
