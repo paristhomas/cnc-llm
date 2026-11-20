@@ -5,7 +5,7 @@
   --ink: #111214; --ink-2: #4a4b4f; --ink-3: #6e6f73; --line: #e1e0d9; --line-2: #cfcec6;
   --accent: #1f5fbf; --accent-ink: #ffffff; --accent-soft: #e3edfb;
   --good: #11753a; --good-bg: #e2f3e8; --bad: #b42323; --bad-bg: #fbe5e3; --warn: #8a5a00; --warn-bg: #fcf0d6;
-  --s1: #2a78d6; --s-gouge: #173c8a; --s-proud: #d0452f;
+  --s1: #2a78d6; --s-gouge: #2f66c9; --s-proud: #d0452f;
   --vp-a: #eef0f3; --vp-b: #d5d9df; --hud: rgba(255,255,255,.86); --hud-ink: #15171a;
   --shadow: 0 1px 2px rgba(16,18,22,.06), 0 4px 16px rgba(16,18,22,.05);
   --radius: 10px;
@@ -20,7 +20,7 @@
     --ink: #f0efec; --ink-2: #c3c2bb; --ink-3: #9a9a95; --line: #2c2d31; --line-2: #3a3b40;
     --accent: #6aa5f0; --accent-ink: #0b1220; --accent-soft: #1c2a40;
     --good: #4cc47a; --good-bg: #15301f; --bad: #f07a6e; --bad-bg: #3a1a18; --warn: #f2bd55; --warn-bg: #352812;
-    --s1: #3987e5; --s-gouge: #7aa7ee; --s-proud: #ee7a62;
+    --s1: #3987e5; --s-gouge: #6f9ff0; --s-proud: #ee7a62;
     --vp-a: #24272c; --vp-b: #121316; --hud: rgba(20,21,24,.82); --hud-ink: #eceae4;
     --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 18px rgba(0,0,0,.25);
     --gc-g: #79aef2; --gc-r: #f08a7e; --gc-m: #c39af0; --gc-t: #5fd19c; --gc-f: #f2bd55; --gc-ax: #dcdad4; --gc-cm: #8d8f94;
@@ -32,7 +32,7 @@
   --ink: #f0efec; --ink-2: #c3c2bb; --ink-3: #9a9a95; --line: #2c2d31; --line-2: #3a3b40;
   --accent: #6aa5f0; --accent-ink: #0b1220; --accent-soft: #1c2a40;
   --good: #4cc47a; --good-bg: #15301f; --bad: #f07a6e; --bad-bg: #3a1a18; --warn: #f2bd55; --warn-bg: #352812;
-  --s1: #3987e5; --s-gouge: #7aa7ee; --s-proud: #ee7a62;
+  --s1: #3987e5; --s-gouge: #6f9ff0; --s-proud: #ee7a62;
   --vp-a: #24272c; --vp-b: #121316; --hud: rgba(20,21,24,.82); --hud-ink: #eceae4;
   --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 18px rgba(0,0,0,.25);
   --gc-g: #79aef2; --gc-r: #f08a7e; --gc-m: #c39af0; --gc-t: #5fd19c; --gc-f: #f2bd55; --gc-ax: #dcdad4; --gc-cm: #8d8f94;
@@ -82,6 +82,7 @@ h3 { font-size: 15px; margin: 0 0 10px; font-weight: 650; }
 .badge.final { background: var(--accent-soft); color: var(--accent); }
 :root[data-theme="dark"] .badge.valid, :root[data-theme="dark"] .badge.invalid { color: #0b0c0e; }
 @media (prefers-color-scheme: dark) { :root:where(:not([data-theme="light"])) .badge.valid, :root:where(:not([data-theme="light"])) .badge.invalid { color: #0b0c0e; } }
+.int-note { font-size: 12px; color: var(--ink-3); margin: 8px 0 0; line-height: 1.45; }
 .verdict { margin: 18px 0 0; padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--surface-2); border-radius: 0 8px 8px 0; color: var(--ink-2); font-size: 14.5px; }
 .verdict strong { color: var(--ink); }
 

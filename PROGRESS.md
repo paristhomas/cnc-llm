@@ -33,3 +33,11 @@ Autonomous overnight run. Newest entries at the bottom.
   0.5 um and the noise test nudges in XY too -> 100% agreement. Proud regions now name the nearest passes and by how
   much they missed (was: last move that lowered the column, often the facing pass). Skill: fixed trimesh section tip
   (to_2D(to_2D=eye(4)) keeps model XY), shank-through-cleared-space rule, full-circle helices.
+- 05:10 Overnight a 5-hour usage limit stopped the viewer agent and the undercut run (resumed at 05:00).
+  Dev results (all VALID): motor_mount 99.998%, mould_cavity 99.665%, cam_plate 99.87%, heatsink 100.000%,
+  undercut_block 99.957% (19.6% undercut surface excluded). Fixes: edge band also excluded from region tables,
+  evaluate tie-break on cycle time, skill hints (ball contact on slopes, plunge threshold, cycle-time iterations).
+  Validation runs launched (gimbal_arm, impeller) with the skill frozen.
+  Known: chip-load check uses tool-centre feed (internal small-radius arcs read as "rubbing" warnings);
+  holder blocks full-depth small holes deeper than stick-out (counts against score, not tool-limited).
+  GitHub push still 403; Google Drive upload blocked by connector size limits (4.2 MB per call).

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>gimbal_arm · CNC run report</title>
+<link rel="stylesheet" href="assets/report.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-main">
+      <div class="eyebrow">CNC-LLM run report · 20261120-050447-validation</div>
+      <h1>gimbal_arm</h1>
+      <p class="desc">Camera gimbal arm 120 long, tapering from 40 wide at the motor end to 24 wide at the clamp end (tangent R arcs). Motor end: D30 boss 20 tall with a spherical-cap (R40) top, D12 through bore with 1 mm chamfer. Arm web 6 thick with three triangular lightening pockets (R2 corners) 4 mm deep, perimeter rib 3 wide at full 10 mm height. Clamp end: 12 thick lug with a D8 through hole and a 1.5 wide clamp slit.</p>
+      <dl class="facts">
+        <div><dt>Material</dt><dd>AL6061-T6</dd></div>
+        <div><dt>Stock</dt><dd>128 × 46 × 21 mm</dd></div>
+        <div><dt>Tolerance</dt><dd>±0.1 mm</dd></div>
+        <div><dt>Model / agent</dt><dd>claude-opus-5-5 (Claude Code subagent)</dd></div>
+        <div><dt>Date</dt><dd>2026-11-20 05:04</dd></div>
+        <div><dt>Iterations</dt><dd>0</dd></div>
+      </dl>
+    </div>
+    <div class="hero-score" aria-label="Final score">
+      <div class="score-top">
+        <span class="badge lg invalid">INVALID</span>
+        <span class="muted">0 errors · 0 warnings</span>
+      </div>
+      <div class="score-num">–<span>%</span></div>
+      <div class="score-label">of the machinable surface within ±0.1 mm (latest iteration, not evaluated)</div>
+      <div class="meter" aria-hidden="true"><i style="width:0.00%"></i></div>
+      <div class="chips"><span class="chip warn" title="run python -m cncllm evaluate RUN">Not yet evaluated (latest iteration shown)</span></div>
+      
+    </div>
+  </div>
+  <div class="wrap"><p class="verdict">No simulation results yet.</p></div>
+</header>
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#sim">Simulation</a><a href="#result">Result</a><a href="#problems">Problems</a><a href="#history">History</a>
+  <a href="#metrics">Metrics</a><a href="#images">Images</a><a href="#gcode">G-code</a>
+</div></nav>
+<main class="wrap">
+<section id="sim">
+  <div class="sec-head"><h2>Cutting simulation</h2>
+  <p class="sub">Replay of the evaluated program on a height-field stock (same swept-volume model as the simulator, computed in the browser).
+  Drag to orbit, right-drag / two fingers to pan, wheel / pinch to zoom.</p></div>
+  <p class="muted">No viewer data (run <code>python -m cncllm evaluate</code>).</p>
+</section>
+<section id="result">
+  <div class="sec-head"><h2>Final result</h2>
+  <p class="sub">Target part coloured by the signed deviation of the simulated part, or the machined surface coloured by height error.
+  Undercut and tool-limited surfaces are excluded from the score and shown separately, so they are not mistaken for LLM error.</p></div>
+  
+</section>
+<section id="problems">
+  <div class="sec-head"><h2>Problems</h2><p class="sub">Click a line number to jump the G-code listing and the animation there; click a region to locate it in the result view.</p></div>
+  <div class="stack">
+    <div><h3>Safety &amp; plausibility issues <span class="count">0</span></h3><p class="ok-note">No safety or plausibility issues.</p></div>
+    <div><h3>Out-of-tolerance regions <span class="count">0</span></h3><p class="ok-note">No out-of-tolerance regions.</p></div>
+  </div>
+</section>
+<section id="history">
+  <div class="sec-head"><h2>Iteration history</h2><p class="sub">Score per simulated iteration and the LLM's own notes on what it changed.</p></div>
+  <div class="card chart-card"><p class="muted">No iterations.</p></div>
+  <div class="iters"></div>
+</section>
+<section id="metrics">
+  <div class="sec-head"><h2>Metrics &amp; tools</h2></div>
+  <div class="two">
+    <div><h3>Metrics</h3><div class="tablewrap"><table class="metrics"><tbody></tbody></table></div></div>
+    <div><h3>Tools used</h3><p class="muted">No tool data.</p>
+      <p class="muted small">Estimated cycle time <strong>0.0 min</strong> (feeds as programmed, rapids at 15000 mm/min, 8 s per tool change).</p>
+    </div>
+  </div>
+</section>
+<section id="images">
+  <div class="sec-head"><h2>Images</h2></div>
+  <div class="gallery"><figure><a href="img/target_iso.png" target="_blank"><img src="img/target_iso.png" alt="Target part (iso)"></a><figcaption>Target part (iso)</figcaption></figure><figure><a href="img/target_top.png" target="_blank"><img src="img/target_top.png" alt="Target part (top)"></a><figcaption>Target part (top)</figcaption></figure></div>
+</section>
+<section id="gcode">
+  <div class="sec-head"><h2>G-code</h2><p class="sub">The full listing is in the simulation panel above (search and click to jump).</p></div>
+  <div class="dl-row">
+    
+    
+  </div>
+</section>
+</main>
+<footer class="foot"><div class="wrap">
+  <span>Harness sha256 <code>f4ff400f9db81bf7</code> · git <code>04d482b</code></span>
+  <span>Part ab7778a3e4c6 · generated 2026-11-20 05:05</span>
+</div></footer>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/viewer.js"></script>
+</body>
+</html>

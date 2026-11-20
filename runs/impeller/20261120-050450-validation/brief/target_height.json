@@ -1,0 +1,8 @@
+{
+ "x0": -44.0,
+ "y0": -44.0,
+ "res": 0.05,
+ "nx": 1760,
+ "ny": 1760,
+ "note": "Ht[i, j] = highest target surface at x = x0 + (j + 0.5) res, y = y0 + (i + 0.5) res; 0 where there is no part"
+}

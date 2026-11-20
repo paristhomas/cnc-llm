@@ -1,0 +1,14 @@
+{
+ "part": "impeller",
+ "part_dir": "/home/user/cnc-llm/parts/validation/impeller",
+ "part_sha256": "1b5cad0fff1972a5fa037c12f7ca57b8b351fd38e9795a5e74b15ae5a995d03c",
+ "created": "20261120-050450",
+ "label": "validation",
+ "harness": {
+  "sha256": "f4ff400f9db81bf7c3f46584bdf437325aade9b618420c187d0426dffd0663c9",
+  "git_head": "04d482b",
+  "harness_modified": false,
+  "modified_files": []
+ },
+ "model": "claude-opus-5-5 (Claude Code subagent)"
+}

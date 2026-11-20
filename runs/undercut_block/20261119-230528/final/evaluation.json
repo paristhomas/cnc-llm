@@ -23,8 +23,8 @@
  },
  "integrity": {
   "harness": {
-   "sha256": "4edac44f61fa11b107bad6835759fdcc44eaafee6c71bb6be4cbe7780868d435",
-   "git_head": "b94dba6",
+   "sha256": "f4ff400f9db81bf7c3f46584bdf437325aade9b618420c187d0426dffd0663c9",
+   "git_head": "04d482b",
    "harness_modified": false,
    "modified_files": []
   },

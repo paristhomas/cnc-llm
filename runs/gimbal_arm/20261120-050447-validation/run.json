@@ -1,0 +1,14 @@
+{
+ "part": "gimbal_arm",
+ "part_dir": "/home/user/cnc-llm/parts/validation/gimbal_arm",
+ "part_sha256": "ab7778a3e4c6a8af2f830a71d29586625208bc96e2dbda8c2a21b6c510893d08",
+ "created": "20261120-050447",
+ "label": "validation",
+ "harness": {
+  "sha256": "f4ff400f9db81bf7c3f46584bdf437325aade9b618420c187d0426dffd0663c9",
+  "git_head": "04d482b",
+  "harness_modified": false,
+  "modified_files": []
+ },
+ "model": "claude-opus-5-5 (Claude Code subagent)"
+}

@@ -53,36 +53,6 @@
   "area_mm2": 0.75,
   "points": 5,
   "bbox": [
-   5.17,
-   -16.5,
-   0.01,
-   7.04,
-   -14.95,
-   0.05
-  ],
-  "dev_mean": 5.0,
-  "dev_extreme": 5.0,
-  "surface": "wall (vertical)",
-  "faces": [
-   "face 22 (cylinder r3.2)"
-  ],
-  "last_cut_by_lines": [
-   379
-  ],
-  "nearest_passes": [
-   {
-    "line": 379,
-    "tool": 2,
-    "gap_mm": 0.0
-   }
-  ],
-  "id": 2
- },
- {
-  "type": "proud",
-  "area_mm2": 0.75,
-  "points": 5,
-  "bbox": [
    10.57,
    -6.44,
    21.65,
@@ -125,73 +95,7 @@
     "gap_mm": 0.0
    }
   ],
-  "id": 3
- },
- {
-  "type": "proud",
-  "area_mm2": 0.6,
-  "points": 4,
-  "bbox": [
-   32.11,
-   14.86,
-   0.02,
-   34.72,
-   15.42,
-   0.05
-  ],
-  "dev_mean": 5.0,
-  "dev_extreme": 5.0,
-  "surface": "wall (vertical)",
-  "faces": [
-   "face 25 (cylinder r3.2)"
-  ],
-  "last_cut_by_lines": [
-   455,
-   454
-  ],
-  "nearest_passes": [
-   {
-    "line": 455,
-    "tool": 2,
-    "gap_mm": 0.0
-   },
-   {
-    "line": 454,
-    "tool": 2,
-    "gap_mm": 0.0
-   }
-  ],
-  "id": 4
- },
- {
-  "type": "proud",
-  "area_mm2": 0.45,
-  "points": 3,
-  "bbox": [
-   8.01,
-   20.57,
-   0.02,
-   9.91,
-   21.2,
-   0.04
-  ],
-  "dev_mean": 5.0,
-  "dev_extreme": 5.0,
-  "surface": "wall (vertical)",
-  "faces": [
-   "face 24 (cylinder r3.2)"
-  ],
-  "last_cut_by_lines": [
-   493
-  ],
-  "nearest_passes": [
-   {
-    "line": 493,
-    "tool": 2,
-    "gap_mm": 0.0
-   }
-  ],
-  "id": 5
+  "id": 2
  },
  {
   "type": "proud",
@@ -240,7 +144,7 @@
     "gap_mm": 0.007
    }
   ],
-  "id": 6
+  "id": 3
  },
  {
   "type": "proud",
@@ -289,133 +193,19 @@
     "gap_mm": 0.0
    }
   ],
-  "id": 7
+  "id": 4
  },
  {
   "type": "proud",
-  "area_mm2": 0.45,
-  "points": 3,
+  "area_mm2": 0.3,
+  "points": 2,
   "bbox": [
-   36.16,
-   18.19,
-   0.0,
-   37.19,
-   20.36,
-   0.01
-  ],
-  "dev_mean": 5.0,
-  "dev_extreme": 5.0,
-  "surface": "wall (vertical)",
-  "faces": [
-   "face 25 (cylinder r3.2)"
-  ],
-  "last_cut_by_lines": [
-   455,
-   454,
-   456
-  ],
-  "nearest_passes": [
-   {
-    "line": 455,
-    "tool": 2,
-    "gap_mm": 0.0
-   },
-   {
-    "line": 454,
-    "tool": 2,
-    "gap_mm": 0.0
-   },
-   {
-    "line": 456,
-    "tool": 2,
-    "gap_mm": 0.0
-   }
-  ],
-  "id": 8
- },
- {
-  "type": "proud",
-  "area_mm2": 0.45,
-  "points": 3,
-  "bbox": [
-   37.07,
-   -18.89,
-   0.03,
-   37.15,
-   -17.45,
+   5.17,
+   -16.5,
+   0.04,
+   5.8,
+   -15.68,
    0.05
-  ],
-  "dev_mean": 5.0,
-  "dev_extreme": 5.0,
-  "surface": "wall (vertical)",
-  "faces": [
-   "face 23 (cylinder r3.2)"
-  ],
-  "last_cut_by_lines": [
-   416,
-   417,
-   418
-  ],
-  "nearest_passes": [
-   {
-    "line": 416,
-    "tool": 2,
-    "gap_mm": 0.0
-   },
-   {
-    "line": 417,
-    "tool": 2,
-    "gap_mm": 0.0
-   },
-   {
-    "line": 418,
-    "tool": 2,
-    "gap_mm": 0.0
-   }
-  ],
-  "id": 9
- },
- {
-  "type": "proud",
-  "area_mm2": 0.3,
-  "points": 2,
-  "bbox": [
-   4.81,
-   18.26,
-   0.01,
-   5.38,
-   19.84,
-   0.03
-  ],
-  "dev_mean": 5.0,
-  "dev_extreme": 5.0,
-  "surface": "wall (vertical)",
-  "faces": [
-   "face 24 (cylinder r3.2)"
-  ],
-  "last_cut_by_lines": [
-   493
-  ],
-  "nearest_passes": [
-   {
-    "line": 493,
-    "tool": 2,
-    "gap_mm": 0.0
-   }
-  ],
-  "id": 10
- },
- {
-  "type": "proud",
-  "area_mm2": 0.3,
-  "points": 2,
-  "bbox": [
-   6.94,
-   -21.05,
-   0.0,
-   7.02,
-   -21.02,
-   0.03
   ],
   "dev_mean": 5.0,
   "dev_extreme": 5.0,
@@ -433,7 +223,7 @@
     "gap_mm": 0.0
    }
   ],
-  "id": 11
+  "id": 5
  },
  {
   "type": "proud",
@@ -481,7 +271,7 @@
     "gap_mm": 0.022
    }
   ],
-  "id": 12
+  "id": 6
  },
  {
   "type": "proud",
@@ -529,7 +319,7 @@
     "gap_mm": 1.527
    }
   ],
-  "id": 13
+  "id": 7
  },
  {
   "type": "proud",
@@ -578,7 +368,7 @@
     "gap_mm": 0.0
    }
   ],
-  "id": 14
+  "id": 8
  },
  {
   "type": "proud",
@@ -627,7 +417,7 @@
     "gap_mm": 0.007
    }
   ],
-  "id": 15
+  "id": 9
  },
  {
   "type": "proud",
@@ -657,37 +447,67 @@
     "gap_mm": 0.0
    }
   ],
-  "id": 16
+  "id": 10
  },
  {
   "type": "proud",
   "area_mm2": 0.15,
   "points": 1,
   "bbox": [
-   9.85,
-   -15.39,
-   0.02,
-   9.85,
-   -15.39,
-   0.02
+   8.01,
+   21.2,
+   0.04,
+   8.01,
+   21.2,
+   0.04
   ],
   "dev_mean": 5.0,
   "dev_extreme": 5.0,
   "surface": "wall (vertical)",
   "faces": [
-   "face 22 (cylinder r3.2)"
+   "face 24 (cylinder r3.2)"
   ],
   "last_cut_by_lines": [
-   379
+   493
   ],
   "nearest_passes": [
    {
-    "line": 379,
+    "line": 493,
     "tool": 2,
     "gap_mm": 0.0
    }
   ],
-  "id": 17
+  "id": 11
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   9.91,
+   20.57,
+   0.04,
+   9.91,
+   20.57,
+   0.04
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 24 (cylinder r3.2)"
+  ],
+  "last_cut_by_lines": [
+   493
+  ],
+  "nearest_passes": [
+   {
+    "line": 493,
+    "tool": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 12
  },
  {
   "type": "proud",
@@ -735,7 +555,7 @@
     "gap_mm": 0.006
    }
   ],
-  "id": 18
+  "id": 13
  },
  {
   "type": "proud",
@@ -783,55 +603,7 @@
     "gap_mm": 1.356
    }
   ],
-  "id": 19
- },
- {
-  "type": "proud",
-  "area_mm2": 0.15,
-  "points": 1,
-  "bbox": [
-   32.77,
-   6.01,
-   15.0,
-   32.77,
-   6.01,
-   15.0
-  ],
-  "dev_mean": 5.0,
-  "dev_extreme": 5.0,
-  "surface": "floor/top (faces up)",
-  "faces": [
-   "face 9 (plane z15)"
-  ],
-  "last_cut_by_lines": [
-   516,
-   517,
-   224,
-   225
-  ],
-  "nearest_passes": [
-   {
-    "line": 516,
-    "tool": 3,
-    "gap_mm": 0.175
-   },
-   {
-    "line": 517,
-    "tool": 3,
-    "gap_mm": 0.175
-   },
-   {
-    "line": 224,
-    "tool": 1,
-    "gap_mm": 1.618
-   },
-   {
-    "line": 225,
-    "tool": 1,
-    "gap_mm": 1.618
-   }
-  ],
-  "id": 20
+  "id": 14
  },
  {
   "type": "proud",
@@ -861,55 +633,7 @@
     "gap_mm": 0.0
    }
   ],
-  "id": 21
- },
- {
-  "type": "proud",
-  "area_mm2": 0.15,
-  "points": 1,
-  "bbox": [
-   33.59,
-   -6.79,
-   27.55,
-   33.59,
-   -6.79,
-   27.55
-  ],
-  "dev_mean": 0.107,
-  "dev_extreme": 0.107,
-  "surface": "wall (vertical)",
-  "faces": [
-   "face 35 (bspline)"
-  ],
-  "last_cut_by_lines": [
-   1489,
-   1488,
-   1494,
-   1493
-  ],
-  "nearest_passes": [
-   {
-    "line": 1489,
-    "tool": 8,
-    "gap_mm": 0.0
-   },
-   {
-    "line": 1488,
-    "tool": 8,
-    "gap_mm": 0.0
-   },
-   {
-    "line": 1494,
-    "tool": 8,
-    "gap_mm": 0.0
-   },
-   {
-    "line": 1493,
-    "tool": 8,
-    "gap_mm": 0.0
-   }
-  ],
-  "id": 22
+  "id": 15
  },
  {
   "type": "proud",
@@ -957,55 +681,133 @@
     "gap_mm": 1.452
    }
   ],
-  "id": 23
+  "id": 16
  },
  {
   "type": "proud",
   "area_mm2": 0.15,
   "points": 1,
   "bbox": [
-   33.28,
-   6.17,
-   21.73,
-   33.28,
-   6.17,
-   21.73
+   32.77,
+   6.01,
+   15.0,
+   32.77,
+   6.01,
+   15.0
   ],
-  "dev_mean": 0.209,
-  "dev_extreme": 0.209,
-  "surface": "wall (vertical)",
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "surface": "floor/top (faces up)",
   "faces": [
-   "face 33 (bspline)"
+   "face 9 (plane z15)"
   ],
   "last_cut_by_lines": [
-   1416,
-   1415,
-   1421,
-   1420
+   516,
+   517,
+   224,
+   225
   ],
   "nearest_passes": [
    {
-    "line": 1416,
-    "tool": 8,
-    "gap_mm": 0.019
+    "line": 516,
+    "tool": 3,
+    "gap_mm": 0.175
    },
    {
-    "line": 1415,
-    "tool": 8,
-    "gap_mm": 0.019
+    "line": 517,
+    "tool": 3,
+    "gap_mm": 0.175
    },
    {
-    "line": 1421,
-    "tool": 8,
-    "gap_mm": 0.043
+    "line": 224,
+    "tool": 1,
+    "gap_mm": 1.618
    },
    {
-    "line": 1420,
-    "tool": 8,
-    "gap_mm": 0.043
+    "line": 225,
+    "tool": 1,
+    "gap_mm": 1.618
    }
   ],
-  "id": 24
+  "id": 17
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   32.11,
+   15.42,
+   0.05,
+   32.11,
+   15.42,
+   0.05
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 25 (cylinder r3.2)"
+  ],
+  "last_cut_by_lines": [
+   455
+  ],
+  "nearest_passes": [
+   {
+    "line": 455,
+    "tool": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 18
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   33.59,
+   -6.79,
+   27.55,
+   33.59,
+   -6.79,
+   27.55
+  ],
+  "dev_mean": 0.107,
+  "dev_extreme": 0.107,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 35 (bspline)"
+  ],
+  "last_cut_by_lines": [
+   1489,
+   1488,
+   1494,
+   1493
+  ],
+  "nearest_passes": [
+   {
+    "line": 1489,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 1488,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 1494,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 1493,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 19
  },
  {
   "type": "proud",
@@ -1053,19 +855,103 @@
     "gap_mm": 0.054
    }
   ],
-  "id": 25
+  "id": 20
  },
  {
   "type": "proud",
   "area_mm2": 0.15,
   "points": 1,
   "bbox": [
-   35.32,
-   -15.09,
-   0.02,
-   35.32,
-   -15.09,
-   0.02
+   33.28,
+   6.17,
+   21.73,
+   33.28,
+   6.17,
+   21.73
+  ],
+  "dev_mean": 0.209,
+  "dev_extreme": 0.209,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 33 (bspline)"
+  ],
+  "last_cut_by_lines": [
+   1416,
+   1415,
+   1421,
+   1420
+  ],
+  "nearest_passes": [
+   {
+    "line": 1416,
+    "tool": 8,
+    "gap_mm": 0.019
+   },
+   {
+    "line": 1415,
+    "tool": 8,
+    "gap_mm": 0.019
+   },
+   {
+    "line": 1421,
+    "tool": 8,
+    "gap_mm": 0.043
+   },
+   {
+    "line": 1420,
+    "tool": 8,
+    "gap_mm": 0.043
+   }
+  ],
+  "id": 21
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   34.59,
+   14.86,
+   0.05,
+   34.59,
+   14.86,
+   0.05
+  ],
+  "dev_mean": 5.0,
+  "dev_extreme": 5.0,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 25 (cylinder r3.2)"
+  ],
+  "last_cut_by_lines": [
+   455,
+   454
+  ],
+  "nearest_passes": [
+   {
+    "line": 455,
+    "tool": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 454,
+    "tool": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 22
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.15,
+  "points": 1,
+  "bbox": [
+   37.15,
+   -18.59,
+   0.05,
+   37.15,
+   -18.59,
+   0.05
   ],
   "dev_mean": 5.0,
   "dev_extreme": 5.0,
@@ -1074,15 +960,21 @@
    "face 23 (cylinder r3.2)"
   ],
   "last_cut_by_lines": [
+   416,
    417
   ],
   "nearest_passes": [
+   {
+    "line": 416,
+    "tool": 2,
+    "gap_mm": 0.0
+   },
    {
     "line": 417,
     "tool": 2,
     "gap_mm": 0.0
    }
   ],
-  "id": 26
+  "id": 23
  }
 ]

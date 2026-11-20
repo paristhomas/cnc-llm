@@ -31,7 +31,8 @@
       <div class="score-num">100.000<span>%</span></div>
       <div class="score-label">of the machinable surface within ±0.1 mm</div>
       <div class="meter" aria-hidden="true"><i style="width:100.00%"></i></div>
-      <div class="chips"><span class="chip warn" title="harness sha256 4edac44f61fa…, git b94dba6, uncommitted harness changes: no, unchanged since run start: no, part unchanged: yes"><b aria-hidden="true">!</b> Harness changed · git b94dba6</span><span class="chip good" title="300000 query points, 0 disagree beyond 2 µm"><b aria-hidden="true">✓</b> MillBill cross-check 100.000%</span></div>
+      <div class="chips"><span class="chip warn" title="harness sha256 4edac44f61fa…, git b94dba6, uncommitted harness changes: no, unchanged since run start: no, part unchanged: yes"><b aria-hidden="true">!</b> Harness changed since run start · git b94dba6</span><span class="chip good" title="300000 query points, 0 disagree beyond 2 µm"><b aria-hidden="true">✓</b> MillBill cross-check 100.000%</span></div>
+      <p class="int-note">Integrity note: the harness code changed between the start of the run and the final evaluation. The final score was re-computed by the current harness in a fresh process, so it is consistent; a change is expected while the harness is being developed. Hashes are in the footer.</p>
     </div>
   </div>
   <div class="wrap"><p class="verdict">The program is <strong>valid</strong> (no crash, collision or overload detected). 100.000% of the machinable surface is within ±0.1 mm; 0.00% is gouged (max 0.00 mm deep) and 0.00% is proud. Largest gouge: <button class="region-btn inline" data-region="1">R1</button> 0.15 mm² on a wall (vertical) (worst -5.00 mm).</p></div>
@@ -89,7 +90,7 @@
         <dt>cycle</dt><dd>14.4 min</dd>
         <dt>lines / moves</dt><dd>11098 / 15192</dd>
       </dl>
-      <a class="thumb" href="iter/03/deviation_top.png" target="_blank"><img loading="lazy" src="iter/03/deviation_top.png" alt="Deviation map, iteration 3"></a>
+      <a class="thumb" href="iter/03/deviation_top.png" target="_blank"><img src="iter/03/deviation_top.png" alt="Deviation map, iteration 3"></a>
     </div>
     <div class="notes"><p>Roughing: fixed the air-move test (tool at/above the previous-pass material top of this and the neighbouring raster lines within +-5 mm) so riding over already-cleared areas runs at F5000; toolpath geometry unchanged.</p></div>
   </div>
@@ -109,7 +110,7 @@
         <dt>cycle</dt><dd>15.1 min</dd>
         <dt>lines / moves</dt><dd>11052 / 15146</dd>
       </dl>
-      <a class="thumb" href="iter/02/deviation_top.png" target="_blank"><img loading="lazy" src="iter/02/deviation_top.png" alt="Deviation map, iteration 2"></a>
+      <a class="thumb" href="iter/02/deviation_top.png" target="_blank"><img src="iter/02/deviation_top.png" alt="Deviation map, iteration 2"></a>
     </div>
     <div class="notes"><p>Crown: extended ball Y-lines outboard on the low side of each fin by 3*sin(slope)+0.1 so the ball contact reaches the fin edge (iter 1 left +0.2-0.33 on the outer edges of the end fins and fins +-18). Roughing: feed F5000 where the raster rides over already-cleared air (cycle time).</p></div>
   </div>
@@ -129,7 +130,7 @@
         <dt>cycle</dt><dd>14.5 min</dd>
         <dt>lines / moves</dt><dd>11016 / 15110</dd>
       </dl>
-      <a class="thumb" href="iter/01/deviation_top.png" target="_blank"><img loading="lazy" src="iter/01/deviation_top.png" alt="Deviation map, iteration 1"></a>
+      <a class="thumb" href="iter/01/deviation_top.png" target="_blank"><img src="iter/01/deviation_top.png" alt="Deviation map, iteration 1"></a>
     </div>
     <div class="notes"><p>First attempt: T1 z-level Y-raster roughing (dropped cutter, 0.3 allowance, ramped re-entries), T1 floor rings at Z6, T2 gap slots + walls to size, T6 ball fillets (centre on fillet centre, 0.03 off the walls) and crown Y-lines, T3 helical holes, T1 outer profile at Z-0.2.</p></div>
   </div>
@@ -147,7 +148,7 @@
 </section>
 <section id="images">
   <div class="sec-head"><h2>Images</h2></div>
-  <div class="gallery"><figure><a href="img/deviation_top.png" target="_blank"><img loading="lazy" src="img/deviation_top.png" alt="Surface deviation (top view)"></a><figcaption>Surface deviation (top view)</figcaption></figure><figure><a href="img/height_error_top.png" target="_blank"><img loading="lazy" src="img/height_error_top.png" alt="Height error (top view)"></a><figcaption>Height error (top view)</figcaption></figure><figure><a href="img/machined_top.png" target="_blank"><img loading="lazy" src="img/machined_top.png" alt="Machined height map"></a><figcaption>Machined height map</figcaption></figure><figure><a href="img/section_x.png" target="_blank"><img loading="lazy" src="img/section_x.png" alt="Section along X"></a><figcaption>Section along X</figcaption></figure><figure><a href="img/section_y.png" target="_blank"><img loading="lazy" src="img/section_y.png" alt="Section along Y"></a><figcaption>Section along Y</figcaption></figure><figure><a href="img/target_iso.png" target="_blank"><img loading="lazy" src="img/target_iso.png" alt="Target part (iso)"></a><figcaption>Target part (iso)</figcaption></figure><figure><a href="img/target_top.png" target="_blank"><img loading="lazy" src="img/target_top.png" alt="Target part (top)"></a><figcaption>Target part (top)</figcaption></figure></div>
+  <div class="gallery"><figure><a href="img/deviation_top.png" target="_blank"><img src="img/deviation_top.png" alt="Surface deviation (top view)"></a><figcaption>Surface deviation (top view)</figcaption></figure><figure><a href="img/height_error_top.png" target="_blank"><img src="img/height_error_top.png" alt="Height error (top view)"></a><figcaption>Height error (top view)</figcaption></figure><figure><a href="img/machined_top.png" target="_blank"><img src="img/machined_top.png" alt="Machined height map"></a><figcaption>Machined height map</figcaption></figure><figure><a href="img/section_x.png" target="_blank"><img src="img/section_x.png" alt="Section along X"></a><figcaption>Section along X</figcaption></figure><figure><a href="img/section_y.png" target="_blank"><img src="img/section_y.png" alt="Section along Y"></a><figcaption>Section along Y</figcaption></figure><figure><a href="img/target_iso.png" target="_blank"><img src="img/target_iso.png" alt="Target part (iso)"></a><figcaption>Target part (iso)</figcaption></figure><figure><a href="img/target_top.png" target="_blank"><img src="img/target_top.png" alt="Target part (top)"></a><figcaption>Target part (top)</figcaption></figure></div>
 </section>
 <section id="gcode">
   <div class="sec-head"><h2>G-code</h2><p class="sub">The full listing is in the simulation panel above (search and click to jump).</p></div>
@@ -159,7 +160,7 @@
 </main>
 <footer class="foot"><div class="wrap">
   <span>Harness sha256 <code>4edac44f61fa11b1</code> · git <code>b94dba6</code></span>
-  <span>Part 99fbaf59b104 · generated 2026-11-19 23:15</span>
+  <span>Part 99fbaf59b104 · generated 2026-11-20 05:05</span>
 </div></footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="assets/data.js"></script>
