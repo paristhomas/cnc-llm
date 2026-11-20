@@ -40,6 +40,7 @@ Acceptance (`docs/ACCEPTANCE_3PLUS2.md`):
    - vise and crash messages name the box and the tool part, and give G54 locations.
 
 ## Known gaps / next
+- **Superseded by `docs/BRIEF_REFINE_3PLUS2.md` (new owner rules: no unreachable exclusion; Machine view).**
 - Run CTC-04 (×0.2) as held-out validation with the frozen skill, about 300k tokens.
 - Machinist feedback for the skill:
   - more and larger tabs;
