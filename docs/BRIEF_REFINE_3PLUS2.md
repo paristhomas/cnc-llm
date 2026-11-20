@@ -197,6 +197,28 @@ only to close loopholes, never to loosen. Record each such change in the accepta
 
 If ≥ 95 % turns out impossible, report the real number and the reach audit. Do not shrink the scored surface.
 
+## 6a. What "great" means (the bar to aim for, not just pass)
+§6 is the minimum to claim success. The owner wants **great**: a result they would happily show a friend, and a
+machinist would run without edits. Judge each column on evidence, not on what you say about it.
+
+| | Not acceptable | Good (minimum, §6) | **Great (the goal)** |
+|---|---|---|---|
+| FTC-10 whole-surface in ±0.1 mm | < 95 %, or any exclusion beyond tabs and the edge band | ≥ 95 % | **≥ 98 %, with every feature (each hole, pocket, slot, boss, chamfer, underside) finished; no feature left proud as a whole** |
+| Gouges | any region > 1 mm² | none > 1 mm² | **no gouge region at all beyond 0.02 mm deep** |
+| What the operator does | saws webs, or files faces | snaps 2–4 tabs | **snaps 2–4 tabs (each ≤ 3 mm wide) and files them flush in under 5 minutes; witness ≤ 0.5 %** |
+| Machinist verdict | "do not run" | "run with minor edits" | **"run as is"**: feeds at library chip load, sensible stick-outs, no air-cutting passes > 10 % of cycle time, safe indexing |
+| Cycle time | not reported | reported | **≤ run 2's 86 min, or longer with a stated reason (for example, the extra underside finishing)** |
+| Held-out CTC-04 ×0.2 (frozen skill, first attempt) | not run | run and reported | **≥ 95 % whole surface and VALID**: shows that the skill generalises, not just that FTC-10 was tuned |
+| Machine view | the tool still tilts; the table doesn't move | A/C visibly move the table | **A non-machinist who watches for 60 s, without explanation, can say "the table tilts and spins the part so the vertical tool can reach each side".** Smooth swings, readable DRO, a "play whole job" button at a sensible speed, loads in < 5 s, usable on a phone |
+| Final result view | failed area hidden or called "unreachable" | honest colours | **one glance shows: green part, tabs marked, and every red/blue spot clickable to its region, the G-code line and the reason** |
+| Honesty | headline differs from the whole-surface number | headline = whole-surface number | **the critical reviewer (§5) tries every attack and finds no FAIL; every number in the report reproduces from `metrics.json` by its own recomputation** |
+
+How to use this table:
+- If time or usage runs short, trade in this order: keep **Honesty** and **Validity** absolute; then the FTC-10 score; then
+  Machine view; then the machinist "run as is"; then CTC-04; then cycle time.
+- Never trade honesty for a bigger number.
+- The final handoff states which column each row reached, with evidence.
+
 ## 7. Constraints
 - Open-source tools only.
 - Use subagents to protect your context. Size each one to its job.
