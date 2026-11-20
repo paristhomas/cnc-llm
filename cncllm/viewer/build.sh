@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Rebuild the committed viewer bundle (cncllm/viewer/dist/viewer.js) from src/.
+# Rebuild the committed viewer bundles (cncllm/viewer/dist/viewer.js, 3+2: dist/viewer5.js) from src/.
 # three.js and esbuild are installed into a cache dir OUTSIDE the package (the package's .js files are part of the
 # harness fingerprint, node_modules must not be):  VIEWER_BUILD_DIR (default ~/.cache/cncllm-viewer-build).
 set -euo pipefail
@@ -16,5 +16,9 @@ ESB="$WORK/node_modules/.bin/esbuild"
 # 2) page bundle: three + OrbitControls + RoomEnvironment + viewer, one classic script
 "$ESB" "$HERE/src/main.js" --bundle --format=iife --minify --target=es2020 --loader:.txt=text \
   --legal-comments=eof --outfile="$HERE/dist/viewer.js" --log-level=warning
+# 3) 3+2 report: its own worker + page bundle (dist/worker5.txt, dist/viewer5.js)
+"$ESB" "$HERE/src/worker5.js" --bundle --format=iife --minify --target=es2020 --outfile="$HERE/dist/worker5.txt" --log-level=warning
+"$ESB" "$HERE/src/main5.js" --bundle --format=iife --minify --target=es2020 --loader:.txt=text \
+  --legal-comments=eof --outfile="$HERE/dist/viewer5.js" --log-level=warning
 cp "$WORK/node_modules/three/LICENSE" "$HERE/dist/THREE_LICENSE"
 ls -l "$HERE/dist"
