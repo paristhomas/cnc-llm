@@ -124,6 +124,11 @@ Start after the usage limit resets.
 ## Parts found and committed: NIST MBE PMI test models (public domain)
 11 STEP models are in `parts/incoming/nist/`; see its README for the assessment.
 
+**Decision (user, 2026-11-20):**
+- **ftc_10 is the main showcase part.** It is machined at native size, and its report is the one the user will
+  demo.
+- Scaling the large models is accepted.
+
 Proposed set (3+2 from aluminium billet, scaled to fit a desktop 5-axis machine of about 200 mm):
 - **development:** ftc_10 (native size), ftc_06 (×0.5), ftc_08 (×0.5), ctc_01 (×0.15)
 - **validation (held out):** ctc_04 (×0.2), plus the Autodesk Fusion 3+2 tutorial part if the user downloads it
