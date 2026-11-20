@@ -348,15 +348,15 @@ class Setup:
     def mintip(self, T, Sc=None):
         Sc = self.Sc if Sc is None else Sc
         R, Rh, L = T['R'], T['Rh'], T['L']
-        A = np.maximum(disc_max(Sc, (Rh + 0.6) / GC) - L + 0.6, disc_max(self.Vc, (Rh + 2.5) / GC) - L + 2.5)
-        B = disc_max(self.Vc, (R + 2.5) / GC) + 2.5
+        A = np.maximum(disc_max(Sc, (Rh + 0.6) / GC) - L + 0.6, disc_max(self.Vc, (Rh + 5.0) / GC) - L + 5.0)
+        B = disc_max(self.Vc, (R + 5.0) / GC) + 5.0
         return np.maximum(A, B)
 
     def clearance(self, T):
         R, Rh, L = T['R'], T['Rh'], T['L']
-        a = disc_max(self.Sc, (R + 1.0) / GC) + 1.0
-        b = np.maximum(disc_max(self.Sc, (Rh + 1.0) / GC) - L + 1.0, disc_max(self.Vc, (Rh + 2.5) / GC) - L + 2.5)
-        c = disc_max(self.Vc, (R + 2.5) / GC) + 2.5
+        a = disc_max(self.Sc, (R + 1.5) / GC) + 1.5
+        b = np.maximum(disc_max(self.Sc, (Rh + 1.0) / GC) - L + 1.0, disc_max(self.Vc, (Rh + 5.0) / GC) - L + 5.0)
+        c = disc_max(self.Vc, (R + 5.0) / GC) + 5.0
         self.Zclr = np.maximum(np.maximum(a, b), c)
 
     def record(self, pts):

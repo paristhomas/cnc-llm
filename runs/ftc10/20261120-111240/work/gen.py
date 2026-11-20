@@ -184,3 +184,13 @@ for fr in (FR_PX, FR_MX):
 
 open(f'{RUN}/work/program.nc', 'w').write(W.finish())
 log('written', len(W.L), 'lines')
+
+def remaining(lo, hi):
+    st = job.stock
+    a = np.floor((np.array(lo) - st.lo) / 0.5).astype(int); b = np.ceil((np.array(hi) - st.lo) / 0.5).astype(int)
+    sub = st.v[a[0]:b[0], a[1]:b[1], a[2]:b[2]]
+    return int(sub.sum()), sub.size
+for nm, lo, hi in [('access zone', [-36, -60, -9], [36, 60, -1]), ('pocket', [-20, -50, 15], [20, 15, 30]),
+                   ('channels+Y', [7, 25, 1], [17, 60, 7]), ('under +Y flange', [-30, 64, -9], [30, 78, 21]),
+                   ('under -Y flange', [-30, -78, -9], [30, -64, 21])]:
+    log('remaining voxels', nm, remaining(lo, hi))

@@ -54,5 +54,33 @@
   },
   "lines": 56900,
   "moves": 135282
+ },
+ {
+  "iter": 3,
+  "time": "2026-11-20T11:56:40",
+  "metrics": {
+   "machinable_in_tol_pct": 85.72,
+   "machinable_gouge_pct": 0.0,
+   "machinable_proud_pct": 14.28,
+   "all_in_tol_pct": 82.564,
+   "unreachable_area_pct": 3.683,
+   "unreachable_in_tol_pct": 0.022,
+   "max_gouge_mm": 0.0165,
+   "any_gouge_pct": 0.0,
+   "parting_face_pct": 0.681,
+   "edge_band_excluded_pct": 0.845,
+   "surface_area_mm2": 47792.4,
+   "probes": 246093,
+   "tolerance_mm": 0.1,
+   "cycle_time_min": 122.16,
+   "setups": 6,
+   "distinct_orientations": 4,
+   "final_connection_mm2": 30.0,
+   "errors": 4,
+   "warnings": 0,
+   "valid": false
+  },
+  "lines": 58897,
+  "moves": 137285
  }
 ]

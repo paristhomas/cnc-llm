@@ -123,7 +123,7 @@ def level_masks(S, T, z, allow, ap, Hc=None):
     obst = Hc > z + 1e-4
     d = ndimage.distance_transform_edt(~obst) * GC
     mt = S.mintip(T)
-    apok = disc_max(S.Sc, (R - 0.1) / GC) <= z + ap + 0.05
+    apok = disc_max(S.Sc, (R - 0.6) / GC) <= z + ap + 0.05
     need = ndimage.distance_transform_edt(~(S.Sc > z + 0.05)) * GC <= R + 0.1
     f = d - R - allow - GC / 2
     ok = (mt <= z) & apok
