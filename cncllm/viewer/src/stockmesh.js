@@ -1,7 +1,7 @@
 // Solid stock rendered from a height field: top surface (one vertex per cell centre inside the stock), side skirts
 // down to Z0 and a bottom face. Only rows touched since the last update are re-uploaded.
 import * as THREE from 'three';
-import { ALU, ALU_RAW, THROUGH, devColor, hexRgb } from './colors.js';
+import { ALU, ALU_RAW, THROUGH, WALL, devColor, hexRgb } from './colors.js';
 
 // vertex colours are linear in three.js: author in sRGB, convert through a LUT (output is 8-bit anyway)
 const LUT = new Uint8Array(256);
@@ -115,20 +115,22 @@ export class StockMesh {
         let r, g, bl;
         if (h <= 0.003) { [r, g, bl] = THROUGH; }
         else if (mode === 'error' && Ht) {
-          let e = h - Ht[gi + j];
-          if (e > tol || e < -tol) {
-            // allow one cell of lateral misregistration at steep walls (the target top is resampled to the grid):
-            // take the neighbouring target height that explains this cell best
-            const gk = gi + j, ii = i, jj = this.jA + j;
-            for (let di = -1; di <= 1; di++) {
-              if (ii + di < 0 || ii + di >= this.g.ny) continue;
-              for (let dj = -1; dj <= 1; dj++) {
-                if (jj + dj < 0 || jj + dj >= nx) continue;
-                const e2 = h - Ht[gk + di * nx + dj];
-                if (Math.abs(e2) < Math.abs(e)) e = e2;
-              }
+          // a top-down height difference is meaningless on steep walls: if the target or the machined surface
+          // steps by more than 2 cells' worth between neighbours, the cell is a wall -> neutral, judged in the
+          // deviation view instead
+          const gk = gi + j, ii = i, jj = this.jA + j, step = 2 * this.g.res;
+          let wall = false;
+          const ht = Ht[gk];
+          for (let di = -1; di <= 1 && !wall; di++) {
+            if (ii + di < 0 || ii + di >= this.g.ny) continue;
+            for (let dj = -1; dj <= 1; dj++) {
+              if (jj + dj < 0 || jj + dj >= nx) continue;
+              const k2 = gk + di * nx + dj;
+              if (Math.abs(Ht[k2] - ht) > step || Math.abs(H[k2] - h) > step) { wall = true; break; }
             }
           }
+          const e = h - ht;
+          if (wall) { [r, g, bl] = WALL; } else
           [r, g, bl] = devColor(e, tol);
         } else if (mode === 'tool' && own && own[gi + j]) {
           const t = own[gi + j] * 3; r = trgb[t]; g = trgb[t + 1]; bl = trgb[t + 2];

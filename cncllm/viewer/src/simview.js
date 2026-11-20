@@ -168,7 +168,7 @@ export class SimView {
   // ------------------------------------------------------------------ frame
   frame() {
     const now = performance.now();
-    const dt = Math.min(now - this.lastT, 100) / 1000;
+    const dt = Math.min(now - this.lastT, 250) / 1000;
     this.lastT = now;
     if (this.playing) {
       this.playTime += dt * this.speed;
@@ -195,7 +195,7 @@ export class SimView {
       this.toolObj.userData.spin.rotation.z -= dt * 30;
       changed = true;
     }
-    if (now - this.uiT > (this.playing ? 90 : 30)) { this.uiT = now; this.updateUI(pos); }
+    if (now - this.uiT > (this.playing ? 90 : 30)) { this.uiT = now; this.updateUI(this.cursor); }
     return changed || this.playing || !caught;
   }
   timeToCursor(t) {
@@ -219,11 +219,17 @@ export class SimView {
   placeTool(pos) {
     const n = this.n;
     if (!n) return;
-    const m = Math.min(Math.floor(pos), n - 1), f = pos >= n ? 1 : pos - m;
+    const m = this.moveAt(pos), f = Math.min(Math.max(pos - m, 0), 1);
     this.updateTool(m);
     if (!this.toolObj) return;
     this.pointAt(m, f, this.toolObj.position);
     this.spinning = ((this.D.TL[m] >> 6) & 1) === 1;
+    // park: hide the tool once the program has finished so it does not hide the part
+    this.toolObj.visible = this.showTool !== false && pos < n;
+  }
+  // the move the tool is on (fractional position) or has just finished (integer position); -> its G-code line is "current"
+  moveAt(pos) {
+    return Math.max(0, Math.min(Math.ceil(pos) - 1, this.n - 1));
   }
   updateTool(m) {
     const t = this.n ? this.D.TL[Math.min(m, this.n - 1)] & 31 : 0;
@@ -282,7 +288,7 @@ export class SimView {
     q('.pathmode').value = n > 3000 ? 'recent' : 'all';
     this.setPathMode(q('.pathmode').value);
     q('.rapids').onchange = (e) => { this.path.material.uniforms.uRapids.value = e.target.checked ? 1 : 0; this.stage.invalidate(); };
-    q('.ghost').onchange = (e) => { this.ghost.visible = e.target.checked; this.stage.invalidate(); };
+    q('.ghost').onchange = (e) => { this.ghost.visible = e.target.checked; this.legGhost.hidden = !e.target.checked; this.stage.invalidate(); };
     q('.showtool').onchange = (e) => { this.showTool = e.target.checked; if (this.toolObj) this.toolObj.visible = this.showTool; this.stage.invalidate(); };
     els.controls.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => this.stage.view(b.dataset.view)));
     // marks on the scrubber: tool changes and error moves
@@ -310,8 +316,9 @@ export class SimView {
     const leg = document.createElement('div');
     leg.className = 'vp-legend';
     leg.innerHTML = D.toolsUsed.map((t) => `<span><i style="background:${this.toolColor(t)}"></i>T${t}</span>`).join('') +
-      `<span><i class="dash" style="--c:${RAPID}"></i>rapid</span><span class="muted-l">faint = not yet cut</span>`;
+      `<span><i class="dash" style="--c:${RAPID}"></i>rapid</span><span class="muted-l">faint = still to run</span><span class="lg-ghost" hidden><i style="background:#2f8cff"></i>target part (overlay)</span>`;
     els.view.appendChild(leg);
+    this.legGhost = leg.querySelector('.lg-ghost');
     // side panel: current block, tool, listing
     els.side.innerHTML = `
       <div class="cur-block"><div class="cb-head"><span class="cb-label">Current block</span><span class="cb-line mono"></span></div><div class="cb-code mono"></div>
@@ -361,8 +368,8 @@ export class SimView {
     const m = fm[L];
     this.playing = false; this.syncPlay();
     if (m >= 0 && m < this.n) this.setCursor(m + 1);
-    this.list.setCurrent(l, true);
-    this.forcedLine = l;
+    this.list.setCurrent(m >= 0 && m < this.n ? this.D.line[m] : l, true);
+    this.uiT = 0;
     if (scroll) this.els.view.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
   rpmAt(m) {
@@ -377,16 +384,12 @@ export class SimView {
     if (document.activeElement !== this.scrub) this.scrub.value = this.cursor;
     this.timeEl.textContent = `${fmtTime(this.cursorToTime(this.cursor))} / ${fmtTime(this.total)}`;
     if (!n) return;
-    const m = Math.min(Math.floor(pos), n - 1);
-    const line = D.line[m];
-    if (this.forcedLine && line !== this.forcedLine && Math.abs(pos - this.cursor) < 1e-9 && !this.playing) {
-      // keep the explicitly picked line highlighted until playback moves on
-    } else this.forcedLine = 0;
-    const showLine = this.forcedLine || line;
+    const m = this.moveAt(pos);
+    const showLine = D.line[m];
     this.list.setCurrent(showLine);
     const t = D.TL[m] & 31, rapid = (D.TL[m] >> 5) & 1, spin = (D.TL[m] >> 6) & 1;
     const td = D.meta.tools[t];
-    const p = this.toolObj ? this.toolObj.position : new THREE.Vector3();
+    const p = this.pointAt(m, Math.min(Math.max(pos - m, 0), 1), new THREE.Vector3());
     this.cb.line.textContent = `line ${showLine}`;
     this.cb.code.textContent = this.list.line(showLine) || ' ';
     this.cb.tool.textContent = td ? `T${t} · ${td.name}` : 'none';
@@ -419,14 +422,14 @@ export function buildGhost(D) {
   g.setIndex(new THREE.BufferAttribute(D.meshF, 1));
   g.computeVertexNormals();
   const grp = new THREE.Group();
-  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x5aa8ff, transparent: true, opacity: 0.22, depthWrite: false, metalness: 0, roughness: 0.6, side: THREE.DoubleSide }));
+  const m = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ color: 0x2f8cff, emissive: 0x0d3c80, transparent: true, opacity: 0.38, depthWrite: false, metalness: 0, roughness: 0.6, side: THREE.DoubleSide, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 }));
   m.renderOrder = 3;
   let eg;
   if (D.meshEdges && D.meshEdges.length) {
     eg = new THREE.BufferGeometry();
     eg.setAttribute('position', new THREE.BufferAttribute(D.meshEdges, 3));
   } else eg = new THREE.EdgesGeometry(g, 28);
-  const e = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x2b7de9, transparent: true, opacity: 0.75, depthWrite: false }));
+  const e = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x0a4fc2, transparent: true, opacity: 1.0, depthWrite: false, depthTest: false }));
   e.renderOrder = 4;
   grp.add(m, e);
   return grp;

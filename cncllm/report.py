@@ -405,30 +405,24 @@ def _fmt(v, nd=2):
     return str(v)
 
 
-def _history_svg(hist: list, final_iter) -> str:
-    """Score / gouge / proud per iteration on one 0-100 % axis. x positions are in % and y in px (no viewBox), so the
-    text keeps its real size at any width; y tick labels are HTML."""
-    if not hist:
-        return '<p class="muted">No iterations.</p>'
-    H, T, B = 240, 18, 30
+def _line_chart(hist, series, lo, hi, ticks, label, H=220, final_iter=None, direct_key=None, fmt="{:.2f}%"):
+    """Line chart, x positions in % and y in px (no viewBox), so text keeps its real size at any width."""
+    T, B = 20, 28
     n = len(hist)
-    xs = [(4 + 92 * i / (n - 1)) if n > 1 else 50.0 for i in range(n)]
+    xs = [(8 + 84 * i / (n - 1)) if n > 1 else 50.0 for i in range(n)]
 
     def y(v):
-        return T + (H - T - B) * (1 - max(0.0, min(100.0, float(v))) / 100)
+        return T + (H - T - B) * (1 - (min(max(float(v), lo), hi) - lo) / max(hi - lo, 1e-9))
 
-    series = [("Score (in tolerance)", "machinable_in_tol_pct", "var(--ink)"),
-              ("Gouge", "machinable_gouge_pct", "var(--s-gouge)"),
-              ("Proud", "machinable_proud_pct", "var(--s-proud)")]
-    p = [f'<svg class="chart" width="100%" height="{H}" role="img" aria-label="Score, gouge and proud percentage per iteration">']
+    p = [f'<svg class="chart" width="100%" height="{H}" role="img" aria-label="{_esc(label)}">']
     ylab = []
-    for g in (0, 25, 50, 75, 100):
+    for g in ticks:
         p.append(f'<line class="grid" x1="0" x2="100%" y1="{y(g):.1f}" y2="{y(g):.1f}"/>')
-        ylab.append(f'<span style="top:{y(g) - 8:.1f}px">{g}%</span>')
+        ylab.append(f'<span style="top:{y(g) - 8:.1f}px">{fmt.format(g)}</span>')
     for i, h in enumerate(hist):
-        p.append(f'<text class="tick" x="{xs[i]:.2f}%" y="{H - 10}" text-anchor="middle">#{h.get("iter")}</text>')
+        p.append(f'<text class="tick" x="{xs[i]:.2f}%" y="{H - 8}" text-anchor="middle">#{h.get("iter")}</text>')
         if h.get("iter") == final_iter:
-            p.append(f'<line class="final" x1="{xs[i]:.2f}%" x2="{xs[i]:.2f}%" y1="{T - 6}" y2="{H - B}"/>')
+            p.append(f'<line class="final" x1="{xs[i]:.2f}%" x2="{xs[i]:.2f}%" y1="{T - 8}" y2="{H - B}"/>')
     for name, key, col in series:
         pts = [(xs[i], y(h.get("metrics", {}).get(key, 0))) for i, h in enumerate(hist)]
         for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
@@ -437,14 +431,39 @@ def _history_svg(hist: list, final_iter) -> str:
             v = float(hist[i].get("metrics", {}).get(key, 0))
             p.append(f'<g class="pt"><circle cx="{a:.2f}%" cy="{b:.1f}" r="11" fill="transparent"/>'
                      f'<circle cx="{a:.2f}%" cy="{b:.1f}" r="4.5" fill="{col}" stroke="var(--surface)" stroke-width="2"/>'
-                     f'<title>Iteration {hist[i].get("iter")}: {name} {v:.3f}%</title></g>')
-            if key == "machinable_in_tol_pct" and n <= 12:
-                anchor = "start" if i == 0 and n > 1 else "end" if i == n - 1 and n > 1 else "middle"
-                p.append(f'<text class="vlab" x="{a:.2f}%" y="{b - 10:.1f}" text-anchor="{anchor}">{v:.2f}%</text>')
+                     f'<title>Iteration {hist[i].get("iter")}: {name} {v:.3f}</title></g>')
+            if key == direct_key and n <= 12:
+                p.append(f'<text class="vlab" x="{a:.2f}%" y="{b - 10:.1f}" text-anchor="middle">{v:.2f}</text>')
     p.append("</svg>")
-    leg = "".join(f'<span class="lg"><i style="background:{c}"></i>{_esc(nm)}</span>' for nm, _, c in series)
-    return (f'<div class="legend">{leg}<span class="lg"><i class="dash"></i>evaluated iteration</span></div>'
-            f'<div class="chart-box"><div class="ylab">{"".join(ylab)}</div>{"".join(p)}</div>')
+    return f'<div class="chart-box"><div class="ylab">{"".join(ylab)}</div>{"".join(p)}</div>'
+
+
+def _history_svg(hist: list, final_iter) -> str:
+    """Score per iteration on an auto-scaled axis, plus a second small chart of gouge / proud %."""
+    if not hist:
+        return '<p class="muted">No iterations.</p>'
+    import math as _m
+    sc = [float(h.get("metrics", {}).get("machinable_in_tol_pct", 0)) for h in hist]
+    span = 100 - min(sc)
+    step = next(s for s in (0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 25) if span / s <= 5) if span > 0 else 0.1
+    lo = max(0.0, _m.floor((min(sc) - step * 0.5) / step) * step)
+    ticks = [lo + k * step for k in range(int(round((100 - lo) / step)) + 1)]
+    nd = 2 if step < 0.5 else 1 if step < 1 else 0
+    gp = [max(float(h.get("metrics", {}).get(k, 0)) for k in ("machinable_gouge_pct", "machinable_proud_pct")) for h in hist]
+    gmax = max(gp + [0.0])
+    gstep = next(s for s in (0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 25) if max(gmax, 0.1) / s <= 4)
+    gt = [k * gstep for k in range(int(_m.ceil(max(gmax, 0.1) / gstep)) + 1)]
+    a = _line_chart(hist, [("Score (in tolerance)", "machinable_in_tol_pct", "var(--ink)")], lo, 100, ticks,
+                    "Score per iteration", 220, final_iter, "machinable_in_tol_pct", "{:.%df}%%" % nd)
+    b = _line_chart(hist, [("Gouge", "machinable_gouge_pct", "var(--s-gouge)"), ("Proud", "machinable_proud_pct", "var(--s-proud)")],
+                    0, gt[-1], gt, "Gouged and proud surface per iteration", 150, final_iter, None,
+                    "{:.%df}%%" % (2 if gstep < 0.5 else 1 if gstep < 1 else 0))
+    note = (f'<p class="muted small chart-note">Score axis zoomed to {ticks[0]:.{nd}f}–100 %. Values as simulated at the time of each '
+            f'iteration; the header shows the trusted final re-evaluation.</p>')
+    return (f'<div class="legend"><span class="lg"><i style="background:var(--ink)"></i>Score: machinable surface in tolerance</span>'
+            f'<span class="lg"><i class="dash"></i>evaluated iteration</span></div>{a}'
+            f'<div class="legend" style="margin-top:10px"><span class="lg"><i style="background:var(--s-gouge)"></i>Gouge %</span>'
+            f'<span class="lg"><i style="background:var(--s-proud)"></i>Proud %</span></div>{b}{note}')
 
 
 def _issue_rows(issues: list) -> str:
@@ -506,8 +525,8 @@ METRIC_LABELS = [
     ("edge_band_excluded_pct", "Face-boundary band (0.03 mm, excluded)", "%"),
     ("undercut_area_pct", "Undercut area (not reachable from +Z, excluded)", "%"),
     ("tool_limited_area_pct", "Tool-limited area (needs a smaller tool, excluded)", "%"),
-    ("remaining_excess_cm3", "Excess material left", "cm³"),
-    ("gouged_cm3", "Gouged volume", "cm³"),
+    ("remaining_excess_cm3", "Excess material left (raw height field)", "cm³"),
+    ("gouged_cm3", "Gouged volume (raw height field, incl. excluded areas)", "cm³"),
     ("removed_cm3", "Material removed", "cm³"),
     ("surface_area_mm2", "Surface area evaluated", "mm²"),
     ("probes", "Surface probe points", ""),
@@ -529,7 +548,7 @@ def _verdict(m: dict, regs: list, issues: list) -> str:
                  + (f', first at line <a href="#sim" class="gl" data-gline="{first.get("line")}">{first.get("line")}</a>: '
                     f'{_esc(first.get("msg", ""))}' if first else "") + ".")
     s.append(f'{m.get("machinable_in_tol_pct", 0):.3f}% of the machinable surface is within ±{m.get("tolerance_mm", 0.1)} mm; '
-             f'{m.get("machinable_gouge_pct", 0):.2f}% is gouged (max {m.get("max_gouge_mm", 0):.2f} mm deep) and '
+             f'{m.get("machinable_gouge_pct", 0):.2f}% is gouged (max {m.get("max_gouge_mm", 0):.3f} mm deep) and '
              f'{m.get("machinable_proud_pct", 0):.2f}% is proud.')
     g = [r for r in regs if r["type"] == "gouge"]
     p = [r for r in regs if r["type"] == "proud"]
@@ -647,16 +666,24 @@ def build(run_dir) -> Path:
         badge = '<span class="badge sm valid">valid</span>' if hm.get("valid") else \
             f'<span class="badge sm invalid">invalid · {hm.get("errors", 0)} err</span>'
         fin = '<span class="badge sm final">evaluated</span>' if n == final_iter and is_final else ""
+        it_issues = _load(it / "issues.json", []) or []
+        it_errs = [i for i in it_issues if i.get("severity") == "error"]
+        err_html = ""
+        if it_errs:
+            err_html = ('<div class="iter-errs"><strong>Why invalid:</strong><ul>' + "".join(
+                f'<li>line {_esc(i.get("line", "?"))}: {_esc(i.get("msg", ""))}</li>' for i in it_errs[:4]) +
+                (f'<li>… {len(it_errs) - 4} more (see feedback)</li>' if len(it_errs) > 4 else "") + "</ul></div>")
         cards.append(f"""
 <article class="iter-card{' is-final' if n == final_iter else ''}" id="iter-{n}">
   <header><h3>Iteration {n}</h3>{badge}{fin}<span class="muted when">{_esc(str(h.get('time', '')).replace('T', ' '))}</span></header>
   <div class="iter-body">
     <div class="iter-stats">
       <div class="big">{hm.get('machinable_in_tol_pct', 0):.3f}%{delta}</div>
+      <div class="muted small asof">score as simulated at the time</div>
       <dl>
         <dt>gouge</dt><dd>{hm.get('machinable_gouge_pct', 0):.2f}%</dd>
         <dt>proud</dt><dd>{hm.get('machinable_proud_pct', 0):.2f}%</dd>
-        <dt>max gouge</dt><dd>{hm.get('max_gouge_mm', 0):.2f} mm</dd>
+        <dt>max gouge</dt><dd>{hm.get('max_gouge_mm', 0):.3f} mm</dd>
         <dt>errors</dt><dd>{hm.get('errors', 0)}</dd>
         <dt>warnings</dt><dd>{hm.get('warnings', 0)}</dd>
         <dt>cycle</dt><dd>{hm.get('cycle_time_min', 0):.1f} min</dd>
@@ -664,7 +691,7 @@ def build(run_dir) -> Path:
       </dl>
       {thumb}
     </div>
-    <div class="notes">{md_to_html(notes) if notes.strip() else '<p class="muted">No notes from the LLM for this iteration.</p>'}</div>
+    <div class="notes">{err_html}{md_to_html(notes) if notes.strip() else '<p class="muted">No notes from the LLM for this iteration.</p>'}</div>
   </div>
   <footer class="links">{''.join(links)}</footer>
 </article>""")
@@ -720,7 +747,7 @@ def build(run_dir) -> Path:
     else:
         chips.append('<span class="chip warn" title="run python -m cncllm evaluate RUN">Not yet evaluated (latest iteration shown)</span>')
 
-    mrows = "".join(f'<tr><th>{_esc(lbl)}</th><td class="num">{_fmt(m.get(k))}{(" " + u) if u and k in m else ""}</td></tr>'
+    mrows = "".join(f'<tr><th>{_esc(lbl)}</th><td class="num">{_fmt(m.get(k), 3 if k == "max_gouge_mm" else 2)}{(" " + u) if u and k in m else ""}</td></tr>'
                     for k, lbl, u in METRIC_LABELS if k in m)
     # per-tool table
     per_tool = {}
@@ -796,7 +823,7 @@ def build(run_dir) -> Path:
         <span class="muted">{n_err} error{'s' if n_err != 1 else ''} · {n_warn} warning{'s' if n_warn != 1 else ''}</span>
       </div>
       <div class="score-num">{(f'{score:.3f}' if score is not None else '–')}<span>%</span></div>
-      <div class="score-label">of the machinable surface within ±{tol:g} mm{'' if is_final else ' (latest iteration, not evaluated)'}</div>
+      <div class="score-label">of the machinable surface within ±{tol:g} mm{' · trusted final evaluation of iteration ' + str(final_iter) if is_final else ' (latest iteration, not evaluated)'}</div>
       <div class="meter" aria-hidden="true"><i style="width:{max(0, min(100, score or 0)):.2f}%"></i></div>
       <div class="chips">{''.join(chips)}</div>
       {f'<p class="int-note">{_esc(integrity_note)}</p>' if integrity_note else ''}
@@ -843,8 +870,8 @@ def build(run_dir) -> Path:
   </div>
 </section>
 <section id="images">
-  <div class="sec-head"><h2>Images</h2></div>
-  <div class="gallery">{gal}</div>
+  <div class="sec-head"><h2>Images</h2><p class="sub">2D plots written by the simulator for the LLM's feedback (the same information as the 3D views above).</p></div>
+  <details class="imgs" open><summary>Show / hide simulator plots</summary><div class="gallery">{gal}</div></details>
 </section>
 <section id="gcode">
   <div class="sec-head"><h2>G-code</h2><p class="sub">The full listing is in the simulation panel above (search and click to jump).</p></div>

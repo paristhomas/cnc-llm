@@ -1,9 +1,10 @@
 // Palettes. Tool colours follow the order of first use in the program (fixed categorical order, never cycled by rank);
 // red is reserved for rapids. Deviation uses a blue (gouge) / green (in tolerance) / red (proud) diverging scale.
-export const TOOL_PALETTE = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#6250d6', '#8a6d3b', '#5f7d8c', '#a04f9e'];
+export const TOOL_PALETTE = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#6250d6', '#8a6d3b', '#5f7d8c', '#a04f9e', '#00a0b0'];
 export const RAPID = '#e34948';
 export const ALU = [0.73, 0.75, 0.78];       // machined aluminium
-export const ALU_RAW = [0.58, 0.60, 0.64];   // raw stock top (mill finish)
+export const ALU_RAW = [0.55, 0.57, 0.60];
+export const WALL = [0.60, 0.62, 0.65];   // steep wall: not judged in the top-down height error   // raw stock top (mill finish)
 export const THROUGH = [0.20, 0.22, 0.25];   // cut through to the fixture plate
 
 export const DEV = {

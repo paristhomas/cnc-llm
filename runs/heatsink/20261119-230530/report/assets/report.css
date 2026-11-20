@@ -1,4 +1,5 @@
 /* CNC-LLM run report. System font stack, restrained palette, light + dark (prefers-color-scheme or data-theme). */
+[hidden] { display: none !important; }
 :root {
   color-scheme: light;
   --page: #f6f6f4; --surface: #ffffff; --surface-2: #f1f1ee; --surface-3: #e8e8e4;
@@ -335,3 +336,11 @@ svg.chart .pt:hover circle:last-of-type { r: 6; }
   table.regions td:nth-child(5), table.regions td.where, table.regions td.lines { grid-column: 1 / -1; min-width: 0; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .spin { animation: none; } }
+
+.chart-note { margin: 6px 0 0; }
+.asof { margin-top: -2px; }
+.iter-errs { background: var(--bad-bg); color: var(--bad); border-radius: 8px; padding: 8px 10px; margin-bottom: 10px; font-size: 13px; }
+.iter-errs ul { margin: 4px 0 0; padding-left: 18px; }
+details.imgs > summary { cursor: pointer; color: var(--accent); font-weight: 600; font-size: 13.5px; margin-bottom: 10px; }
+:root[data-theme="dark"] .gallery img { filter: brightness(.86); }
+@media (prefers-color-scheme: dark) { :root:where(:not([data-theme="light"])) .gallery img, :root:where(:not([data-theme="light"])) .thumb img { filter: brightness(.86); } }

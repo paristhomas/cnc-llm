@@ -9,9 +9,11 @@ uniform float uCur; uniform float uWin;
 varying vec3 vCol; varying float vDist; varying float vRapid; varying float vPast;
 void main() {
   vCol = color; vDist = aDist; vRapid = aRapid; vPast = aIdx < uCur ? (aIdx < uCur - uWin ? 0.5 : 1.0) : 0.0;
-  vec4 p = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  p.z -= 0.0008 * p.w;   // lift slightly towards the camera so lines on machined floors stay visible
-  gl_Position = p;
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  // pull the line 0.04 mm towards the camera (view space) so paths on machined floors stay visible,
+  // without letting paths inside uncut material show through the stock
+  mv.xyz *= max(1.0 - 0.04 / max(length(mv.xyz), 1e-3), 0.0);
+  gl_Position = projectionMatrix * mv;
 }`;
 const FS = `
 uniform float uPastA; uniform float uFutA; uniform float uOldA; uniform float uDash; uniform float uRapids; uniform float uFuture; uniform float uCuts;

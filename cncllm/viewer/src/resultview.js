@@ -53,7 +53,7 @@ export class ResultView {
     this.ghost.visible = false;
     st.scene.add(this.ghost);
     // machined stock as a faint ghost over the deviation view
-    this.stockGhostMat = new THREE.MeshStandardMaterial({ color: 0xb8bec7, transparent: true, opacity: 0.25, depthWrite: false, flatShading: true });
+    this.stockGhostMat = new THREE.MeshStandardMaterial({ color: 0xf0a030, emissive: 0x5a3200, transparent: true, opacity: 0.4, depthWrite: false, flatShading: true, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4 });
     this.mode = 'dev';
     this.buildBar(els.bar);
     this.buildMarkers(els.view);
@@ -68,7 +68,9 @@ export class ResultView {
     this.target.visible = m === 'dev';
     this.machined.group.visible = m === 'mach';
     this.bar.querySelectorAll('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
-    this.bar.querySelector('.ovl-label').textContent = m === 'dev' ? 'machined stock overlay' : 'target overlay';
+    this.bar.querySelector('.ovl-label').textContent = m === 'dev' ? 'machined stock overlay' : 'target part overlay';
+    this.bar.querySelector('.ovl-sw').style.background = m === 'dev' ? '#f0a030' : '#2f8cff';
+    this.bar.querySelector('.wall-legend').hidden = m !== 'mach';
     this.applyOverlay();
     this.bar.querySelector('.cls-legend').hidden = m !== 'dev';
     this.bar.querySelector('.cb-title').textContent = m === 'dev' ? 'Signed deviation of the machined part at the target surface (mm)' : 'Machined top minus target top, seen from above (mm)';
@@ -89,27 +91,28 @@ export class ResultView {
   buildBar(bar) {
     this.bar = bar;
     const t = this.tol;
-    const ticks = [-1, -0.5, -t, t, 0.5, 1];
+    const ticks = [-1, -0.5, 0, 0.5, 1];
     bar.innerHTML = `
       <div class="res-ctl">
         <span class="seg" role="group" aria-label="Result display">
           <button type="button" data-mode="dev" aria-pressed="true">Deviation on target</button>
           <button type="button" data-mode="mach" aria-pressed="false">Machined surface</button>
         </span>
-        <label class="chk"><input type="checkbox" class="ovl"> <span class="ovl-label">machined stock overlay</span></label>
+        <label class="chk"><input type="checkbox" class="ovl"> <i class="sw ovl-sw" style="background:#f0a030"></i><span class="ovl-label">machined stock overlay</span></label>
         <label class="chk"><input type="checkbox" class="mk" checked> region labels</label>
-        <span class="seg views" role="group" aria-label="View"><button type="button" data-view="iso">Iso</button><button type="button" data-view="top">Top</button><button type="button" data-view="front">Front</button></span>
+        <span class="seg views" role="group" aria-label="View"><button type="button" data-view="iso" title="Reset to the isometric overview">Reset / Iso</button><button type="button" data-view="top">Top</button><button type="button" data-view="front">Front</button></span>
       </div>
       <div class="cbar">
         <div class="cb-title">Signed deviation of the machined part at the target surface (mm)</div>
         <div class="cb-grad" style="background:${devGradientCSS(t)}"></div>
-        <div class="cb-ticks">${ticks.map((v) => `<span style="left:${50 + v * 50}%">${v > 0 ? '+' : ''}${Math.abs(v) < 1 ? v.toFixed(Math.abs(v) < 0.5 ? 2 : 1) : v.toFixed(0)}</span>`).join('')}</div>
-        <div class="cb-ends"><span>◀ gouge (cut too deep)</span><span class="mid">in tolerance ±${t}</span><span>proud (material left) ▶</span></div>
+        <div class="cb-ticks">${ticks.map((v) => `<span style="left:${50 + v * 50}%">${v === 0 ? '±' + t : (v > 0 ? '+' : '') + (Math.abs(v) < 1 ? v.toFixed(1) : v.toFixed(0))}</span>`).join('')}</div>
+        <div class="cb-ends"><span>◀ gouge (too deep)</span><span class="mid">in tolerance</span><span>proud (left) ▶</span></div>
         <div class="cls-legend">
           <span><i class="sw hatch" style="background:${DEV.undercut}"></i>undercut – not reachable from +Z (excluded)</span>
           <span><i class="sw" style="background:${DEV.limited}"></i>tool-limited – needs a smaller tool than the library (excluded)</span>
           <span><i class="sw" style="background:${DEV.datum}"></i>datum face (stock bottom)</span>
         </div>
+        <div class="cls-legend wall-legend" hidden><span><i class="sw" style="background:#9a9ea6"></i>steep wall – a top-down height error is not meaningful there; walls are judged in the deviation view</span></div>
       </div>`;
     bar.querySelectorAll('[data-mode]').forEach((b) => (b.onclick = () => this.setMode(b.dataset.mode)));
     bar.querySelector('.ovl').onchange = () => this.applyOverlay();
