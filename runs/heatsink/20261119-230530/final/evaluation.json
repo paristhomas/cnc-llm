@@ -1,5 +1,5 @@
 {
- "iteration": 2,
+ "iteration": 3,
  "metrics": {
   "machinable_in_tol_pct": 100.0,
   "machinable_gouge_pct": 0.0,
@@ -16,15 +16,15 @@
   "remaining_excess_cm3": 0.112,
   "gouged_cm3": 0.2299,
   "removed_cm3": 89.288,
-  "cycle_time_min": 15.14,
+  "cycle_time_min": 14.41,
   "errors": 0,
   "warnings": 0,
   "valid": true
  },
  "integrity": {
   "harness": {
-   "sha256": "4edac44f61fa11b107bad6835759fdcc44eaafee6c71bb6be4cbe7780868d435",
-   "git_head": "b94dba6",
+   "sha256": "f4ff400f9db81bf7c3f46584bdf437325aade9b618420c187d0426dffd0663c9",
+   "git_head": "ecbcf6a",
    "harness_modified": false,
    "modified_files": []
   },
@@ -46,7 +46,7 @@
   "disagree_beyond_2um": 0,
   "agreement_pct": 100.0,
   "millbill": {
-   "moves": 15170,
+   "moves": 15216,
    "warnings": []
   },
   "examples": []

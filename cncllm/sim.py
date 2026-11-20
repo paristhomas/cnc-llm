@@ -229,6 +229,32 @@ def move_stats(M, vol, thick):
             "rapid_length_mm": float(L[rapid].sum()), "per_tool": per_tool, "L": L, "tsec": tsec}
 
 
+def window_engagement(M, vol, L):
+    """Removed volume per mm of travel over a window of 0.5 D around each move, within runs of consecutive cutting
+    moves of one tool (a rapid or tool change ends a run)."""
+    n = len(M)
+    Aw = np.zeros(n)
+    isc = (M[:, 7] < 0.5) & (M[:, 6] > 0)
+    brk = np.r_[True, (M[1:, 6] != M[:-1, 6]) | (isc[1:] != isc[:-1])]
+    starts = np.r_[np.where(brk)[0], n]
+    for a, b in zip(starts[:-1], starts[1:]):
+        if not isc[a]:
+            continue
+        l = L[a:b]
+        cl = np.r_[0.0, np.cumsum(l)]
+        cv = np.r_[0.0, np.cumsum(vol[a:b])]
+        D = LIBRARY[int(M[a, 6])].diameter
+        c = cl[:-1] + l / 2
+        lo = np.searchsorted(cl, c - D / 4, side="right") - 1
+        hi = np.searchsorted(cl, c + D / 4, side="left")
+        idx = np.arange(b - a)
+        lo = np.clip(np.minimum(lo, idx), 0, None)
+        hi = np.minimum(np.maximum(hi, idx + 1), b - a)
+        span = cl[hi] - cl[lo]
+        Aw[a:b] = (cv[hi] - cv[lo]) / np.maximum(span, np.maximum(np.minimum(D / 2, cl[-1]), 1e-9))
+    return Aw
+
+
 def cutting_checks(M, vol, thick, stats):
     """Plausibility of cutting data in aluminium: chip load, engagement (cross-section), plunging."""
     out = []
@@ -238,6 +264,9 @@ def cutting_checks(M, vol, thick, stats):
     cut = (M[:, 7] < 0.5) & (vol > 1e-6)
     groups = {}
     maxA = {}
+    # engagement cross-section measured over a window of >= 0.5 D of travel (short arc chords alone over-count the
+    # leading edge of the cutter); windows never span a rapid or a tool change
+    Aw = window_engagement(M, vol, L)
     for i in np.where(cut)[0]:
         t = LIBRARY[int(M[i, 6])]
         rpm, f = M[i, 9], M[i, 8]
@@ -252,7 +281,7 @@ def cutting_checks(M, vol, thick, stats):
                 groups.setdefault(("chipload_low", t.number), []).append(i)
         # cross-sectional engagement area (removed volume per mm of travel)
         if horiz > 0.05:
-            A = vol[i] / max(L[i], 1e-9)
+            A = Aw[i]
             if A > 0.75 * D * D and t.kind != "cone":
                 groups.setdefault(("engagement", t.number), []).append(i)
                 worst = maxA.get(t.number)

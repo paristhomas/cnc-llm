@@ -23,15 +23,15 @@
  },
  "integrity": {
   "harness": {
-   "sha256": "945d17f7b0d4559030f63b0314b8887e2ef65c4a1d72c73f293a984ecae92fa9",
-   "git_head": "f4314df",
+   "sha256": "f4ff400f9db81bf7c3f46584bdf437325aade9b618420c187d0426dffd0663c9",
+   "git_head": "ecbcf6a",
    "harness_modified": false,
    "modified_files": []
   },
   "part_sha256_now": "cd7cf0a835a11d69fe8f352d9ab24bd9ecbec8785a2bef0178d6961399339805",
   "part_sha256_at_start": "cd7cf0a835a11d69fe8f352d9ab24bd9ecbec8785a2bef0178d6961399339805",
   "part_unchanged": true,
-  "harness_unchanged_since_run_start": true,
+  "harness_unchanged_since_run_start": false,
   "generator_scan": {
    "files": [
     "gen.py"
@@ -42,29 +42,13 @@
  },
  "crosscheck_millbill": {
   "points": 269957,
-  "disagree": 4,
-  "disagree_beyond_2um": 3,
-  "agreement_pct": 99.99889,
+  "disagree": 0,
+  "disagree_beyond_2um": 0,
+  "agreement_pct": 100.0,
   "millbill": {
    "moves": 43385,
    "warnings": []
   },
-  "examples": [
-   [
-    -1.9333,
-    -11.8415,
-    3.7391
-   ],
-   [
-    -5.1539,
-    -10.8363,
-    3.8092
-   ],
-   [
-    2.1291,
-    -11.8086,
-    5.954
-   ]
-  ]
+  "examples": []
  }
 }

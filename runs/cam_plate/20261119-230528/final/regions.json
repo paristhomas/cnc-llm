@@ -19,7 +19,32 @@
    "face 8 (plane)"
   ],
   "last_cut_by_lines": [
-   27
+   24491,
+   24492,
+   24512,
+   24513
+  ],
+  "nearest_passes": [
+   {
+    "line": 24491,
+    "tool": 4,
+    "gap_mm": 0.047
+   },
+   {
+    "line": 24492,
+    "tool": 4,
+    "gap_mm": 0.047
+   },
+   {
+    "line": 24512,
+    "tool": 4,
+    "gap_mm": 0.047
+   },
+   {
+    "line": 24513,
+    "tool": 4,
+    "gap_mm": 0.047
+   }
   ],
   "id": 1
  },
@@ -43,7 +68,32 @@
    "face 0 (plane)"
   ],
   "last_cut_by_lines": [
-   27
+   24511,
+   24520,
+   24485,
+   24487
+  ],
+  "nearest_passes": [
+   {
+    "line": 24511,
+    "tool": 4,
+    "gap_mm": 0.048
+   },
+   {
+    "line": 24520,
+    "tool": 4,
+    "gap_mm": 0.048
+   },
+   {
+    "line": 24485,
+    "tool": 4,
+    "gap_mm": 0.048
+   },
+   {
+    "line": 24487,
+    "tool": 4,
+    "gap_mm": 0.048
+   }
   ],
   "id": 2
  },
@@ -67,7 +117,32 @@
    "face 0 (plane)"
   ],
   "last_cut_by_lines": [
-   27
+   24487,
+   24439,
+   24492,
+   24488
+  ],
+  "nearest_passes": [
+   {
+    "line": 24487,
+    "tool": 4,
+    "gap_mm": 0.051
+   },
+   {
+    "line": 24439,
+    "tool": 4,
+    "gap_mm": 0.051
+   },
+   {
+    "line": 24492,
+    "tool": 4,
+    "gap_mm": 0.051
+   },
+   {
+    "line": 24488,
+    "tool": 4,
+    "gap_mm": 0.051
+   }
   ],
   "id": 3
  }

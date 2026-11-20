@@ -23,8 +23,8 @@
  },
  "integrity": {
   "harness": {
-   "sha256": "945d17f7b0d4559030f63b0314b8887e2ef65c4a1d72c73f293a984ecae92fa9",
-   "git_head": "f4314df",
+   "sha256": "f4ff400f9db81bf7c3f46584bdf437325aade9b618420c187d0426dffd0663c9",
+   "git_head": "ecbcf6a",
    "harness_modified": false,
    "modified_files": []
   },
@@ -42,44 +42,13 @@
  },
  "crosscheck_millbill": {
   "points": 300000,
-  "disagree": 6,
-  "disagree_beyond_2um": 6,
-  "agreement_pct": 99.998,
+  "disagree": 0,
+  "disagree_beyond_2um": 0,
+  "agreement_pct": 100.0,
   "millbill": {
    "moves": 48386,
    "warnings": []
   },
-  "examples": [
-   [
-    -34.0738,
-    -28.7627,
-    26.5965
-   ],
-   [
-    34.9116,
-    -25.4586,
-    19.1935
-   ],
-   [
-    -38.4555,
-    -31.9732,
-    25.8416
-   ],
-   [
-    38.1206,
-    -31.9975,
-    24.0036
-   ],
-   [
-    39.5048,
-    24.2939,
-    20.7368
-   ],
-   [
-    40.2792,
-    24.7135,
-    21.2762
-   ]
-  ]
+  "examples": []
  }
 }

@@ -20,22 +20,22 @@ Gouges (target material removed) scrap the part: fix them first. 'tool_limited' 
 
 ## Out-of-tolerance regions (largest first)
 
-| id | type | area mm2 | surface | bbox (xmin ymin zmin xmax ymax zmax) | mean dev | extreme | faces | G-code lines |
+| id | type | area mm2 | surface | bbox (xmin ymin zmin xmax ymax zmax) | mean dev | extreme | faces | G-code lines (gouge: lines that cut it; proud: closest passes that could have reached it) |
 |---|---|---|---|---|---|---|---|---|
-| R1 | proud | 5.1 | wall (vertical) | -3 16.14 1.18 -2.65 16.5 11.82 | +0.166 | +0.238 | face 5 (plane); face 8 (plane) | last cut by 27 |
-| R2 | proud | 3.6 | wall (vertical) | 2.65 16.14 0.48 3 16.5 7.78 | +0.168 | +0.238 | face 5 (plane); face 0 (plane) | last cut by 27 |
-| R3 | proud | 1.35 | wall (vertical) | 2.67 16.16 9.5 3 16.5 11.9 | +0.167 | +0.238 | face 5 (plane); face 0 (plane) | last cut by 27 |
+| R1 | proud | 5.1 | wall (vertical) | -3 16.14 1.18 -2.65 16.5 11.82 | +0.166 | +0.238 | face 5 (plane); face 8 (plane) | nearest passes: line 24491 T4 missed by 0.047 mm, line 24492 T4 missed by 0.047 mm, line 24512 T4 missed by 0.047 mm |
+| R2 | proud | 3.6 | wall (vertical) | 2.65 16.14 0.48 3 16.5 7.78 | +0.168 | +0.238 | face 5 (plane); face 0 (plane) | nearest passes: line 24511 T4 missed by 0.048 mm, line 24520 T4 missed by 0.048 mm, line 24485 T4 missed by 0.048 mm |
+| R3 | proud | 1.35 | wall (vertical) | 2.67 16.16 9.5 3 16.5 11.9 | +0.167 | +0.238 | face 5 (plane); face 0 (plane) | nearest passes: line 24487 T4 missed by 0.051 mm, line 24439 T4 missed by 0.051 mm, line 24492 T4 missed by 0.051 mm |
 
 ## Tools
 
 | T | tool | time s | cut length mm | removed cm3 |
 |---|---|---|---|---|
-| T1 | 10 mm 3-flute flat endmill | 198.5 | 8965.0 | 34.989 |
+| T1 | 10 mm 3-flute flat endmill | 198.5 | 8965.1 | 34.989 |
 | T2 | 6 mm 3-flute flat endmill | 21.8 | 652.4 | 1.549 |
 | T3 | 3 mm 2-flute flat endmill | 454.7 | 4775.4 | 3.998 |
 | T4 | 1.5 mm 2-flute flat endmill | 24.3 | 156.0 | 0.008 |
 | T9 | 6 mm 90deg chamfer mill | 8.7 | 96.9 | 0.036 |
 
-Moves: 39776, cut length 14646 mm, rapid length 2062 mm, estimated cycle time 12.5 min.
+Moves: 42820, cut length 14646 mm, rapid length 2062 mm, estimated cycle time 12.5 min.
 
 Images: `deviation_top.png` (probe points coloured by deviation, regions boxed), `height_error_top.png`, `machined_top.png`, `section_x.png`, `section_y.png`.
