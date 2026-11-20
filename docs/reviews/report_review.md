@@ -92,3 +92,16 @@ The legend text "faint = not yet cut" is misleading once the program has finishe
 - The clear verdict sentence, the VALID badge, the integrity and cross-check chips, and the harness hashes in the footer.
 - The current-block panel, the virtualised and syntax-highlighted G-code listing with search and follow, and the tool-change ticks on the scrubber.
 - The phone layout is genuinely usable: tables become cards, there is no horizontal scroll, and the controls wrap cleanly.
+
+## Re-check after fixes (2026-11-20)
+
+Method: Playwright/Chromium (swiftshader) on mould_cavity/20261119-224900 and heatsink/20261119-230530; screenshots in scratchpad `review2/`.
+
+- **A3: PASS.** Click listing row 20 -> Next -> ArrowRight x2 (view focused) -> Prev -> Jump to end: line, highlighted row and move counter stay in sync on both runs (e.g. mould 11/line 20 -> 12/line 21 -> 13/line 22; end = move 48,392 / line 37949).
+- **D1: FIXED.** After a listing click, Next/arrows/Jump to end update "Current block" and the highlighted row (previously stuck at 20).
+- **D2: FIXED.** All 6 mould problem-list buttons (23949, 23948, 24853, 23947, 32922, 32921) highlight exactly the same line. Step button and ArrowRight give the same line at the same move (moves 1-5 on both runs; no backwards line). Note: arrow keys only act when the sim viewport has focus (by design, not a defect).
+- **A5: PASS.** Machined surface -> Top on heatsink: no red; steep walls are grey with the legend entry "steep wall - top-down height error is not meaningful there". Deviation mode and undercut/tool-limited/datum legend still fine.
+- **D3: FIXED.**
+- **D4: FIXED.** Sim "target" toggle now draws a clear blue wireframe/outline box of the target plus a "target part (overlay)" legend entry; result "machined stock overlay" shows an orange tint and has an orange legend swatch. Minor: hatch speckle remains on fin walls in the result overlay.
+- **A9: PASS.** 390x844, light and dark: scrollWidth == innerWidth == 390; dark theme legible.
+- **D8: FIXED.** Colour-bar labels "-1 / -0.5 / ±0.1 / +0.5 / +1" and "gouge (too deep) / in tolerance / proud (left)" are separated and unclipped, on one line each.

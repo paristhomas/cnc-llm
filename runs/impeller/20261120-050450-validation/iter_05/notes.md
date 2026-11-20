@@ -1,0 +1,1 @@
+Iter 5: back to T4 0.78 / T8 0.52 (better corner reach), but run the T4 and T8 Z-level passes over the whole hub vicinity (r<13) too, so no material is left above the short flutes next to the 10 mm hub wall.

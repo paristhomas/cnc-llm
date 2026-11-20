@@ -1,1 +1,1 @@
-Iter 4: shank clearance - T4 corner ring 0.82 (gap 0.07) and T8 first ring 0.55 / corner levels 0.56, to stop shank contact with the 10 mm hub wall in the simulator grid.
+Iter 6: Z-level corner passes (T3/T4/T8) no longer chord-simplified (0.0003 mm) so every level follows exactly the XY of the final pass - removes the residual shank-contact slivers.

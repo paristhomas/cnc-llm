@@ -326,9 +326,9 @@ def refine(P, z, f, thr=0.15, it=7):
     return np.array(pts)
 
 
-def emit_runs(g, runs, f, fpl):
+def emit_runs(g, runs, f, fpl, tol=0.003):
     for r in runs:
-        r = simplify3(r, 0.003)
+        r = simplify3(r, tol)
         rr0 = math.hypot(r[0, 0], r[0, 1])
         g.go_to(r[0, 0], r[0, 1], 19.0 if rr0 > 21 else 23.0)
         g.lin(r[0, 0], r[0, 1], r[0, 2], fpl)
@@ -340,7 +340,7 @@ def emit_runs(g, runs, f, fpl):
         g.retract()
 
 
-def contour_pass(g, isl, d, R, kind, f, fpl, rfoot, holder=None, step=0.1, mask=None, levels=(), avoid=None):
+def contour_pass(g, isl, d, R, kind, f, fpl, rfoot, holder=None, step=0.1, mask=None, levels=(), avoid=None, tol=None):
     ring = isl.buffer(d, quad_segs=64).exterior
     c = np.array(ring.coords)
     P = densify(c, step)[:-1]
@@ -379,7 +379,7 @@ def contour_pass(g, isl, d, R, kind, f, fpl, rfoot, holder=None, step=0.1, mask=
             Q = P[idx]
             fzl = fz if lev is None else (lambda X, lev=lev: np.maximum(fz(X), lev))
             out.append(refine(Q, zz[idx], fzl))
-        emit_runs(g, out, f, fpl)
+        emit_runs(g, out, f, fpl, tol=tol if tol is not None else (0.0003 if levels else 0.003))
 
 
 def leftover(isl, d, R):
@@ -457,7 +457,7 @@ if t8:
         contour_pass(g, ISL, 0.52, 0.5, 'ball', 384, 128, 0.49, holder=(10.0, 12.0), step=0.04,
                      mask=LO4.buffer(0.7).union(HUBZ), levels=(20.0, 17.5, 15.0, 12.5, 10.0, 7.5))
     for d in t8:
-        contour_pass(g, ISL, d, 0.5, 'ball', 384, 128, min(0.5, d - 0.03), holder=(10.0, 12.0), step=0.08)
+        contour_pass(g, ISL, d, 0.5, 'ball', 384, 128, min(0.5, d - 0.03), holder=(10.0, 12.0), step=0.04 if d < 0.6 else 0.08, tol=0.0003 if d < 0.6 else 0.003)
 
 # T1 outer profile
 g.tool_change(1, 18000, 'T1 outer profile R40')

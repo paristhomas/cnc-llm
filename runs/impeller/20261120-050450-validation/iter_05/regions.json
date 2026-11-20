@@ -1,0 +1,1965 @@
+[
+ {
+  "type": "proud",
+  "area_mm2": 8.55,
+  "points": 57,
+  "bbox": [
+   11.65,
+   -14.51,
+   7.96,
+   23.62,
+   -2.12,
+   11.57
+  ],
+  "dev_mean": 0.264,
+  "dev_extreme": 1.278,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 9 (cone)",
+   "face 32 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   151213,
+   151214,
+   151212,
+   151215
+  ],
+  "nearest_passes": [
+   {
+    "line": 151213,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151214,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151212,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151215,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 1
+ },
+ {
+  "type": "proud",
+  "area_mm2": 7.95,
+  "points": 53,
+  "bbox": [
+   -23.75,
+   1.54,
+   8.12,
+   -10.1,
+   14.92,
+   12.54
+  ],
+  "dev_mean": 0.202,
+  "dev_extreme": 0.712,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 38 (cylinder r19.521)",
+   "face 21 (cone)"
+  ],
+  "last_cut_by_lines": [
+   151715,
+   155830,
+   155831,
+   151716
+  ],
+  "nearest_passes": [
+   {
+    "line": 151715,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155830,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155831,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151716,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 2
+ },
+ {
+  "type": "proud",
+  "area_mm2": 7.65,
+  "points": 51,
+  "bbox": [
+   -22.63,
+   -13.67,
+   8.45,
+   -12.2,
+   -11.72,
+   10.56
+  ],
+  "dev_mean": 0.309,
+  "dev_extreme": 1.144,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 17 (cone)",
+   "face 36 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   155678,
+   151539,
+   151540,
+   155679
+  ],
+  "nearest_passes": [
+   {
+    "line": 155678,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151539,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151540,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155679,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 3
+ },
+ {
+  "type": "proud",
+  "area_mm2": 6.75,
+  "points": 45,
+  "bbox": [
+   2.63,
+   -20.79,
+   9.45,
+   4.37,
+   -11.29,
+   11.62
+  ],
+  "dev_mean": 0.312,
+  "dev_extreme": 1.022,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 34 (cylinder r19.521)",
+   "face 13 (cone)"
+  ],
+  "last_cut_by_lines": [
+   151382,
+   151383,
+   151381,
+   128274
+  ],
+  "nearest_passes": [
+   {
+    "line": 151382,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151383,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151381,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 128274,
+    "tool": 6,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 4
+ },
+ {
+  "type": "proud",
+  "area_mm2": 5.4,
+  "points": 36,
+  "bbox": [
+   -4.21,
+   15.88,
+   8.41,
+   -0.17,
+   26.63,
+   10.56
+  ],
+  "dev_mean": 0.423,
+  "dev_extreme": 5.0,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 25 (cone)",
+   "face 40 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   150882,
+   150881,
+   150880,
+   155111
+  ],
+  "nearest_passes": [
+   {
+    "line": 150882,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150881,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150880,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155111,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 5
+ },
+ {
+  "type": "proud",
+  "area_mm2": 5.25,
+  "points": 35,
+  "bbox": [
+   11.4,
+   11.59,
+   8.75,
+   19.99,
+   13.63,
+   10.71
+  ],
+  "dev_mean": 0.515,
+  "dev_extreme": 5.0,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 5 (cone)",
+   "face 30 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   151049,
+   151050,
+   151048,
+   151051
+  ],
+  "nearest_passes": [
+   {
+    "line": 151049,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151050,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151048,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151051,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 6
+ },
+ {
+  "type": "proud",
+  "area_mm2": 4.5,
+  "points": 30,
+  "bbox": [
+   7.29,
+   12.02,
+   8.45,
+   19.53,
+   16.22,
+   11.19
+  ],
+  "dev_mean": 0.175,
+  "dev_extreme": 0.343,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 26 (cylinder r22.021)",
+   "face 25 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155178,
+   150941,
+   150942,
+   155179
+  ],
+  "nearest_passes": [
+   {
+    "line": 155178,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150941,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150942,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155179,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 7
+ },
+ {
+  "type": "proud",
+  "area_mm2": 4.35,
+  "points": 29,
+  "bbox": [
+   12.62,
+   -8.56,
+   8.51,
+   23.64,
+   0.28,
+   11.43
+  ],
+  "dev_mean": 0.157,
+  "dev_extreme": 0.303,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 5 (cone)",
+   "face 6 (cylinder r22.021)"
+  ],
+  "last_cut_by_lines": [
+   151099,
+   155314,
+   151100,
+   151098
+  ],
+  "nearest_passes": [
+   {
+    "line": 151099,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155314,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151100,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151098,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 8
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.75,
+  "points": 25,
+  "bbox": [
+   -35.83,
+   -13.14,
+   6.0,
+   -24.67,
+   -5.52,
+   8.06
+  ],
+  "dev_mean": 0.146,
+  "dev_extreme": 0.278,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 36 (cylinder r19.521)",
+   "face 17 (cone)",
+   "face 16 (cylinder r1.25)"
+  ],
+  "last_cut_by_lines": [
+   155644,
+   151507,
+   155643,
+   151506
+  ],
+  "nearest_passes": [
+   {
+    "line": 155644,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151507,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155643,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151506,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 9
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.3,
+  "points": 22,
+  "bbox": [
+   -13.8,
+   -15.23,
+   9.66,
+   -6.75,
+   -11.61,
+   11.31
+  ],
+  "dev_mean": 0.168,
+  "dev_extreme": 0.301,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 14 (cylinder r22.021)",
+   "face 13 (cone)"
+  ],
+  "last_cut_by_lines": [
+   151423,
+   155591,
+   151422,
+   117655
+  ],
+  "nearest_passes": [
+   {
+    "line": 151423,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155591,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151422,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 117655,
+    "tool": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 10
+ },
+ {
+  "type": "proud",
+  "area_mm2": 3.3,
+  "points": 22,
+  "bbox": [
+   -6.96,
+   13.44,
+   8.65,
+   -4.53,
+   24.43,
+   10.96
+  ],
+  "dev_mean": 0.16,
+  "dev_extreme": 0.235,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 22 (cylinder r22.021)",
+   "face 21 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155885,
+   151763,
+   151764,
+   155886
+  ],
+  "nearest_passes": [
+   {
+    "line": 155885,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151763,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151764,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155886,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 11
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.85,
+  "points": 19,
+  "bbox": [
+   3.23,
+   30.0,
+   6.33,
+   11.09,
+   33.63,
+   7.66
+  ],
+  "dev_mean": 0.142,
+  "dev_extreme": 0.195,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 40 (cylinder r19.521)",
+   "face 25 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155085,
+   155086,
+   155084,
+   150854
+  ],
+  "nearest_passes": [
+   {
+    "line": 155085,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155086,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155084,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150854,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 12
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.85,
+  "points": 19,
+  "bbox": [
+   6.37,
+   -19.2,
+   9.69,
+   7.02,
+   -11.46,
+   11.24
+  ],
+  "dev_mean": 0.148,
+  "dev_extreme": 0.22,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 10 (cylinder r22.021)",
+   "face 9 (cone)"
+  ],
+  "last_cut_by_lines": [
+   151250,
+   155441,
+   151249,
+   155440
+  ],
+  "nearest_passes": [
+   {
+    "line": 151250,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155441,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151249,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155440,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 13
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.4,
+  "points": 16,
+  "bbox": [
+   -22.27,
+   1.4,
+   8.95,
+   -16.32,
+   6.59,
+   10.58
+  ],
+  "dev_mean": 0.157,
+  "dev_extreme": 0.224,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 17 (cone)",
+   "face 18 (cylinder r22.021)"
+  ],
+  "last_cut_by_lines": [
+   155731,
+   151585,
+   151586,
+   155732
+  ],
+  "nearest_passes": [
+   {
+    "line": 155731,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151585,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151586,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155732,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 14
+ },
+ {
+  "type": "proud",
+  "area_mm2": 2.25,
+  "points": 15,
+  "bbox": [
+   31.66,
+   5.9,
+   6.0,
+   36.17,
+   9.93,
+   6.96
+  ],
+  "dev_mean": 0.17,
+  "dev_extreme": 0.374,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 30 (cylinder r19.521)",
+   "face 28 (cylinder r1.25)",
+   "face 5 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155220,
+   151013,
+   151014,
+   155219
+  ],
+  "nearest_passes": [
+   {
+    "line": 155220,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151013,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151014,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155219,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 15
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.65,
+  "points": 11,
+  "bbox": [
+   -7.04,
+   -32.29,
+   6.93,
+   -2.19,
+   -28.8,
+   7.64
+  ],
+  "dev_mean": 0.138,
+  "dev_extreme": 0.181,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 34 (cylinder r19.521)",
+   "face 13 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155520,
+   155521,
+   151359,
+   155513
+  ],
+  "nearest_passes": [
+   {
+    "line": 155520,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155521,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151359,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155513,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 16
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.65,
+  "points": 11,
+  "bbox": [
+   -4.37,
+   11.51,
+   10.86,
+   -4.04,
+   14.38,
+   11.49
+  ],
+  "dev_mean": 0.172,
+  "dev_extreme": 0.272,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 40 (cylinder r19.521)",
+   "face 25 (cone)"
+  ],
+  "last_cut_by_lines": [
+   150897,
+   150896,
+   154889,
+   154709
+  ],
+  "nearest_passes": [
+   {
+    "line": 150897,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150896,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 154889,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 154709,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 17
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.5,
+  "points": 10,
+  "bbox": [
+   -10.34,
+   -11.02,
+   10.85,
+   -7.29,
+   -8.76,
+   11.68
+  ],
+  "dev_mean": 0.194,
+  "dev_extreme": 0.262,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 17 (cone)",
+   "face 36 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   155010,
+   154830,
+   154650,
+   155700
+  ],
+  "nearest_passes": [
+   {
+    "line": 155010,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 154830,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 154650,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155700,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 18
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.5,
+  "points": 10,
+  "bbox": [
+   24.48,
+   11.39,
+   7.18,
+   29.04,
+   13.19,
+   8.11
+  ],
+  "dev_mean": 0.153,
+  "dev_extreme": 0.203,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 5 (cone)",
+   "face 30 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   155236,
+   155237,
+   151028,
+   151027
+  ],
+  "nearest_passes": [
+   {
+    "line": 155236,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155237,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151028,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151027,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 19
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.05,
+  "points": 7,
+  "bbox": [
+   -24.34,
+   22.79,
+   6.44,
+   -23.92,
+   25.01,
+   6.81
+  ],
+  "dev_mean": 0.169,
+  "dev_extreme": 0.206,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 38 (cylinder r19.521)",
+   "face 21 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155793,
+   151678,
+   155792,
+   151677
+  ],
+  "nearest_passes": [
+   {
+    "line": 155793,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151678,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155792,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151677,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 20
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.05,
+  "points": 7,
+  "bbox": [
+   -3.74,
+   9.38,
+   12.24,
+   -3.39,
+   9.58,
+   16.96
+  ],
+  "dev_mean": 0.135,
+  "dev_extreme": 0.176,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 40 (cylinder r19.521)",
+   "face 29 (cylinder r10)"
+  ],
+  "last_cut_by_lines": [
+   154892,
+   154533,
+   154532,
+   154893
+  ],
+  "nearest_passes": [
+   {
+    "line": 154892,
+    "tool": 8,
+    "gap_mm": 0.034
+   },
+   {
+    "line": 154533,
+    "tool": 8,
+    "gap_mm": 0.034
+   },
+   {
+    "line": 154532,
+    "tool": 8,
+    "gap_mm": 0.034
+   },
+   {
+    "line": 154893,
+    "tool": 8,
+    "gap_mm": 0.034
+   }
+  ],
+  "id": 21
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.05,
+  "points": 7,
+  "bbox": [
+   3.41,
+   -10.14,
+   11.81,
+   3.8,
+   -9.38,
+   14.61
+  ],
+  "dev_mean": 0.132,
+  "dev_extreme": 0.167,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 29 (cylinder r10)",
+   "face 34 (cylinder r19.521)",
+   "face 13 (cone)"
+  ],
+  "last_cut_by_lines": [
+   154802,
+   155560,
+   155559,
+   154803
+  ],
+  "nearest_passes": [
+   {
+    "line": 154802,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155560,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155559,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 154803,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 22
+ },
+ {
+  "type": "proud",
+  "area_mm2": 1.05,
+  "points": 7,
+  "bbox": [
+   12.55,
+   33.92,
+   6.0,
+   12.97,
+   34.38,
+   6.48
+  ],
+  "dev_mean": 0.327,
+  "dev_extreme": 0.611,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 3 (plane z6)",
+   "face 24 (cylinder r1.25)"
+  ],
+  "last_cut_by_lines": [
+   150832,
+   150831,
+   150833,
+   150834
+  ],
+  "nearest_passes": [
+   {
+    "line": 150832,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150831,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150833,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 150834,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 23
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.9,
+  "points": 6,
+  "bbox": [
+   -24.53,
+   18.1,
+   6.87,
+   -24.2,
+   21.25,
+   7.53
+  ],
+  "dev_mean": 0.131,
+  "dev_extreme": 0.184,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 38 (cylinder r19.521)",
+   "face 21 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155803,
+   151689,
+   151688,
+   155804
+  ],
+  "nearest_passes": [
+   {
+    "line": 155803,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151689,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151688,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155804,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 24
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.9,
+  "points": 6,
+  "bbox": [
+   -23.44,
+   26.79,
+   6.0,
+   -23.07,
+   28.43,
+   6.43
+  ],
+  "dev_mean": 0.307,
+  "dev_extreme": 0.855,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 20 (cylinder r1.25)",
+   "face 21 (cone)",
+   "face 38 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   151665,
+   151664,
+   151663,
+   151666
+  ],
+  "nearest_passes": [
+   {
+    "line": 151665,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151664,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151663,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151666,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 25
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.9,
+  "points": 6,
+  "bbox": [
+   -12.96,
+   -34.28,
+   6.0,
+   -9.64,
+   -32.93,
+   6.47
+  ],
+  "dev_mean": 0.164,
+  "dev_extreme": 0.372,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 3 (plane z6)",
+   "face 13 (cone)",
+   "face 34 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   151333,
+   151334,
+   151332,
+   151335
+  ],
+  "nearest_passes": [
+   {
+    "line": 151333,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151334,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151332,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151335,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 26
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.9,
+  "points": 6,
+  "bbox": [
+   1.84,
+   -23.71,
+   8.82,
+   2.76,
+   -22.3,
+   9.35
+  ],
+  "dev_mean": 0.152,
+  "dev_extreme": 0.223,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 34 (cylinder r19.521)",
+   "face 13 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155532,
+   155533,
+   151370,
+   155531
+  ],
+  "nearest_passes": [
+   {
+    "line": 155532,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155533,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151370,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155531,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 27
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.75,
+  "points": 5,
+  "bbox": [
+   -9.94,
+   -1.14,
+   15.9,
+   -9.93,
+   -1.11,
+   17.44
+  ],
+  "dev_mean": 0.133,
+  "dev_extreme": 0.139,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 29 (cylinder r10)"
+  ],
+  "last_cut_by_lines": [
+   155028,
+   155029,
+   155720,
+   154669
+  ],
+  "nearest_passes": [
+   {
+    "line": 155028,
+    "tool": 8,
+    "gap_mm": 0.048
+   },
+   {
+    "line": 155029,
+    "tool": 8,
+    "gap_mm": 0.048
+   },
+   {
+    "line": 155720,
+    "tool": 8,
+    "gap_mm": 0.048
+   },
+   {
+    "line": 154669,
+    "tool": 8,
+    "gap_mm": 0.048
+   }
+  ],
+  "id": 28
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.75,
+  "points": 5,
+  "bbox": [
+   9.84,
+   -1.76,
+   12.66,
+   10.18,
+   -1.54,
+   15.42
+  ],
+  "dev_mean": 0.132,
+  "dev_extreme": 0.177,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 29 (cylinder r10)",
+   "face 32 (cylinder r19.521)"
+  ],
+  "last_cut_by_lines": [
+   155417,
+   155416,
+   154593,
+   154592
+  ],
+  "nearest_passes": [
+   {
+    "line": 155417,
+    "tool": 8,
+    "gap_mm": 0.044
+   },
+   {
+    "line": 155416,
+    "tool": 8,
+    "gap_mm": 0.044
+   },
+   {
+    "line": 154593,
+    "tool": 8,
+    "gap_mm": 0.044
+   },
+   {
+    "line": 154592,
+    "tool": 8,
+    "gap_mm": 0.044
+   }
+  ],
+  "id": 29
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.75,
+  "points": 5,
+  "bbox": [
+   9.93,
+   1.06,
+   16.11,
+   10.02,
+   1.16,
+   17.51
+  ],
+  "dev_mean": 0.117,
+  "dev_extreme": 0.135,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 29 (cylinder r10)",
+   "face 6 (cylinder r22.021)"
+  ],
+  "last_cut_by_lines": [
+   154759,
+   155290,
+   155291,
+   154398
+  ],
+  "nearest_passes": [
+   {
+    "line": 154759,
+    "tool": 8,
+    "gap_mm": 0.043
+   },
+   {
+    "line": 155290,
+    "tool": 8,
+    "gap_mm": 0.043
+   },
+   {
+    "line": 155291,
+    "tool": 8,
+    "gap_mm": 0.043
+   },
+   {
+    "line": 154398,
+    "tool": 8,
+    "gap_mm": 0.043
+   }
+  ],
+  "id": 30
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.6,
+  "points": 4,
+  "bbox": [
+   -5.94,
+   8.04,
+   13.46,
+   -5.92,
+   8.15,
+   14.39
+  ],
+  "dev_mean": 0.125,
+  "dev_extreme": 0.135,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 29 (cylinder r10)",
+   "face 22 (cylinder r22.021)"
+  ],
+  "last_cut_by_lines": [
+   154519,
+   155059,
+   154518,
+   155058
+  ],
+  "nearest_passes": [
+   {
+    "line": 154519,
+    "tool": 8,
+    "gap_mm": 0.043
+   },
+   {
+    "line": 155059,
+    "tool": 8,
+    "gap_mm": 0.043
+   },
+   {
+    "line": 154518,
+    "tool": 8,
+    "gap_mm": 0.043
+   },
+   {
+    "line": 155058,
+    "tool": 8,
+    "gap_mm": 0.043
+   }
+  ],
+  "id": 31
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.6,
+  "points": 4,
+  "bbox": [
+   3.4,
+   -9.57,
+   16.28,
+   3.73,
+   -9.39,
+   17.75
+  ],
+  "dev_mean": 0.129,
+  "dev_extreme": 0.156,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 34 (cylinder r19.521)",
+   "face 29 (cylinder r10)"
+  ],
+  "last_cut_by_lines": [
+   154442,
+   154443,
+   154083,
+   154802
+  ],
+  "nearest_passes": [
+   {
+    "line": 154442,
+    "tool": 8,
+    "gap_mm": 0.045
+   },
+   {
+    "line": 154443,
+    "tool": 8,
+    "gap_mm": 0.045
+   },
+   {
+    "line": 154083,
+    "tool": 8,
+    "gap_mm": 0.045
+   },
+   {
+    "line": 154802,
+    "tool": 8,
+    "gap_mm": 0.045
+   }
+  ],
+  "id": 32
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.45,
+  "points": 3,
+  "bbox": [
+   -18.62,
+   -16.21,
+   8.61,
+   -16.52,
+   -15.99,
+   9.0
+  ],
+  "dev_mean": 0.122,
+  "dev_extreme": 0.153,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 13 (cone)",
+   "face 14 (cylinder r22.021)"
+  ],
+  "last_cut_by_lines": [
+   117668,
+   155604,
+   151436,
+   151437
+  ],
+  "nearest_passes": [
+   {
+    "line": 117668,
+    "tool": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155604,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151436,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151437,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 33
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.45,
+  "points": 3,
+  "bbox": [
+   4.23,
+   -25.1,
+   8.43,
+   4.81,
+   -23.85,
+   8.76
+  ],
+  "dev_mean": 0.135,
+  "dev_extreme": 0.158,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 9 (cone)",
+   "face 10 (cylinder r22.021)"
+  ],
+  "last_cut_by_lines": [
+   117434,
+   151271,
+   155462,
+   151272
+  ],
+  "nearest_passes": [
+   {
+    "line": 117434,
+    "tool": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151271,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155462,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151272,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 34
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.45,
+  "points": 3,
+  "bbox": [
+   5.91,
+   -8.1,
+   13.14,
+   5.94,
+   -8.05,
+   14.15
+  ],
+  "dev_mean": 0.137,
+  "dev_extreme": 0.14,
+  "surface": "wall (vertical)",
+  "faces": [
+   "face 29 (cylinder r10)",
+   "face 10 (cylinder r22.021)"
+  ],
+  "last_cut_by_lines": [
+   154788,
+   154789,
+   154969,
+   154608
+  ],
+  "nearest_passes": [
+   {
+    "line": 154788,
+    "tool": 8,
+    "gap_mm": 0.053
+   },
+   {
+    "line": 154789,
+    "tool": 8,
+    "gap_mm": 0.053
+   },
+   {
+    "line": 154969,
+    "tool": 8,
+    "gap_mm": 0.053
+   },
+   {
+    "line": 154608,
+    "tool": 8,
+    "gap_mm": 0.053
+   }
+  ],
+  "id": 35
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.45,
+  "points": 3,
+  "bbox": [
+   22.91,
+   -28.42,
+   6.0,
+   23.11,
+   -27.07,
+   6.09
+  ],
+  "dev_mean": 0.177,
+  "dev_extreme": 0.216,
+  "surface": "floor/top (faces up)",
+  "faces": [
+   "face 9 (cone)",
+   "face 3 (plane z6)"
+  ],
+  "last_cut_by_lines": [
+   155356,
+   155357,
+   155355,
+   155358
+  ],
+  "nearest_passes": [
+   {
+    "line": 155356,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155357,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155355,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155358,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 36
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.45,
+  "points": 3,
+  "bbox": [
+   24.13,
+   -18.9,
+   7.39,
+   24.48,
+   -17.29,
+   7.65
+  ],
+  "dev_mean": 0.155,
+  "dev_extreme": 0.187,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 32 (cylinder r19.521)",
+   "face 9 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155373,
+   151190,
+   151189,
+   155372
+  ],
+  "nearest_passes": [
+   {
+    "line": 155373,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151190,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151189,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155372,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 37
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.45,
+  "points": 3,
+  "bbox": [
+   24.32,
+   -21.46,
+   6.98,
+   24.53,
+   -20.45,
+   7.22
+  ],
+  "dev_mean": 0.134,
+  "dev_extreme": 0.194,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 32 (cylinder r19.521)",
+   "face 9 (cone)"
+  ],
+  "last_cut_by_lines": [
+   155368,
+   151185,
+   151184,
+   155367
+  ],
+  "nearest_passes": [
+   {
+    "line": 155368,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151185,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151184,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155367,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 38
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.3,
+  "points": 2,
+  "bbox": [
+   -24.62,
+   10.1,
+   8.19,
+   -24.52,
+   10.35,
+   8.2
+  ],
+  "dev_mean": 0.132,
+  "dev_extreme": 0.145,
+  "surface": "slope/curved (faces up)",
+  "faces": [
+   "face 18 (cylinder r22.021)",
+   "face 17 (cone)"
+  ],
+  "last_cut_by_lines": [
+   117893,
+   151607,
+   155753,
+   151608
+  ],
+  "nearest_passes": [
+   {
+    "line": 117893,
+    "tool": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151607,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155753,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151608,
+    "tool": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 39
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.3,
+  "points": 2,
+  "bbox": [
+   -20.73,
+   -16.23,
+   8.24,
+   -20.58,
+   -16.2,
+   8.26
+  ],
+  "dev_mean": 0.117,
+  "dev_extreme": 0.124,
+  "surface": "floor/top (faces up)",
+  "faces": [
+   "face 13 (cone)"
+  ],
+  "last_cut_by_lines": [
+   151441,
+   155609,
+   151442,
+   155610
+  ],
+  "nearest_passes": [
+   {
+    "line": 151441,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155609,
+    "tool": 8,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 151442,
+    "tool": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 155610,
+    "tool": 8,
+    "gap_mm": 0.0
+   }
+  ],
+  "id": 40
+ }
+]
