@@ -166,5 +166,61 @@
   },
   "lines": 81641,
   "moves": 159953
+ },
+ {
+  "iter": 7,
+  "time": "2026-11-20T16:15:32",
+  "metrics": {
+   "machinable_in_tol_pct": 86.004,
+   "machinable_gouge_pct": 0.0,
+   "machinable_proud_pct": 13.996,
+   "all_in_tol_pct": 82.837,
+   "unreachable_area_pct": 3.683,
+   "unreachable_in_tol_pct": 0.022,
+   "max_gouge_mm": 0.0135,
+   "any_gouge_pct": 0.0,
+   "parting_face_pct": 0.681,
+   "edge_band_excluded_pct": 0.845,
+   "surface_area_mm2": 47792.4,
+   "probes": 246093,
+   "tolerance_mm": 0.1,
+   "cycle_time_min": 135.89,
+   "setups": 7,
+   "distinct_orientations": 5,
+   "final_connection_mm2": 102.0,
+   "errors": 2,
+   "warnings": 0,
+   "valid": false
+  },
+  "lines": 76261,
+  "moves": 154540
+ },
+ {
+  "iter": 8,
+  "time": "2026-11-20T16:26:55",
+  "metrics": {
+   "machinable_in_tol_pct": 83.98,
+   "machinable_gouge_pct": 0.0,
+   "machinable_proud_pct": 16.02,
+   "all_in_tol_pct": 80.888,
+   "unreachable_area_pct": 3.683,
+   "unreachable_in_tol_pct": 0.022,
+   "max_gouge_mm": 0.0153,
+   "any_gouge_pct": 0.0,
+   "parting_face_pct": 0.681,
+   "edge_band_excluded_pct": 0.845,
+   "surface_area_mm2": 47792.4,
+   "probes": 246093,
+   "tolerance_mm": 0.1,
+   "cycle_time_min": 129.79,
+   "setups": 7,
+   "distinct_orientations": 5,
+   "final_connection_mm2": 102.0,
+   "errors": 1,
+   "warnings": 0,
+   "valid": false
+  },
+  "lines": 73040,
+  "moves": 151367
  }
 ]

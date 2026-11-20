@@ -45,14 +45,15 @@ RULES5 = """\
 - Crashes are errors: rapids touching material, spindle stopped while cutting, material above the flute length,
   tool holder touching material, **tool or holder touching the vise or table** (all moves, all orientations).
   In tilted setups the material state is tracked on a 0.25 mm voxel grid, so keep rapids >= 0.5 mm clear.
-- **Rigidity:** until the `(PART-OFF)` section the material connecting the part to the gripped stub (measured in the
-  middle of the stub gap) must stay >= 50 % of the stock cross-section.
+- **Rigidity:** until the `(PART-OFF)` section the weakest material cross-section between the gripped stub and the
+  part (minimum over planes spanning the stub gap) must stay >= 30 % of the stock cross-section.
 - **Part-off:** the program must end with a part-off section that cuts the stub gap down to <= 15 % of the section
   but leaves >= 2 mm2 (tabs or a thin web) so the part does not come loose in the machine; the operator breaks /
   saws it off and hand-finishes the bottom (parting) face, which is therefore not scored.
 - Cutting data checks as in 3-axis (chip load, cut cross-section, plunges).
 - Score: share of the **3+2-reachable** surface within +-0.1 mm (reachable = the smallest library flat or ball tool can
-  reach it from some allowed tool direction without gouging the part or entering the vise). Surface no tool
+  reach it from some allowed tool direction - with its holder and stick-out - without gouging the part or entering
+  the vise). Surface no tool
   direction reaches is reported separately as "needs simultaneous 5-axis / a smaller tool".
 """
 

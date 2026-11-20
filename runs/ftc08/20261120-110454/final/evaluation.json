@@ -1,12 +1,12 @@
 {
  "iteration": 7,
  "metrics": {
-  "machinable_in_tol_pct": 99.803,
+  "machinable_in_tol_pct": 99.778,
   "machinable_gouge_pct": 0.001,
-  "machinable_proud_pct": 0.196,
+  "machinable_proud_pct": 0.221,
   "all_in_tol_pct": 98.354,
-  "unreachable_area_pct": 1.467,
-  "unreachable_in_tol_pct": 1.054,
+  "unreachable_area_pct": 1.444,
+  "unreachable_in_tol_pct": 1.14,
   "max_gouge_mm": 5.0,
   "any_gouge_pct": 0.001,
   "parting_face_pct": 18.962,
@@ -24,14 +24,18 @@
  },
  "integrity": {
   "harness": {
-   "sha256": "85453d8f45965177fff9302d6f3e5d68d3222413e7fa943b4b84450009cd32c4",
-   "git_head": "62b2911",
-   "harness_modified": false,
-   "modified_files": []
+   "sha256": "29692a9908ce8118b3f2b00bf15d11a44f6e2407be9fca8072b42c87f89ab884",
+   "git_head": "7e34e27",
+   "harness_modified": true,
+   "modified_files": [
+    "M cncllm/part5.py",
+    " M cncllm/sim5.py",
+    " M cncllm/x5.py"
+   ]
   },
   "part_sha256_now": "5340075f80385ce2f279b0b570836f58aaa4dd838ca055c2cd48dce9d3945b62",
   "part_unchanged": true,
-  "harness_unchanged_since_run_start": true,
+  "harness_unchanged_since_run_start": false,
   "generator_scan": {
    "files": [
     "gen.py",

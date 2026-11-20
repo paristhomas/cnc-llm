@@ -165,11 +165,19 @@ def candidate_dirs(faces: list, Rfix: np.ndarray, max_tilt=MAX_TILT) -> np.ndarr
     return np.array(out)
 
 
-def reachability(V, F, vise, stock_lo, stock_hi, P, N, dirs, res=REACH_RES, tools=(4, 8), verbose=False):
-    """Per probe: index of a direction from which the library's smallest flat or ball tool can remove the material
-    just outside the surface (tol + 0.03 mm) without gouging the part or entering the vise; -1 if none."""
-    import time
+# tools used for reachability (holder-aware) and the raster resolution each is evaluated at
+REACH_TOOLS = ((4, 0.075), (8, 0.075), (3, 0.15), (7, 0.15), (2, 0.3), (6, 0.3), (1, 0.5))
 
+
+def reachability(V, F, vise, stock_lo, stock_hi, P, N, dirs, res=REACH_RES, tools=None, verbose=False):
+    """Per probe: index of a direction from which some library tool, WITH its holder (cylinder of the holder diameter
+    from the stick-out up), can remove the material just outside the surface (tol + 0.03 mm) without gouging the part
+    or entering the vise; -1 if none. Small tools are evaluated on fine rasters, large ones on coarser rasters."""
+    import time
+    from .part import holder_floor
+
+    tools = tools or REACH_TOOLS
+    scale = res / REACH_RES
     Vv, Fv = [V], [F]
     off = len(V)
     for lo, hi in vise:
@@ -182,30 +190,35 @@ def reachability(V, F, vise, stock_lo, stock_hi, P, N, dirs, res=REACH_RES, tool
                         for z in (stock_lo[2], stock_hi[2])])
     best = np.full(len(P), -1, np.int64)
     Q = P + N * (TOL + 0.03)
+    groups = {}
+    for tn, r in tools:
+        groups.setdefault(r * scale, []).append(tn)
     for di, d in enumerate(dirs):
         t0 = time.time()
         R = frame_of(d)
-        Vk = VA @ R            # fixture -> frame coordinates (R orthonormal)
+        Vk = np.ascontiguousarray(VA @ R)
         C = corners @ R
         lo2 = C[:, :2].min(0) - 3.0
         hi2 = C[:, :2].max(0) + 3.0
-        nx, ny = int(math.ceil((hi2[0] - lo2[0]) / res)), int(math.ceil((hi2[1] - lo2[1]) / res))
-        Ht = kernel.raster_top(np.ascontiguousarray(Vk), FA, lo2[0], lo2[1], res, nx, ny, -1e6)
-        floor = np.full_like(Ht, -1e30)
-        Hach = np.full_like(Ht, 1e30)
-        for tn in tools:
-            row = LIBRARY[tn].row()
-            Hach = np.minimum(Hach, kernel.achievable(Ht, res, int(row[0]), row[1], row[2], row[3], row[4], floor))
         todo = np.where(best < 0)[0]
+        if not len(todo):
+            break
         q = Q[todo] @ R
-        jj = np.clip(((q[:, 0] - lo2[0]) / res - 0.5).round().astype(int), 0, nx - 1)
-        ii = np.clip(((q[:, 1] - lo2[1]) / res - 0.5).round().astype(int), 0, ny - 1)
-        ok = Hach[ii, jj] <= q[:, 2] + 0.03
+        ok = np.zeros(len(todo), bool)
+        for rr, tns in sorted(groups.items()):
+            nx, ny = int(math.ceil((hi2[0] - lo2[0]) / rr)), int(math.ceil((hi2[1] - lo2[1]) / rr))
+            Ht = kernel.raster_top(Vk, FA, lo2[0], lo2[1], rr, nx, ny, -1e6)
+            jj = np.clip(((q[:, 0] - lo2[0]) / rr - 0.5).round().astype(int), 0, nx - 1)
+            ii = np.clip(((q[:, 1] - lo2[1]) / rr - 0.5).round().astype(int), 0, ny - 1)
+            for tn in tns:
+                t = LIBRARY[tn]
+                row = t.row()
+                zf = holder_floor(Ht, rr, t.holder_diameter / 2, t.stickout, block=max(1, int(round(0.5 / rr))))
+                Hach = kernel.achievable(Ht, rr, int(row[0]), row[1], row[2], row[3], row[4], zf)
+                ok |= Hach[ii, jj] <= q[:, 2] + 0.03
         best[todo[ok]] = di
         if verbose:
             print(f"  dir {di} {np.round(d, 3)}: +{ok.sum()} reachable, {np.sum(best < 0)} left ({time.time() - t0:.1f}s)")
-        if not (best < 0).any():
-            break
     return best
 
 
@@ -214,7 +227,7 @@ def load(run_part_dir, rebuild=False, verbose=True) -> Part5:
     step = pdir / "part.step"
     setup = json.loads((pdir / "setup.json").read_text())
     sha = hashlib.sha256(step.read_bytes() + json.dumps(setup, sort_keys=True).encode()).hexdigest()
-    cfile = pdir / ".cache" / f"pre5_{sha[:16]}.npz"
+    cfile = pdir / ".cache" / f"pre5b_{sha[:16]}.npz"
     if cfile.exists() and not rebuild:
         z = np.load(cfile, allow_pickle=False)
         meta = json.loads(str(z["meta"]))

@@ -796,272 +796,299 @@
    {
     "after_segment": 1,
     "line": 38743,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 14550.88,
+    "weakest_z": -0.1,
+    "fraction": 0.7664,
     "islands": [
-     18965.19
+     14550.88
     ],
     "part_off": false
    },
    {
     "after_segment": 2,
     "line": 38804,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 13337.75,
+    "weakest_z": -0.1,
+    "fraction": 0.7025,
     "islands": [
-     18965.19
+     13337.75
     ],
     "part_off": false
    },
    {
     "after_segment": 3,
     "line": 38866,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 12165.06,
+    "weakest_z": -0.1,
+    "fraction": 0.6407,
     "islands": [
-     18965.19
+     12165.06
     ],
     "part_off": false
    },
    {
     "after_segment": 4,
     "line": 38938,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 11345.06,
+    "weakest_z": -0.1,
+    "fraction": 0.5975,
     "islands": [
-     18965.19
+     11345.06
     ],
     "part_off": false
    },
    {
     "after_segment": 5,
     "line": 39010,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 10550.69,
+    "weakest_z": -0.1,
+    "fraction": 0.5557,
     "islands": [
-     18965.19
+     10550.69
     ],
     "part_off": false
    },
    {
     "after_segment": 6,
     "line": 39082,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 10486.0,
+    "weakest_z": -0.1,
+    "fraction": 0.5523,
     "islands": [
-     18965.19
+     10486.0
     ],
     "part_off": false
    },
    {
     "after_segment": 7,
     "line": 39154,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 10421.31,
+    "weakest_z": -0.1,
+    "fraction": 0.5489,
     "islands": [
-     18965.19
+     10421.31
     ],
     "part_off": false
    },
    {
     "after_segment": 8,
     "line": 39226,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 10356.62,
+    "weakest_z": -0.1,
+    "fraction": 0.5455,
     "islands": [
-     18965.19
+     10356.62
     ],
     "part_off": false
    },
    {
     "after_segment": 9,
     "line": 39298,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 10289.06,
+    "weakest_z": -0.1,
+    "fraction": 0.5419,
     "islands": [
-     18965.19
+     10289.06
     ],
     "part_off": false
    },
    {
     "after_segment": 10,
     "line": 39346,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 10038.56,
+    "weakest_z": -0.1,
+    "fraction": 0.5287,
     "islands": [
-     18965.19
+     10038.56
     ],
     "part_off": false
    },
    {
     "after_segment": 11,
     "line": 39389,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9788.56,
+    "weakest_z": -0.1,
+    "fraction": 0.5156,
     "islands": [
-     18965.19
+     9788.56
     ],
     "part_off": false
    },
    {
     "after_segment": 12,
     "line": 39432,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9645.94,
+    "weakest_z": -0.1,
+    "fraction": 0.508,
     "islands": [
-     18965.19
+     9645.94
     ],
     "part_off": false
    },
    {
     "after_segment": 13,
     "line": 39475,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9482.94,
+    "weakest_z": -0.1,
+    "fraction": 0.4995,
     "islands": [
-     18965.19
+     9482.94
     ],
     "part_off": false
    },
    {
     "after_segment": 14,
     "line": 39501,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9458.19,
+    "weakest_z": -0.1,
+    "fraction": 0.4982,
     "islands": [
-     18965.19
+     9458.19
     ],
     "part_off": false
    },
    {
     "after_segment": 15,
     "line": 39527,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9434.12,
+    "weakest_z": -0.1,
+    "fraction": 0.4969,
     "islands": [
-     18965.19
+     9434.12
     ],
     "part_off": false
    },
    {
     "after_segment": 16,
     "line": 39553,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9409.38,
+    "weakest_z": -0.1,
+    "fraction": 0.4956,
     "islands": [
-     18965.19
+     9409.38
     ],
     "part_off": false
    },
    {
     "after_segment": 17,
     "line": 39579,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9384.62,
+    "weakest_z": -0.1,
+    "fraction": 0.4943,
     "islands": [
-     18965.19
+     9384.62
     ],
     "part_off": false
    },
    {
     "after_segment": 18,
     "line": 42574,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9384.62,
+    "weakest_z": -0.1,
+    "fraction": 0.4943,
     "islands": [
-     18965.19
+     9384.62
     ],
     "part_off": false
    },
    {
     "after_segment": 19,
     "line": 45564,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9384.62,
+    "weakest_z": -0.1,
+    "fraction": 0.4943,
     "islands": [
-     18965.19
+     9384.62
     ],
     "part_off": false
    },
    {
     "after_segment": 20,
     "line": 47650,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9384.62,
+    "weakest_z": -0.1,
+    "fraction": 0.4943,
     "islands": [
-     18965.19
+     9384.62
     ],
     "part_off": false
    },
    {
     "after_segment": 21,
     "line": 49736,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9384.62,
+    "weakest_z": -0.1,
+    "fraction": 0.4943,
     "islands": [
-     18965.19
+     9384.62
     ],
     "part_off": false
    },
    {
     "after_segment": 22,
     "line": 57515,
-    "area_mm2": 18965.19,
-    "fraction": 0.9989,
+    "area_mm2": 9384.62,
+    "weakest_z": -0.1,
+    "fraction": 0.4943,
     "islands": [
-     18965.19
+     9384.62
     ],
     "part_off": false
    },
    {
     "after_segment": 23,
     "line": 83222,
-    "area_mm2": 15440.0,
-    "fraction": 0.8132,
+    "area_mm2": 9384.62,
+    "weakest_z": -0.1,
+    "fraction": 0.4943,
     "islands": [
-     15440.0
+     9384.62
     ],
     "part_off": true
    },
    {
     "after_segment": 24,
     "line": 124222,
-    "area_mm2": 15340.69,
-    "fraction": 0.808,
+    "area_mm2": 9384.62,
+    "weakest_z": -0.1,
+    "fraction": 0.4943,
     "islands": [
-     15340.69
+     9384.62
     ],
     "part_off": true
    },
    {
     "after_segment": 25,
     "line": 124279,
-    "area_mm2": 10473.38,
-    "fraction": 0.5516,
+    "area_mm2": 6582.5,
+    "weakest_z": -7.3,
+    "fraction": 0.3467,
     "islands": [
-     10473.38
+     6582.5
     ],
     "part_off": true
    },
    {
     "after_segment": 26,
     "line": 124331,
-    "area_mm2": 5609.81,
-    "fraction": 0.2955,
+    "area_mm2": 3192.0,
+    "weakest_z": -7.3,
+    "fraction": 0.1681,
     "islands": [
-     3524.25,
-     2085.56
+     2325.69,
+     866.31
     ],
     "part_off": true
    },
    {
     "after_segment": 27,
     "line": 124357,
-    "area_mm2": 4125.06,
-    "fraction": 0.2173,
+    "area_mm2": 2972.0,
+    "weakest_z": -7.3,
+    "fraction": 0.1565,
     "islands": [
-     3524.25,
-     600.81
+     2325.69,
+     646.31
     ],
     "part_off": true
    },
@@ -1069,6 +1096,7 @@
     "after_segment": 28,
     "line": 124383,
     "area_mm2": 2660.06,
+    "weakest_z": -10.9,
     "fraction": 0.1401,
     "islands": [
      2059.25,

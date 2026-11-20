@@ -1,2 +1,2 @@
-Iteration 7: G1 links now respect the side-frame exclusion masks; the band under the box/boss is left entirely to
-+Y (shank rubbed the strip left between masked and unmasked rows); lowered pedestal ends left to the +-Y setups.
+Iteration 8: back to the full-length pedestal at Z-11 (the lowered ends left stock the side tools rubbed); the band
+under the box/boss (Y21..68, tool centre above Z-8.2) is left to the +Y setup; G1 links respect the mask.

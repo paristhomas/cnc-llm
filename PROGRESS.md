@@ -78,3 +78,14 @@ Autonomous overnight run. Newest entries at the bottom.
   - the exported STL is welded;
   - the brief's face bounding boxes are worded clearly;
   - skill notes added: M5 before indexing, 0.3 mm shank clearance on 0.25 mm voxels, part-off reach.
+- 17:00 FTC-10 showcase run 1 (360k tokens, 8 iterations): best valid result 81.3% (iteration 5); 86% iterations kept
+  one shank error. Its key friction was an eval flaw: reachability ignored holders, so cross-hole middles counted
+  as reachable. Harness v5.2:
+  - holder-aware reachability over 7 tools, each at its own raster resolution;
+  - the rigidity and part-off connection is now the weakest plane over the gap (rigidity limit 30 %);
+  - crash messages give G54 locations.
+  Re-scored without LLM cost:
+  - FTC-08: 99.78 %, still VALID.
+  - FTC-10: 87.15 % of the reachable surface (11.2 % now unreachable), but INVALID on rigidity: the part hung on
+    thin necks.
+  Acceptance doc annotated with both revisions. FTC-10 rerun launched with these lessons.

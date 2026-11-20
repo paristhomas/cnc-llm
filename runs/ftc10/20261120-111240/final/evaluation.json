@@ -1,0 +1,58 @@
+{
+ "iteration": 5,
+ "metrics": {
+  "machinable_in_tol_pct": 87.152,
+  "machinable_gouge_pct": 0.0,
+  "machinable_proud_pct": 12.848,
+  "all_in_tol_pct": 78.3,
+  "unreachable_area_pct": 11.204,
+  "unreachable_in_tol_pct": 8.139,
+  "max_gouge_mm": 0.0151,
+  "any_gouge_pct": 0.0,
+  "parting_face_pct": 0.681,
+  "edge_band_excluded_pct": 0.845,
+  "surface_area_mm2": 47792.4,
+  "probes": 246093,
+  "tolerance_mm": 0.1,
+  "cycle_time_min": 117.67,
+  "setups": 7,
+  "distinct_orientations": 5,
+  "final_connection_mm2": 102.0,
+  "errors": 3,
+  "warnings": 1,
+  "valid": false
+ },
+ "integrity": {
+  "harness": {
+   "sha256": "29692a9908ce8118b3f2b00bf15d11a44f6e2407be9fca8072b42c87f89ab884",
+   "git_head": "7e34e27",
+   "harness_modified": true,
+   "modified_files": [
+    "M cncllm/part5.py",
+    " M cncllm/sim5.py",
+    " M cncllm/x5.py"
+   ]
+  },
+  "part_sha256_now": "5dfc6082a8fa0f0d3c21b257e5a929d59b34b347322c89932390b1083f140e4f",
+  "part_unchanged": true,
+  "harness_unchanged_since_run_start": false,
+  "generator_scan": {
+   "files": [
+    "cam.py",
+    "gen.py",
+    "ops.py"
+   ],
+   "forbidden_imports": [],
+   "ok": true
+  }
+ },
+ "crosscheck_millbill": {
+  "points": 250000,
+  "disagree": 0,
+  "disagree_beyond_2um": 0,
+  "agreement_pct": 100.0,
+  "frames": 7,
+  "note": "moves from our G68.2 parser; material classification by MillBill's kernel",
+  "examples": []
+ }
+}

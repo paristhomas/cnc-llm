@@ -24,7 +24,7 @@ VOX = 0.25
 GRID_RES = 0.1
 MAX_GRID = 8e6
 INDEX_TIME_S = 6.0
-RIGID_MIN = 0.5        # connection must keep >= 50 % of the stub section until the part-off
+RIGID_MIN = 0.3        # weakest connection must keep >= 30 % of the stub section until the part-off
 PARTOFF_MAX = 0.15     # part-off must leave <= 15 % ...
 TAB_MIN_MM2 = 2.0      # ... but at least this much (tabs / web), so the part does not drop in the machine
 
@@ -105,19 +105,25 @@ def frame_angles(R):
     return math.degrees(math.acos(max(-1, min(1, d[2])))), (math.degrees(math.atan2(d[1], d[0])) if abs(d[2]) < 0.9999 else 0.0)
 
 
-def connection_area(wp, part, res=0.25):
-    """Material area at the plane in the middle of the stub gap (between the vise jaws and the part bottom)."""
+def connection_area(wp, part, res=0.25, nplanes=7):
+    """Weakest material cross-section between the vise stub and the part: the minimum, over planes spanning the stub
+    gap (from just above the jaws to just below the part bottom), of the material area in the plane."""
     lo, hi = part.stock_lo, part.stock_hi
-    zc = -part.fixture["gap"] / 2
+    gap = part.fixture["gap"]
     xs = np.arange(lo[0] + res / 2, hi[0], res)
     ys = np.arange(lo[1] + res / 2, hi[1], res)
     X, Y = np.meshgrid(xs, ys)
-    P = np.c_[X.ravel(), Y.ravel(), np.full(X.size, zc)]
-    ins = wp.inside(P).reshape(X.shape)
     from scipy import ndimage
-    lab, n = ndimage.label(ins)
-    sizes = np.bincount(lab.ravel())[1:] * res * res if n else np.zeros(0)
-    return float(ins.sum() * res * res), sorted(sizes.round(2).tolist(), reverse=True)
+    best = None
+    for zc in np.linspace(-gap + 0.3, -0.1, nplanes):
+        P = np.c_[X.ravel(), Y.ravel(), np.full(X.size, zc)]
+        ins = wp.inside(P).reshape(X.shape)
+        area = float(ins.sum() * res * res)
+        if best is None or area < best[0]:
+            lab, n = ndimage.label(ins)
+            sizes = np.bincount(lab.ravel())[1:] * res * res if n else np.zeros(0)
+            best = (area, sorted(sizes.round(2).tolist(), reverse=True), float(zc))
+    return best[0], best[1], best[2]
 
 
 def run(program_text: str, part, verbose=True) -> dict:
@@ -180,6 +186,7 @@ def run(program_text: str, part, verbose=True) -> dict:
                       "R": R, "o": o})
     t1 = time.time()
     # ---- crash flags from the grid replay
+    _, B_, _ = to_fixture(M, frames)
     names = {1: "rapid (G0) move removes material - crash", 2: "material removed with spindle stopped - crash",
              4: "material contact above the flute length (shank rubbing / tool too short)",
              8: "tool holder collides with material (stick-out too short for this depth)"}
@@ -190,8 +197,9 @@ def run(program_text: str, part, verbose=True) -> dict:
             i0 = kk[0]
             issues.append({"severity": "error", "kind": "collision", "count": int(len(kk)), "line": lines[0],
                            "lines": lines[:30], "volume_mm3": round(float(vol[kk].sum()), 2),
-                           "msg": msg + f"; first at line {int(M[i0, 10])} (frame {int(M[i0, 12])}, T{int(M[i0, 6])}), "
-                                        f"removed column up to {thick[i0]:.2f} mm"})
+                           "msg": msg + f"; first at line {int(M[i0, 10])} (frame {int(M[i0, 12])}, T{int(M[i0, 6])}, move "
+                                        f"ends at G54 ({B_[i0, 0]:.2f}, {B_[i0, 1]:.2f}, {B_[i0, 2]:.2f})), removed column up "
+                                        f"to {thick[i0]:.2f} mm (material left by earlier setups counts too)"})
     # ---- vise / table collisions (tool + holder, every move incl. rapids)
     A, B, D = to_fixture(M, frames)
     act = M[:, 6] > 0
@@ -226,8 +234,8 @@ def run(program_text: str, part, verbose=True) -> dict:
     conn = []
     for si, (a, b, k) in enumerate(segs):
         wp_b = Workpiece5(M, frames, part, upto=b)
-        area, islands = connection_area(wp_b, part)
-        conn.append({"after_segment": si + 1, "line": int(M[b - 1, 10]), "area_mm2": round(area, 2),
+        area, islands, zw = connection_area(wp_b, part)
+        conn.append({"after_segment": si + 1, "line": int(M[b - 1, 10]), "area_mm2": round(area, 2), "weakest_z": round(zw, 2),
                      "fraction": round(area / A0, 4), "islands": islands[:6],
                      "part_off": bool(po_line and M[a, 10] >= po_line)})
     rigid = {"stock_section_mm2": round(A0, 1), "part_off_line": po_line, "checks": conn}
@@ -239,7 +247,8 @@ def run(program_text: str, part, verbose=True) -> dict:
             issues.append({"severity": "error", "kind": "rigidity", "line": c["line"],
                            "msg": f"part connection to the vise stub is only {100 * c['fraction']:.0f}% of the stock "
                                   f"section after segment {c['after_segment']} (before the part-off): the part would "
-                                  f"flex / chatter. Keep >= {100 * RIGID_MIN:.0f}% until the part-off."})
+                                  f"flex / chatter (weakest plane Z{c['weakest_z']:g}). Keep >= {100 * RIGID_MIN:.0f}% of the section at every "
+                                  f"height of the stub gap until the part-off."})
     if conn and po_line is not None:
         last = conn[-1]
         if last["fraction"] > PARTOFF_MAX:

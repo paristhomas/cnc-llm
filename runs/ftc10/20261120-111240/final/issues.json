@@ -1,0 +1,36 @@
+[
+ {
+  "severity": "warning",
+  "kind": "cutting",
+  "msg": "deep plunge (> 0.5 D) at > 50% of the recommended feed for T1; ramp or helix instead",
+  "count": 7,
+  "line": 71386,
+  "lines": [
+   71386,
+   71396,
+   71406,
+   71506,
+   71516,
+   71526,
+   71536
+  ]
+ },
+ {
+  "severity": "error",
+  "kind": "rigidity",
+  "line": 51077,
+  "msg": "part connection to the vise stub is only 7% of the stock section after segment 3 (before the part-off): the part would flex / chatter (weakest plane Z-5.87). Keep >= 30% of the section at every height of the stub gap until the part-off."
+ },
+ {
+  "severity": "error",
+  "kind": "rigidity",
+  "line": 65295,
+  "msg": "part connection to the vise stub is only 5% of the stock section after segment 4 (before the part-off): the part would flex / chatter (weakest plane Z-5.87). Keep >= 30% of the section at every height of the stub gap until the part-off."
+ },
+ {
+  "severity": "error",
+  "kind": "rigidity",
+  "line": 71280,
+  "msg": "part connection to the vise stub is only 5% of the stock section after segment 5 (before the part-off): the part would flex / chatter (weakest plane Z-5.87). Keep >= 30% of the section at every height of the stub gap until the part-off."
+ }
+]

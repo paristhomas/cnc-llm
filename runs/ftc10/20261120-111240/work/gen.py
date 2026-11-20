@@ -17,8 +17,7 @@ part = trimesh.load(f'{RUN}/brief/part.stl')
 BUMPS = (-52.0, -30.0, -8.0, 14.0)
 PED_TOP = -11.0
 keep = [part.triangles,
-        box_tris([-37.5, -63, -43], [37.5, 63, PED_TOP]),          # pedestal (stub kept below the access zone)
-        box_tris([-37.5, -82, -43], [37.5, 82, -17.0]),            # lower pedestal at the ends (holder room from +-Y)
+        box_tris([-37.5, -82, -43], [37.5, 82, PED_TOP]),          # pedestal (stub kept below the access zone)
         box_tris([-40.5, -82, -43], [40.5, 82, -35.0]),            # full-width stub below
         box_tris([-31.0, 35.5, PED_TOP], [-16.0, 59.5, 0.0])]      # neck under the boss (parting face)
 for c in BUMPS:                                                    # small necks under the bump bottoms
@@ -116,8 +115,7 @@ for fr in (FR_PX, FR_MX):
     sg = 1 if fr is FR_PX else -1     # u = sg*Y
     uu = S.uc0 + np.arange(S.nu) * GC; vv = S.vc0 + np.arange(S.nv) * GC
     Yw = sg * uu[None, :]; Zw = vv[:, None]
-    um = ~((Yw > 27.0) & (Yw < 62.0) & (Zw > -7.6))   # under the box/boss: shank would rub; done from +Y
-    um &= ~((np.abs(Yw) > 61.0) & (Zw < -5.0))        # lowered pedestal ends: left to the +-Y setups
+    um = ~((Yw > 21.0) & (Yw < 68.0) & (Zw > -8.2))   # band under the box/boss: shank would rub; done from +Y
     rough(W, S, 1, allow=0.3, ap=2.0, wbot=-1.5, floors=fl, umask=um)
     log(fr.name, 'rough done', len(W.L))
     finish(W, S, 1, steps(40.0, -1.5, 3.0, extra=fl), allow=0.0, umask=um)

@@ -92,6 +92,12 @@ Practical notes:
 - Part-off reach: side tools reach about their stick-out (T1 40 mm). On large footprints, open the middle from +Z
   first (inside windows) so the remaining webs are within reach.
 
+- Rigidity is checked at the weakest plane of the stub gap: thin necks under the part fail. Everything under the
+  part's footprint (underside features in the gap) can only be cut inside the `(PART-OFF)` section, as the last
+  operations, once the rest of the part is finished. Plan for that, or choose an orientation whose underside is plain.
+- Reachability is holder-aware: if the brief says a surface is reachable, some library tool and holder can get
+  there. Holes whose middle no holder can reach are excluded.
+
 Fix the problems in this order:
 1. vise or holder collisions;
 2. other crashes;

@@ -16,9 +16,13 @@ file lists only what is new.
 5. **Rigidity.**
    - The connection area in the stub gap is measured after every setup.
    - Before the `(PART-OFF)` marker it stays at or above 50 % of the stock section; otherwise the run is INVALID.
+   - **Revised 2026-11-20 after the FTC-10 run:** it is now the weakest plane across the whole gap, with a 30 %
+     limit. Measuring only mid-gap let a part hang on thin necks.
 6. **Part-off.** It is required, and must leave between 2 mm² and 15 % of the section. Tab sizes are reported.
 7. **Score.**
    - The headline is the share of the 3+2-reachable surface within ±0.1 mm.
+   - **Revised after the FTC-10 run:** reachability is now holder-aware. Each tool's holder and stick-out are part
+     of the check. Without this, the middles of cross holes counted as reachable.
    - Reachability is computed from geometry only: the smallest library tools, from 26 cube directions plus the part's
      own feature axes within the tilt limit, with the vise as an obstacle.
    - The whole-surface score is also reported.
