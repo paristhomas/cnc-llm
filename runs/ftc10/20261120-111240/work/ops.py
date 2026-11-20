@@ -149,6 +149,8 @@ def rough(W, S, n, allow=0.3, ap=2.0, step=None, wbot=None, floors=(), wtop=None
         if not cand.any():
             continue
         allowed = (f >= 0) & ok
+        if umask is not None:
+            allowed = allowed & umask
 
         def linkok(a, b):
             P = densify(np.array([a[:2], b[:2]]), GC)

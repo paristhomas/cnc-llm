@@ -1,3 +1,2 @@
-Iteration 4: T7 fillet passes limited to 0-30 deg (shank off the finished wall); holder-vs-vise clearance made more
-conservative (sim flagged holder vs jaws at the stub ends); part-off deep slot levels kept to |Y|<=60 (tabs at the stub
-ends); added T5 bull-nose rough/finish from +Y (channels under the right block, r1 fillets) and a new -Y setup (left end).
+Iteration 7: G1 links now respect the side-frame exclusion masks; the band under the box/boss is left entirely to
++Y (shank rubbed the strip left between masked and unmasked rows); lowered pedestal ends left to the +-Y setups.

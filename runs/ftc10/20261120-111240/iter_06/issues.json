@@ -1,0 +1,16 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 4,
+  "line": 29788,
+  "lines": [
+   29788,
+   30439,
+   30741,
+   48229
+  ],
+  "volume_mm3": 362.69,
+  "msg": "material contact above the flute length (shank rubbing / tool too short); first at line 29788 (frame 2, T1), removed column up to 28.00 mm"
+ }
+]

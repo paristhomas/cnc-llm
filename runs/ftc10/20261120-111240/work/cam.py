@@ -350,8 +350,7 @@ class Setup:
         R, Rh, L = T['R'], T['Rh'], T['L']
         A = np.maximum(disc_max(Sc, (Rh + 0.6) / GC) - L + 0.6, disc_max(self.Vc, (Rh + 5.0) / GC) - (L - 12.0) + 2.0)
         B = disc_max(self.Vc, (R + 5.0) / GC) + 5.0
-        Cs = disc_max(self.Hc, (R + 0.6) / GC) - T['F'] + 0.1
-        return np.maximum(np.maximum(A, B), Cs)
+        return np.maximum(A, B)
 
     def clearance(self, T):
         R, Rh, L = T['R'], T['Rh'], T['L']

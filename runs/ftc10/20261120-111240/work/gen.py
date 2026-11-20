@@ -113,9 +113,14 @@ for fr in (FR_PX, FR_MX):
     S = ops.Setup(job, fr, vmin=-40.0)
     fl = floors(S, -1.5, 40.0)
     log(fr.name, 'floors', fl)
-    rough(W, S, 1, allow=0.3, ap=2.0, wbot=-1.5, floors=fl)
+    sg = 1 if fr is FR_PX else -1     # u = sg*Y
+    uu = S.uc0 + np.arange(S.nu) * GC; vv = S.vc0 + np.arange(S.nv) * GC
+    Yw = sg * uu[None, :]; Zw = vv[:, None]
+    um = ~((Yw > 27.0) & (Yw < 62.0) & (Zw > -7.6))   # under the box/boss: shank would rub; done from +Y
+    um &= ~((np.abs(Yw) > 61.0) & (Zw < -5.0))        # lowered pedestal ends: left to the +-Y setups
+    rough(W, S, 1, allow=0.3, ap=2.0, wbot=-1.5, floors=fl, umask=um)
     log(fr.name, 'rough done', len(W.L))
-    finish(W, S, 1, steps(40.0, -1.5, 3.0, extra=fl), allow=0.0)
+    finish(W, S, 1, steps(40.0, -1.5, 3.0, extra=fl), allow=0.0, umask=um)
     log(fr.name, 'finish done', len(W.L))
     sg = 1 if fr is FR_PX else -1     # u = sg*Y
     cb = [(sg * c, 8.0, 5.0, 37.5, 27.5) for c in BUMPS]

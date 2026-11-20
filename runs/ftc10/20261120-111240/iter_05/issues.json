@@ -1,0 +1,18 @@
+[
+ {
+  "severity": "warning",
+  "kind": "cutting",
+  "msg": "deep plunge (> 0.5 D) at > 50% of the recommended feed for T1; ramp or helix instead",
+  "count": 7,
+  "line": 71386,
+  "lines": [
+   71386,
+   71396,
+   71406,
+   71506,
+   71516,
+   71526,
+   71536
+  ]
+ }
+]
