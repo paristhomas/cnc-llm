@@ -290,54 +290,128 @@ g.raw('G3 X1.000 Y0.000 I-1.000 J0.000', 1.0, 0.0, -0.3, F2p)
 g.lin(0.0, 0.0, -0.3, F2p)
 g.retract()
 
-# wall finishing (hub + blades union)
+# ------------------------------------------------------------------ finishing helpers
 ISL = section(15.0)
 ISL = max(ISL.geoms, key=lambda p: p.area) if hasattr(ISL, 'geoms') else ISL
+HUB = section(20.0)
+HUB = Polygon(max(HUB.geoms, key=lambda p: p.area).exterior) if hasattr(HUB, 'geoms') else Polygon(HUB.exterior)
 
 
-def contour_pass(g, d, R, kind, f, fpl, rfoot, zmin=None, holder=None, start_far=True, step=0.1):
-    ring = ISL.buffer(d, quad_segs=64).exterior
+def refine(P, z, f, thr=0.15, it=7):
+    """insert midpoints where linear interpolation would undercut the drop surface; staircase leftovers."""
+    P = np.asarray(P, float); z = np.asarray(z, float)
+    for _ in range(it):
+        dz = np.abs(np.diff(z))
+        L = np.hypot(*(np.diff(P, axis=0).T))
+        idx = np.where((dz > thr) & (L > 0.01))[0]
+        if len(idx) == 0:
+            break
+        M = (P[idx] + P[idx + 1]) / 2
+        zm = f(M)
+        need = zm > (z[idx] + z[idx + 1]) / 2 + 0.002
+        idx = idx[need]; M = M[need]; zm = zm[need]
+        if len(idx) == 0:
+            break
+        P = np.insert(P, idx + 1, M, axis=0)
+        z = np.insert(z, idx + 1, zm)
+    pts = [np.array([P[0, 0], P[0, 1], z[0]])]
+    for k in range(1, len(P)):
+        a = pts[-1]; b = np.array([P[k, 0], P[k, 1], z[k]])
+        if abs(b[2] - a[2]) > thr:
+            if b[2] > a[2]:
+                pts.append(np.array([a[0], a[1], b[2]]))
+            else:
+                pts.append(np.array([b[0], b[1], a[2]]))
+        pts.append(b)
+    return np.array(pts)
+
+
+def emit_runs(g, runs, f, fpl):
+    for r in runs:
+        r = simplify3(r, 0.003)
+        rr0 = math.hypot(r[0, 0], r[0, 1])
+        g.go_to(r[0, 0], r[0, 1], 19.0 if rr0 > 21 else 23.0)
+        g.lin(r[0, 0], r[0, 1], r[0, 2], fpl)
+        prev = r[0]
+        for q in r[1:]:
+            dz = q[2] - prev[2]; dxy = math.hypot(q[0] - prev[0], q[1] - prev[1])
+            g.lin(q[0], q[1], q[2], fpl if (dz < -0.5 and -dz > dxy) else f)
+            prev = q
+        g.retract()
+
+
+def contour_pass(g, isl, d, R, kind, f, fpl, rfoot, holder=None, step=0.1, mask=None, levels=(), avoid=None):
+    ring = isl.buffer(d, quad_segs=64).exterior
     c = np.array(ring.coords)
-    P = densify(c, step)
-    z = drop(P, R, kind, 'fine', rfoot=rfoot)
+    P = densify(c, step)[:-1]
+    fz = lambda Q: drop(Q, R, kind, 'fine', rfoot=rfoot)
+    z = fz(P)
     ok = np.ones(len(P), bool)
     if holder is not None:
         hr, so = holder
         hz = drop(P, hr + 0.5, 'flat', 'coarse')
-        ok = z + so >= hz + 0.3
-    if zmin is not None:
-        z = np.maximum(z, zmin)
-    # rotate so that it starts at farthest-from-centre point
+        ok &= z + so >= hz + 0.3
+    if mask is not None:
+        ok &= np.array([mask.distance(Point(*p)) < 1e-9 for p in P])
+    if avoid is not None:
+        ok &= np.array([avoid.distance(Point(*p)) > 1e-9 for p in P])
+    # start at farthest-from-centre point; closed loop
     i0 = int(np.argmax(np.hypot(P[:, 0], P[:, 1])))
-    P = np.vstack([P[i0:], P[1:i0 + 1]]); z = np.concatenate([z[i0:], z[1:i0 + 1]]); ok = np.concatenate([ok[i0:], ok[1:i0 + 1]])
-    pts = np.column_stack([P, z])
-    # split into runs of ok
-    runs = []
-    cur = []
-    for k in range(len(pts)):
-        if ok[k]:
-            cur.append(pts[k])
+    P = np.roll(P, -i0, axis=0); z = np.roll(z, -i0); ok = np.roll(ok, -i0)
+    if ok.all():
+        P = np.vstack([P, P[:1]]); z = np.append(z, z[0]); ok = np.append(ok, True)
+    for lev in list(levels) + [None]:
+        if lev is None:
+            zz = z.copy(); use = ok.copy()
         else:
-            if len(cur) > 3: runs.append(np.array(cur))
-            cur = []
-    if len(cur) > 3: runs.append(np.array(cur))
-    for r in runs:
-        r = simplify3(r, 0.003)
-        g.go_to(r[0, 0], r[0, 1], 19.0 if np.hypot(r[0, 0], r[0, 1]) > 24 else 23.0)
-        g.lin(r[0, 0], r[0, 1], r[0, 2], fpl)
-        for q in r[1:]:
-            g.lin(q[0], q[1], q[2], f)
-        g.retract()
+            zz = np.maximum(z, lev); use = ok & (z < lev - 0.01)
+            # widen use by a few points so runs overlap
+            use = ok & (np.convolve(use.astype(float), np.ones(7), 'same') > 0)
+        runs = []
+        cur = []
+        for k in range(len(P)):
+            if use[k]:
+                cur.append(k)
+            else:
+                if len(cur) > 2: runs.append(cur)
+                cur = []
+        if len(cur) > 2: runs.append(cur)
+        out = []
+        for idx in runs:
+            Q = P[idx]
+            fzl = fz if lev is None else (lambda X, lev=lev: np.maximum(fz(X), lev))
+            out.append(refine(Q, zz[idx], fzl))
+        emit_runs(g, out, f, fpl)
 
 
-g.c('wall finish T2')
-contour_pass(g, 3.1, 3.0, 'flat', F2, F2p, 3.0)
-contour_pass(g, 3.0, 3.0, 'flat', F2, F2p, 2.95)
+def leftover(isl, d, R):
+    """material near isl's walls not swept by a flat tool of radius R running at offset d."""
+    ring = isl.buffer(d, quad_segs=64).exterior
+    lo = isl.buffer(d + R, quad_segs=64).difference(isl.buffer(d - R + 0.02, quad_segs=64)).difference(ring.buffer(R, quad_segs=32))
+    lo = lo.buffer(-0.04).buffer(0.04)
+    parts = [p for p in (lo.geoms if hasattr(lo, 'geoms') else [lo]) if p.area > 0.003]
+    return unary_union(parts) if parts else Polygon()
 
-# T3 corners
-if CFG.get('t3', True):
-    g.tool_change(3, 24000, 'T3 3mm flat - wall corner contour')
-    contour_pass(g, 1.53, 1.5, 'flat', 960, 320, 1.48)
+
+LO2 = leftover(ISL, 3.0, 3.0)
+LO3 = leftover(ISL, 1.53, 1.5)
+LO4 = leftover(ISL, 0.78, 0.75)
+print('leftover areas', LO2.area, LO3.area, LO4.area, file=sys.stderr)
+
+g.c('wall finish T2 (hub+blades)')
+contour_pass(g, ISL, 3.1, 3.0, 'flat', F2, F2p, 3.0)
+contour_pass(g, ISL, 3.0, 3.0, 'flat', F2, F2p, 2.95)
+g.c('hub wall above blades + blade tops at hub')
+contour_pass(g, HUB, 3.0, 3.0, 'flat', F2, F2p, 2.95)
+
+# T3 corners (only where T2 left corner material), in levels for the 10 mm flute
+g.tool_change(3, 24000, 'T3 3mm flat - concave vertical corners')
+contour_pass(g, ISL, 1.53, 1.5, 'flat', 960, 320, 1.48, mask=LO2.buffer(1.7), levels=(18.5, 15.0, 11.5))
+
+# T4 corners
+g.tool_change(4, 24000, 'T4 1.5mm flat - concave vertical corners')
+contour_pass(g, ISL, 0.78, 0.75, 'flat', 480, 160, 0.73, mask=LO3.buffer(0.95), holder=(10.0, 14.0),
+             levels=(20.5, 19.0, 17.5, 16.0, 14.5, 13.0, 11.5, 10.0, 8.5, 7.0), step=0.05)
 
 # T6 ball raster
 g.tool_change(6, 24000, 'T6 6mm ball - drop-cutter raster')
@@ -345,14 +419,14 @@ F6, F6p = 1440, 480
 R6 = 3.0
 so = CFG.get('so6', 0.5)
 ys = np.arange(-43.0, 43.0 + 1e-6, so)
+f6 = lambda Q: np.maximum(drop(Q, R6, 'ball', 'coarse', extra=0.05), 3.0)
 first = True
 for li, y in enumerate(ys):
     xm = math.sqrt(max(43.5 ** 2 - y * y, 0))
     xs = np.arange(-xm, xm + 1e-6, 0.25)
     if len(xs) < 2: continue
     P = np.column_stack([xs, np.full_like(xs, y)])
-    z = np.maximum(drop(P, R6, 'ball', 'coarse', extra=0.05), 3.0)
-    pts = np.column_stack([P, z])
+    pts = refine(P, f6(P), f6)
     if li % 2: pts = pts[::-1]
     pts = simplify3(pts, 0.003)
     if first:
@@ -365,21 +439,22 @@ for li, y in enumerate(ys):
     for q in pts[1:]:
         dz = q[2] - prev[2]
         dxy = math.hypot(q[0] - prev[0], q[1] - prev[1])
-        ff = F6p if (dz < -1.0 and -dz > dxy) else F6
-        g.lin(q[0], q[1], q[2], ff)
+        g.lin(q[0], q[1], q[2], F6p if (dz < -0.5 and -dz > dxy) else F6)
         prev = q
 g.retract()
 
 # T7 ball pencils
 g.tool_change(7, 24000, 'T7 3mm ball - wall/dish pencils')
 for d in CFG.get('t7', [1.53, 1.9, 2.3]):
-    contour_pass(g, d, 1.5, 'ball', 960, 320, min(1.5, d - 0.03))
+    contour_pass(g, ISL, d, 1.5, 'ball', 960, 320, min(1.5, d - 0.03))
 
-# T8
-if CFG.get('t8', [0.56, 0.8, 1.05, 1.3]):
+# T8 (away from vertical corner leftovers)
+t8 = CFG.get('t8', [0.56, 0.8, 1.05, 1.3])
+if t8:
     g.tool_change(8, 24000, 'T8 1mm ball - corner pencils')
-    for d in CFG.get('t8', [0.56, 0.8, 1.05, 1.3]):
-        contour_pass(g, d, 0.5, 'ball', 384, 128, min(0.5, d - 0.03), holder=(10.0, 12.0), step=0.08)
+    av = LO4.buffer(0.65) if not LO4.is_empty else None
+    for d in t8:
+        contour_pass(g, ISL, d, 0.5, 'ball', 384, 128, min(0.5, d - 0.03), holder=(10.0, 12.0), step=0.08, avoid=av)
 
 # T1 outer profile
 g.tool_change(1, 18000, 'T1 outer profile R40')

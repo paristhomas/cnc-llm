@@ -1,0 +1,1 @@
+Iter 2: refine drop-cutter paths (midpoint insertion + staircase) to stop the ball nicking blade top edges; T3/T4 corner passes in Z levels only near hub/blade corners (fix T3 shank rub); T2 ring around hub for hub wall above blades and blade tops at the hub; T8 kept away from vertical corner leftovers (fix overload).

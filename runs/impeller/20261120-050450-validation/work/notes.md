@@ -1,1 +1,1 @@
-Iter 1: Z-level offset-ring roughing T1 + T2 rest, T2 bore helix + flat drop-cutter wall contour, T3 corner contour, T6 ball drop-cutter raster, T7/T8 ball pencils along wall/dish corner, T1 outer profile.
+Iter 2: refine drop-cutter paths (midpoint insertion + staircase) to stop the ball nicking blade top edges; T3/T4 corner passes in Z levels only near hub/blade corners (fix T3 shank rub); T2 ring around hub for hub wall above blades and blade tops at the hub; T8 kept away from vertical corner leftovers (fix overload).
