@@ -24,11 +24,35 @@ Viewer sources are in `cncllm/viewer/src/*5.js`. Rebuild them with esbuild into 
 Branch for this phase: create `claude/3plus2-refine` from `claude/3plus2-indexed-5axis`. Push at every
 milestone. Do not open PRs unless the owner asks.
 
-## 1. What the owner said (verbatim intent)
-> "I was kinda hoping I would see the +2 axis and I would see how they moved the workpiece."
+## 1. What the owner said (exact words, typos kept)
+This phase:
+> "I was kinda hoping I would see the +2 axis  and I would see how they moved the work piece."
 
-> "New rule: you can't just say things are unreachable — that is not true, it's a failed area. For example this
-> part is machinable such that only small, easy-to-hand-remove tabs are left, but you haven't managed that."
+> "Also new rule you can't just say things are unrwchable that is not true, its a failed area. For example this part
+> is machineable such that only small easy to hand removed tabs are left but you haven't managed that. You're mission
+> now is to write brief to refine this with more critical agent then new machine and agent will pull and continue work"
+
+> "And how toncheck and what I actually want not some inference you've made"
+
+Still in force from the 3+2 phase:
+> "single fixture vice" · "make sure we consider things like keeping part to vice mount rigid to start with then
+> parting off at end and where is best to fixture based on geometry" · "should include final op that does most of
+> partinf so it's easy for operator to do final bit manually out of machine" · "we need good eval" · "Bottom centre
+> part should be main one I will use as example to show friend" (= NIST FTC-10) · "Keep eye on usage" · dialect G68.2.
+
+Still in force from the original spec (paraphrased; exact text is not in the repo):
+- aluminium, ±0.1 mm;
+- a closed loop with a trustworthy simulator that resists reward hacking;
+- a 3D cutting visualisation that an agent evaluates;
+- a web report per run;
+- development parts plus held-out validation parts;
+- open-source tools only;
+- independent agent verification against criteria fixed upfront;
+- push at every milestone;
+- use subagents.
+
+**Everything else in this brief is the previous agent's interpretation.** That includes every number not in the quotes
+above. §6 labels each item OWNER or PROPOSED.
 
 The headline result so far:
 - FTC-10 claims 96.3 % "of reachable surface".
@@ -36,6 +60,10 @@ The headline result so far:
 - So the honest whole-surface number is **84.8 %**. Under the new rule that run scores ~85 %, not 96 %.
 
 ## 2. New rules (supersede ACCEPTANCE_3PLUS2 E7 and F5)
+R1 and "the underside is machined, leaving only tabs" are the owner's rules. Every number in R1–R4 (1.0 mm witness,
+20–30 mm², ≤ 3 mm, 0.5 %/1.5 %, 30 %) is **PROPOSED**; see §6. §3 (Machine view design) and §4 (order of work) are also the
+previous agent's plan, not the owner's.
+
 ### R1. No reachability exclusion
 - The score is over the **whole part surface**.
 - The only exclusions are:
@@ -184,40 +212,45 @@ Its job is to **find reasons to fail the work**. It must:
 Any FAIL blocks the showcase claim until it is fixed and re-reviewed. Fixing the eval after seeing results is allowed
 only to close loopholes, never to loosen. Record each such change in the acceptance doc with its date.
 
-## 6. Targets
-| Item | Target |
-|---|---|
-| FTC-10 whole-surface score (R1) | **≥ 95 %**, stretch ≥ 98 %; no gouge region > 1 mm² |
-| Tab witness area | ≤ 0.5 % of surface (hard limit 1.5 %) |
-| Tabs | 2–4 tabs, total 20–30 mm², each ≤ 3 mm wide |
-| Validity | VALID: no crash, no vise or holder hit, rigid until part-off |
-| MillBill agreement | ≥ 99.99 % |
-| CTC-04 ×0.2 held-out | run and reported honestly, whatever the score |
-| Report | Machine view default, A/C motion visible, honest headline; critical review all PASS |
+## 6. What the owner wants, and how to check it
+Only the rows marked **OWNER** are the owner's requirements. A **PROPOSED** row is the previous agent's attempt to make
+a requirement measurable. Rules for PROPOSED rows:
+- A proposed number may be tightened. It may only be loosened by the owner.
+- Never report a proposed number as "what the owner asked for".
+- Where a proposed number and the owner's words disagree, the owner's words win.
 
-If ≥ 95 % turns out impossible, report the real number and the reach audit. Do not shrink the scored surface.
+| # | Requirement | Source | How to check (method and who) | Pass |
+|---|---|---|---|---|
+| W1 | See the +2 rotary axes move the workpiece | **OWNER** | Reviewer opens the report in Machine view and takes Playwright screenshots before, during and after ≥ 3 re-orientations. A JS self-check exposes `window.__machineCheck` per frame: spindle direction, and table A/C versus the `G68.2` axis. | The table, vise and part visibly rotate; the spindle direction stays (0,0,−1) within 1e-6; A/C match `sim5.frame_angles` for every setup. |
+| W2 | No "unreachable": surface the program did not finish counts as failed | **OWNER** | (a) Recompute the score independently from the probe dump and the exclusion mask. (b) `grep -riE "unreach\|not reachable\|excluded"` over the generated report, feedback and brief text. (c) Regression test: a program that skips a face scores that face as failed. | Excluded area = tab witness + edge band only. The headline is the whole-surface score. No failed area carries an excusing label. |
+| W3 | Only small tabs, easy to remove by hand, are left; the machine does the rest of the parting | **OWNER** | The simulator's part-off table gives tab count, section and smallest width. The reviewer looks at a close-up render of the final part. The machinist reviewer agent answers: "can an operator break and file these by hand, without a saw?" | Machinist says yes; nothing needs a saw; the underside faces are machined. |
+| W3a | Tab sizes: 2–4 tabs, 20–30 mm² total, each ≤ 3 mm wide; witness ≤ 0.5 % (hard 1.5 %) | PROPOSED (from the machinist reviewer agent and the previous agent) | Simulator part-off table and metrics. | As stated. |
+| W4 | Part rigidly attached to the vise mount until the part-off at the end | **OWNER** | Simulator rigidity table, after every setup. | No rigidity error before `(PART-OFF)`. |
+| W4a | Rigidity = weakest plane ≥ 30 % of the stock section | PROPOSED | As W4. | As stated. |
+| W5 | Single vise fixture; fixture position chosen from the geometry | **OWNER** | One `fixture.json` per run, with no re-clamping. `plan.md` gives the reasons, tied to `fixture-suggest` output. | The reviewer agrees the reasons follow from the geometry. |
+| W6 | Good eval that resists reward hacking | **OWNER** | The critical reviewer (§5) tries attacks: big tabs, skipping the underside, hiding material in the edge band, editing the harness, a generator importing the simulator. Each becomes a test in `tests/`. Trusted re-eval checks the harness sha256. MillBill cross-check. | Every attack is caught; MillBill agrees ≥ 99.99 %. |
+| W7 | ±0.1 mm on aluminium | **OWNER** | Simulator metrics, two-sided deviation. | Applies to every scored point. |
+| W8 | Score target: FTC-10 whole surface ≥ 95 %, aim 98 %; no gouge region > 1 mm² | PROPOSED (the owner gave no number; the owner's words imply "everything except tabs") | `metrics.json`, recomputed by the reviewer. | As stated. Always report the real number. |
+| W9 | FTC-10 is the showcase to show a friend | **OWNER** | Publish the report as an artifact. **Only the owner can judge this.** Give the link, and the 5-minute check below. | The owner says it is good enough. |
+| W10 | Held-out validation part | **OWNER** (original spec) | CTC-04 ×0.2 run with the frozen skill; the developer does not touch it. | Run, and reported honestly whatever the score. |
+| W11 | A more critical independent agent verifies against criteria fixed upfront | **OWNER** | `docs/reviews/critical_review_refine.md`, written by an agent that did not do the work and did not see the developer's summary. Criteria = this table plus §5, committed **before** the LLM runs (the git history shows the order). | All OWNER rows PASS with evidence. |
+| W12 | Machinist would run it as is | PROPOSED | Machinist reviewer agent verdict. | "Run as is". |
+| W13 | Cycle time no worse than 86 min without a reason; Machine view loads < 5 s and works on a phone; non-machinist understands it in 60 s | PROPOSED | Report metrics; Playwright timing; phone-viewport screenshot. | As stated. |
+| W14 | Watch usage; open-source tools; push at milestones; use subagents | **OWNER** | Usage noted in `PROGRESS.md` for each run; commit history. | Followed. |
 
-## 6a. What "great" means (the bar to aim for, not just pass)
-§6 is the minimum to claim success. The owner wants **great**: a result they would happily show a friend, and a
-machinist would run without edits. Judge each column on evidence, not on what you say about it.
+### Questions the owner has not answered
+Ask these at the start, briefly; the owner has little time. If no answer comes, keep the PROPOSED values.
+1. Is there a score number you want for FTC-10? (Proposed: ≥ 95 %, aim 98 %.)
+2. What tab size and count do you want? (Proposed: 2–4 tabs, 20–30 mm², each ≤ 3 mm.)
+3. May we add tools to the library, such as a slitting saw, long-reach ball mills or a lollipop cutter?
+4. What does the friend demo need: a video, the interactive page, or both?
 
-| | Not acceptable | Good (minimum, §6) | **Great (the goal)** |
-|---|---|---|---|
-| FTC-10 whole-surface in ±0.1 mm | < 95 %, or any exclusion beyond tabs and the edge band | ≥ 95 % | **≥ 98 %, with every feature (each hole, pocket, slot, boss, chamfer, underside) finished; no feature left proud as a whole** |
-| Gouges | any region > 1 mm² | none > 1 mm² | **no gouge region at all beyond 0.02 mm deep** |
-| What the operator does | saws webs, or files faces | snaps 2–4 tabs | **snaps 2–4 tabs (each ≤ 3 mm wide) and files them flush in under 5 minutes; witness ≤ 0.5 %** |
-| Machinist verdict | "do not run" | "run with minor edits" | **"run as is"**: feeds at library chip load, sensible stick-outs, no air-cutting passes > 10 % of cycle time, safe indexing |
-| Cycle time | not reported | reported | **≤ run 2's 86 min, or longer with a stated reason (for example, the extra underside finishing)** |
-| Held-out CTC-04 ×0.2 (frozen skill, first attempt) | not run | run and reported | **≥ 95 % whole surface and VALID**: shows that the skill generalises, not just that FTC-10 was tuned |
-| Machine view | the tool still tilts; the table doesn't move | A/C visibly move the table | **A non-machinist who watches for 60 s, without explanation, can say "the table tilts and spins the part so the vertical tool can reach each side".** Smooth swings, readable DRO, a "play whole job" button at a sensible speed, loads in < 5 s, usable on a phone |
-| Final result view | failed area hidden or called "unreachable" | honest colours | **one glance shows: green part, tabs marked, and every red/blue spot clickable to its region, the G-code line and the reason** |
-| Honesty | headline differs from the whole-surface number | headline = whole-surface number | **the critical reviewer (§5) tries every attack and finds no FAIL; every number in the report reproduces from `metrics.json` by its own recomputation** |
-
-How to use this table:
-- If time or usage runs short, trade in this order: keep **Honesty** and **Validity** absolute; then the FTC-10 score; then
-  Machine view; then the machinist "run as is"; then CTC-04; then cycle time.
-- Never trade honesty for a bigger number.
-- The final handoff states which column each row reached, with evidence.
+### The owner's own 5-minute check (put this at the top of the final handoff)
+1. Open the artifact link. The headline number is the **whole-surface** score, with the tab witness shown separately.
+2. Press play in Machine view. At each change of orientation, the table should swing the part, and the spindle should not tilt.
+3. Open the final result view. Anything not green is a failure, apart from the marked tabs. Click a spot to see why.
+4. Look at the part-off close-up: are the tabs small enough to snap by hand?
+5. Read the verdict table in `docs/reviews/critical_review_refine.md`. Every OWNER row should say PASS, with evidence.
 
 ## 7. Constraints
 - Open-source tools only.
