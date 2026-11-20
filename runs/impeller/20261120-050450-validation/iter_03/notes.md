@@ -1,0 +1,1 @@
+Iter 3: T3/T4 corner Z-levels applied over whole runs (fix T4 shank rub); T8 pencils start 0.52 from wall (acute dish/wall corner on concave blade side), extra ring, holder margin trimmed to 0.02; T8 Z-level clean-up of hub/blade vertical corners.

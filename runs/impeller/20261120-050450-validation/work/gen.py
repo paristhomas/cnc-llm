@@ -394,6 +394,7 @@ def leftover(isl, d, R):
 LO2 = leftover(ISL, 3.0, 3.0)
 LO3 = leftover(ISL, 1.53, 1.5)
 LO4 = leftover(ISL, 0.78, 0.75)
+HUBZ = Point(0, 0).buffer(13.0, quad_segs=32)
 print('leftover areas', LO2.area, LO3.area, LO4.area, file=sys.stderr)
 
 g.c('wall finish T2 (hub+blades)')
@@ -408,7 +409,7 @@ contour_pass(g, ISL, 1.53, 1.5, 'flat', 960, 320, 1.48, mask=LO2.buffer(1.7), le
 
 # T4 corners
 g.tool_change(4, 24000, 'T4 1.5mm flat - concave vertical corners')
-contour_pass(g, ISL, 0.78, 0.75, 'flat', 480, 160, 0.73, mask=LO3.buffer(0.95), holder=(10.0, 14.0),
+contour_pass(g, ISL, 0.78, 0.75, 'flat', 480, 160, 0.73, mask=LO3.buffer(0.95).union(HUBZ), holder=(10.0, 14.0),
              levels=(20.5, 19.0, 17.5, 16.0, 14.5, 13.0, 11.5, 10.0, 8.5, 7.0), step=0.05)
 
 # T6 ball raster
@@ -454,7 +455,7 @@ if t8:
     if av is not None:
         g.c('T8 vertical corner levels')
         contour_pass(g, ISL, 0.52, 0.5, 'ball', 384, 128, 0.49, holder=(10.0, 12.0), step=0.04,
-                     mask=LO4.buffer(0.7), levels=(20.0, 17.5, 15.0, 12.5, 10.0, 7.5))
+                     mask=LO4.buffer(0.7).union(HUBZ), levels=(20.0, 17.5, 15.0, 12.5, 10.0, 7.5))
     for d in t8:
         contour_pass(g, ISL, d, 0.5, 'ball', 384, 128, min(0.5, d - 0.03), holder=(10.0, 12.0), step=0.08)
 

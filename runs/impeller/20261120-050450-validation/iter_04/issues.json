@@ -1,0 +1,32 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "msg": "material contact above the flute length (shank rubbing / tool too short); first at line 153166: move (-3.30, 10.10, 11.87) -> (-3.28, 10.03, 11.88) with T8, removed 0.059 mm3, max 5.690 mm deep (flute length 3 mm)",
+  "count": 20,
+  "line": 153166,
+  "lines": [
+   153166,
+   153183,
+   153184,
+   153308,
+   153309,
+   153325,
+   153450,
+   153451,
+   153452,
+   153468,
+   153594,
+   153611,
+   153612,
+   153736,
+   153737,
+   153753,
+   153878,
+   153879,
+   153880,
+   153896
+  ],
+  "volume_mm3": 1.85
+ }
+]

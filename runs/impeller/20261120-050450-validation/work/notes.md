@@ -1,1 +1,1 @@
-Iter 2: refine drop-cutter paths (midpoint insertion + staircase) to stop the ball nicking blade top edges; T3/T4 corner passes in Z levels only near hub/blade corners (fix T3 shank rub); T2 ring around hub for hub wall above blades and blade tops at the hub; T8 kept away from vertical corner leftovers (fix overload).
+Iter 4: shank clearance - T4 corner ring 0.82 (gap 0.07) and T8 first ring 0.55 / corner levels 0.56, to stop shank contact with the 10 mm hub wall in the simulator grid.
