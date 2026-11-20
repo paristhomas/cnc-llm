@@ -1,2 +1,3 @@
-Iteration 3: fixed a cascade in the step-down guard (swept radius < guard radius, so the roughed region shrank level
-by level and the middle of the underside was never reached); vise clearance margin 5 mm; rapid clearance +1.5 mm.
+Iteration 4: T7 fillet passes limited to 0-30 deg (shank off the finished wall); holder-vs-vise clearance made more
+conservative (sim flagged holder vs jaws at the stub ends); part-off deep slot levels kept to |Y|<=60 (tabs at the stub
+ends); added T5 bull-nose rough/finish from +Y (channels under the right block, r1 fillets) and a new -Y setup (left end).

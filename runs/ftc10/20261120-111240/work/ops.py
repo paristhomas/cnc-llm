@@ -233,7 +233,7 @@ def finish(W, S, n, levels, allow=0.0, ap=2.0, rest_of=None, near=0.25, umask=No
     mt_c = S.mintip(T)
     for z in sorted(levels, reverse=True):
         f, d = fine_masks(S, T, z, allow)
-        okc = (mt_c <= z) & (S.Sc <= z + ap + 0.05)
+        okc = (mt_c <= z) & (S.Sc <= z + max(ap, 0.6 * T['D']) + 0.05)
         ok = coarse_to_fine(S, okc)
         if umask is not None:
             ok &= coarse_to_fine(S, umask)

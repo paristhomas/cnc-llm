@@ -17,7 +17,8 @@ part = trimesh.load(f'{RUN}/brief/part.stl')
 BUMPS = (-52.0, -30.0, -8.0, 14.0)
 PED_TOP = -11.0
 keep = [part.triangles,
-        box_tris([-37.5, -82, -43], [37.5, 82, PED_TOP]),          # pedestal (stub kept below the access zone)
+        box_tris([-37.5, -63, -43], [37.5, 63, PED_TOP]),          # pedestal (stub kept below the access zone)
+        box_tris([-37.5, -82, -43], [37.5, 82, -17.0]),            # lower pedestal at the ends (holder room from +-Y)
         box_tris([-40.5, -82, -43], [40.5, 82, -35.0]),            # full-width stub below
         box_tris([-31.0, 35.5, PED_TOP], [-16.0, 59.5, 0.0])]      # neck under the boss (parting face)
 for c in BUMPS:                                                    # small necks under the bump bottoms
@@ -84,7 +85,7 @@ log('top T4 done', len(W.L))
 # T7 ball: r2 fillet between pocket floor (Z14) and walls
 T7 = TOOLS[7]
 C = Cutter(W, S, 7)
-for phi in np.radians(np.arange(0, 91, 7.5)):
+for phi in np.radians(np.arange(0, 31, 7.5)):
     n = 2.0 - 0.5 * math.sin(phi)
     z = 14.5 - 0.5 * math.cos(phi) + 30.0
     x0, x1 = -25 + n, 25 - n; y0, y1 = -58 + n, 20 - n
@@ -124,6 +125,8 @@ for fr in (FR_PX, FR_MX):
     log(fr.name, 'holes done', len(W.L))
 
 # ================================================================ SETUP 4: +Y (right-block underside channels)
+if os.environ.get('STOP') == 'py':
+    np.save('/tmp/claude-0/-home-user-cnc-llm/2da81ada-c0c4-5aae-9ae8-f9e5d8619ed9/scratchpad/stock_py.npy', job.stock.v); sys.exit(0)
 log('setup +Y')
 W.c('SETUP - END +Y: channels under the right block (rib, box, boss, Z8 faces)')
 W.set_frame(FR_PY)
@@ -132,8 +135,22 @@ fl = floors(S, 22.5, 82.0)
 log('+Y floors', fl)
 rough(W, S, 1, allow=0.3, ap=2.0, wbot=22.6, floors=fl)
 finish(W, S, 1, steps(82.0, 22.6, 3.0, extra=fl), allow=0.0)
+rough(W, S, 5, allow=0.15, ap=1.5, wbot=28.5, floors=fl)
+finish(W, S, 5, steps(82.0, 28.5, 2.0, extra=fl), allow=0.0, ap=1.5)
 helix(W, S, 3, [(-25.0, 16.0, 2.75, 62.5, 58.2), (23.5, 13.0, 2.75, 62.5, 58.2)], pitch=0.3)
 log('+Y done', len(W.L))
+
+# ================================================================ SETUP 5: -Y (left end wall / flange underside fillet)
+FR_MY = Frame('-Y', 0, 90, 0, [0, 0, 0])
+log('setup -Y')
+W.c('SETUP - END -Y: left end wall, flange underside and r1 fillet (bull nose)')
+W.set_frame(FR_MY)
+S = ops.Setup(job, FR_MY, vmin=-40.0)
+fl = floors(S, 28.0, 82.0)
+log('-Y floors', fl)
+rough(W, S, 5, allow=0.15, ap=1.5, wbot=28.5, floors=fl)
+finish(W, S, 5, steps(82.0, 28.5, 2.0, extra=fl), allow=0.0, ap=1.5)
+log('-Y done', len(W.L))
 
 # ================================================================ PART-OFF
 W.c('PART-OFF')
@@ -148,7 +165,7 @@ for fr in (FR_PX, FR_MX):
     lv = list(np.arange(35.5, -1.5, -2.0)) + [-1.5]
     flip = False
     for w in lv:
-        lim = 87.0 if w >= 1.5 else 72.0
+        lim = 87.0 if w >= 0.6 else 60.0
         ua, ub = (-lim, lim) if not flip else (lim, -lim)
         W.mv('G0', [W.pos[0], W.pos[1], 45.0]); W.mv('G0', [ua, v, 45.0])
         W.mv('G0', [ua, v, w + 2.5]); W.mv('G1', [ua, v, w], Fp)
@@ -157,7 +174,7 @@ for fr in (FR_PX, FR_MX):
     W.mv('G0', [W.pos[0], W.pos[1], 45.0])
     # (b) cut the necks just below the part (Z-5.05 -> tool top at Z-0.05)
     W.c(f'part-off (b) {fr.name}: necks under the part')
-    v = -5.05
+    v = -5.35
     for c in BUMPS:
         u0, u1 = sg * c - 9.0, sg * c + 9.0
         W.mv('G0', [W.pos[0], W.pos[1], 45.0]); W.mv('G0', [u0, v, 45.0]); W.mv('G0', [u0, v, 41.0]); W.mv('G1', [u0, v, 6.0], F)
