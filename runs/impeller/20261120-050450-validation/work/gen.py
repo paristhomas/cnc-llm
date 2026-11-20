@@ -350,7 +350,7 @@ def contour_pass(g, isl, d, R, kind, f, fpl, rfoot, holder=None, step=0.1, mask=
     if holder is not None:
         hr, so = holder
         hz = drop(P, hr + 0.5, 'flat', 'coarse')
-        ok &= z + so >= hz + 0.3
+        ok &= z + so >= hz + 0.02
     if mask is not None:
         ok &= np.array([mask.distance(Point(*p)) < 1e-9 for p in P])
     if avoid is not None:
@@ -364,9 +364,7 @@ def contour_pass(g, isl, d, R, kind, f, fpl, rfoot, holder=None, step=0.1, mask=
         if lev is None:
             zz = z.copy(); use = ok.copy()
         else:
-            zz = np.maximum(z, lev); use = ok & (z < lev - 0.01)
-            # widen use by a few points so runs overlap
-            use = ok & (np.convolve(use.astype(float), np.ones(7), 'same') > 0)
+            zz = np.maximum(z, lev); use = ok.copy()
         runs = []
         cur = []
         for k in range(len(P)):
@@ -445,16 +443,20 @@ g.retract()
 
 # T7 ball pencils
 g.tool_change(7, 24000, 'T7 3mm ball - wall/dish pencils')
-for d in CFG.get('t7', [1.53, 1.9, 2.3]):
+for d in CFG.get('t7', [1.52, 1.9, 2.3]):
     contour_pass(g, ISL, d, 1.5, 'ball', 960, 320, min(1.5, d - 0.03))
 
 # T8 (away from vertical corner leftovers)
-t8 = CFG.get('t8', [0.56, 0.8, 1.05, 1.3])
+t8 = CFG.get('t8', [0.52, 0.75, 1.0, 1.25, 1.5])
 if t8:
     g.tool_change(8, 24000, 'T8 1mm ball - corner pencils')
     av = LO4.buffer(0.65) if not LO4.is_empty else None
+    if av is not None:
+        g.c('T8 vertical corner levels')
+        contour_pass(g, ISL, 0.52, 0.5, 'ball', 384, 128, 0.49, holder=(10.0, 12.0), step=0.04,
+                     mask=LO4.buffer(0.7), levels=(20.0, 17.5, 15.0, 12.5, 10.0, 7.5))
     for d in t8:
-        contour_pass(g, ISL, d, 0.5, 'ball', 384, 128, min(0.5, d - 0.03), holder=(10.0, 12.0), step=0.08, avoid=av)
+        contour_pass(g, ISL, d, 0.5, 'ball', 384, 128, min(0.5, d - 0.03), holder=(10.0, 12.0), step=0.08)
 
 # T1 outer profile
 g.tool_change(1, 18000, 'T1 outer profile R40')
