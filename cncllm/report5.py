@@ -393,7 +393,7 @@ def _setups_table(segs, conn, fixmoves):
 
 
 def _rigidity_chart(rg):
-    """Connection area after each setup (bars) against the 50 % rigidity and 15 % part-off limits."""
+    """Connection area after each setup (bars) against the rigidity and part-off limits."""
     from .sim5 import PARTOFF_MAX, RIGID_MIN
     checks = rg.get("checks") or []
     if not checks:
@@ -430,7 +430,7 @@ def _rigidity_chart(rg):
             f'<span class="lg"><i class="rig-po"></i>part-off section (must end ≤ {100 * PARTOFF_MAX:.0f}% and ≥ 2 mm²)</span>'
             f'<span class="lg"><i class="rig-bad"></i>violates a limit</span></div>'
             f'<div class="chart-box"><div class="ylab">{"".join(ylab)}</div>{"".join(p)}</div>'
-            f'<p class="muted small chart-note">x: setup number; y: material in the connection plane (middle of the stub gap) as a share of the stock section '
+            f'<p class="muted small chart-note">x: setup number; y: weakest material cross-section across the stub gap as a share of the stock section '
             f'({rg.get("stock_section_mm2", 0):g} mm²). Dashed lines: {100 * RIGID_MIN:.0f}% rigidity minimum, {100 * PARTOFF_MAX:.0f}% part-off maximum.</p>')
 
 
@@ -459,7 +459,7 @@ def _conn_maps(cm, checks):
         out.append(f'<figure class="cmap{" final" if last else ""}"><svg viewBox="0 0 {W:g} {Hh:g}" preserveAspectRatio="xMidYMid meet" role="img" '
                    f'aria-label="Connection plane after setup {i + 1}"><rect class="cut" width="{W:g}" height="{Hh:g}"/>'
                    f'<path class="mat" d="{"".join(path)}"/></svg><figcaption>{lbl}</figcaption></figure>')
-    return (f'<div class="cmaps">{"".join(out)}</div><p class="muted small">Seen from above at Z {cm["z"]:g} mm (middle of the stub gap), '
+    return (f'<div class="cmaps">{"".join(out)}</div><p class="muted small">Seen from above at Z {cm["z"]:g} mm (middle of the stub gap; the rigidity check uses the weakest plane), '
             f'X {cm["x0"]:g}…{cm["x0"] + W:g} mm left to right, Y up. Filled = material still connecting the part to the gripped stub. '
             f'Only setups that changed the plane are shown.</p>')
 
@@ -629,7 +629,7 @@ def build(run_dir) -> Path:
                  + (f' · {conn[-1]["area_mm2"]:g} mm² left' if conn else "") + '</span>')
     rig = kinds.get("rigidity")
     pre = [c["fraction"] for c in conn if not c.get("part_off")]
-    chips.append(f'<span class="chip {"bad" if rig else "good"}" title="{_esc(rig[0]["msg"] if rig else "connection to the stub stays >= 50 % until the part-off")}">'
+    chips.append(f'<span class="chip {"bad" if rig else "good"}" title="{_esc(rig[0]["msg"] if rig else "weakest connection to the stub stays >= 30 % of the section until the part-off")}">'
                  f'<b aria-hidden="true">{"✗" if rig else "✓"}</b> Rigidity {"too weak" if rig else "OK"}'
                  + (f' · min {100 * min(pre):.0f}%' if pre else "") + '</span>')
     fxi = kinds.get("fixture")

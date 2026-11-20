@@ -89,3 +89,6 @@ Autonomous overnight run. Newest entries at the bottom.
   - FTC-10: 87.15 % of the reachable surface (11.2 % now unreachable), but INVALID on rigidity: the part hung on
     thin necks.
   Acceptance doc annotated with both revisions. FTC-10 rerun launched with these lessons.
+- 22:45 FTC-10 run 2 (showcase): VALID, 96.285 % of the reachable surface, 7 setups, part-off 2×6.5 mm² tabs,
+  MillBill 100 %. Machinist review: RUN WITH MINOR EDITS. 3+2 report review: all criteria pass (5 defects fixed).
+  Showcase artifact published. docs/HANDOFF_3PLUS2.md written. CTC-04 validation not run (usage).
