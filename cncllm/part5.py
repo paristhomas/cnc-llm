@@ -81,15 +81,21 @@ def fixture_transform(fx: dict) -> np.ndarray:
 def place(step_in: Path, fx: dict, out_dir: Path) -> dict:
     """Write the part in the fixture frame (out_dir/part.step) and the stock / vise definition (out_dir/setup.json)."""
     import cadquery as cq
-    from OCP.gp import gp_GTrsf, gp_Mat, gp_XYZ
-    from OCP.BRepBuilderAPI import BRepBuilderAPI_GTransform
+    from OCP.gp import gp_Trsf, gp_Pnt
+    from OCP.BRepBuilderAPI import BRepBuilderAPI_Transform
 
     fx = {**DEFAULT_FIXTURE, **fx}
     shape = cq.importers.importStep(str(step_in)).val()
-    M = fixture_transform(fx)
-    g = gp_GTrsf()
-    g.SetVectorialPart(gp_Mat(*[float(v) for v in M.ravel()]))
-    shp = cq.Shape.cast(BRepBuilderAPI_GTransform(shape.wrapped, g, True).Shape())
+    Rm = fixture_transform({**fx, "scale": 1.0})
+    t = gp_Trsf()
+    t.SetValues(*[float(v) for v in (Rm[0, 0], Rm[0, 1], Rm[0, 2], 0.0, Rm[1, 0], Rm[1, 1], Rm[1, 2], 0.0,
+                                     Rm[2, 0], Rm[2, 1], Rm[2, 2], 0.0)])
+    shp = cq.Shape.cast(BRepBuilderAPI_Transform(shape.wrapped, t, True).Shape())
+    sc = float(fx.get("scale", 1.0))
+    if abs(sc - 1.0) > 1e-12:     # uniform scaling keeps planes / cylinders analytic
+        ts = gp_Trsf()
+        ts.SetScale(gp_Pnt(0, 0, 0), sc)
+        shp = cq.Shape.cast(BRepBuilderAPI_Transform(shp.wrapped, ts, True).Shape())
     bb = shp.BoundingBox()
     shp = shp.translate(cq.Vector(-(bb.xmin + bb.xmax) / 2, -(bb.ymin + bb.ymax) / 2, -bb.zmin))
     bb = shp.BoundingBox()
