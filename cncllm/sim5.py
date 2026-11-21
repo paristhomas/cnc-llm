@@ -34,6 +34,7 @@ TAB_MAX_COUNT = 4
 WITNESS_MM = 1.0       # part surface within 1 mm of a tab joint is the tab witness (excluded only if the part-off is valid)
 WITNESS_MAX_PCT = 1.5  # hard limit; target 0.5 %
 TAB_RES = 0.1          # section raster for tab sizes
+TAB_BODY_Z = -1.0      # v2: a tab joint is where a tab BODY (material still present 1 mm below the part) meets the part
 
 
 class FrameSweep:
@@ -158,7 +159,7 @@ def tab_sections(wp, part, res=TAB_RES, dz=0.5):
     from scipy import ndimage
     lo, hi = part.stock_lo, part.stock_hi
     gap = float(part.fixture["gap"])
-    zs = np.r_[np.arange(-gap + 0.3, -0.05, dz), -0.05]
+    zs = np.unique(np.round(np.r_[np.arange(-gap + 0.3, -0.05, dz), TAB_BODY_Z, -0.2, -0.05], 6))
     # coarse pass: where is material at all (bounding box), at 0.5 mm
     cr = 0.5
     xs, ys = np.arange(lo[0] + cr / 2, hi[0], cr), np.arange(lo[1] + cr / 2, hi[1], cr)
@@ -183,6 +184,7 @@ def tab_sections(wp, part, res=TAB_RES, dz=0.5):
     FX, FY = np.meshgrid(fx, fy)
     planes, conn_prev = [], None
     weakest = None
+    body_mask = None
     for zc in zs:
         ins = wp.inside(np.c_[FX.ravel(), FY.ravel(), np.full(FX.size, zc)]).reshape(FX.shape)
         lab, isl = _islands(ins, res)
@@ -193,25 +195,32 @@ def tab_sections(wp, part, res=TAB_RES, dz=0.5):
             keep = np.unique(lab[grown & ins])
             conn = np.isin(lab, keep[keep > 0])
         area = float(ins.sum() * res * res)
+        _, cisl = _islands(conn, res)
         planes.append({"z": round(float(zc), 3), "area_mm2": round(area, 2),
-                       "connected_mm2": round(float(conn.sum() * res * res), 2), "islands": len(isl)})
+                       "connected_mm2": round(float(conn.sum() * res * res), 2), "islands": len(isl),
+                       "conn_max_width_mm": round(max((c["width_mm"] for c in cisl), default=0.0), 2)})
+        if abs(zc - TAB_BODY_Z) < 1e-6:
+            body_mask = conn.copy()
         if weakest is None or area < weakest[0]:
             weakest = (area, float(zc), lab, isl)
         conn_prev = conn
     area, zw, lab, isl = weakest
+    above = [p_ for p_ in planes if p_["z"] >= zw - 1e-9]
+    worst = max(above, key=lambda p_: p_["conn_max_width_mm"]) if above else None
     tabs = [{"area_mm2": round(t["area_mm2"], 2), "width_mm": round(t["width_mm"], 2),
              "centroid": [round(float(fx[0] + t["cj"] * res), 2), round(float(fy[0] + t["ci"] * res), 2), round(zw, 2)]}
             for t in sorted(isl, key=lambda t: -t["area_mm2"])]
     return {"planes": planes, "weakest": {"z": round(zw, 3), "area_mm2": round(area, 2)}, "tabs": tabs,
-            "tops_mask": conn_prev, "grid": {"x0": float(fx[0]), "y0": float(fy[0]), "res": res, "nx": len(fx), "ny": len(fy)},
+            "max_width_to_part": ({"z": worst["z"], "width_mm": worst["conn_max_width_mm"]} if worst else None),
+            "tops_mask": body_mask if body_mask is not None else conn_prev, "grid": {"x0": float(fx[0]), "y0": float(fy[0]), "res": res, "nx": len(fx), "ny": len(fy)},
             "coarse_min_mm2": round(coarse_min, 2)}
 
 
 def tab_witness(part, dev, tops_mask, grid, voxel=0.5):
-    """Tab joint = proud probes in a proud region (probes connected through 0.5 mm voxels, 26-neighbourhood) that
-    touches the top of a stub-connected tab (a proud probe below Z0.5 whose XY lies over the tab tops, dilated by
-    0.5 mm). Witness = probes within WITNESS_MM of a joint probe, never gouged ones. Conservative: a whole proud
-    region that reaches a tab counts as joint, so leaving the underside unfinished makes the witness huge."""
+    """v2 (closes review defect M2). Tab joint = proud probes below Z0.5 lying over the footprint of a tab BODY: the
+    stub-connected material still present at TAB_BODY_Z (1 mm below the part), dilated by 1.0 mm for the flare a side
+    tool leaves where its pass stops. No growth over connected proud regions: an unfinished skin next to a tab is
+    failed surface, not joint. Witness = probes within WITNESS_MM of a joint probe, never gouged ones."""
     from scipy import ndimage
     from scipy.spatial import cKDTree
     n = len(dev)
@@ -224,7 +233,7 @@ def tab_witness(part, dev, tops_mask, grid, voxel=0.5):
     if not len(proud):
         return joint, witness
     res = grid["res"]
-    grown = ndimage.binary_dilation(tops_mask, iterations=max(1, int(round(0.5 / res))))
+    grown = ndimage.binary_dilation(tops_mask, iterations=max(1, int(round(1.0 / res))))
     j = np.floor((P[proud, 0] - grid["x0"]) / res + 0.5).astype(int)
     i = np.floor((P[proud, 1] - grid["y0"]) / res + 0.5).astype(int)
     okij = (i >= 0) & (i < grown.shape[0]) & (j >= 0) & (j < grown.shape[1])
@@ -232,14 +241,7 @@ def tab_witness(part, dev, tops_mask, grid, voxel=0.5):
     seed[okij] = grown[i[okij], j[okij]] & (P[proud[okij], 2] < 0.5)
     if not seed.any():
         return joint, witness
-    Q = P[proud]
-    lo = Q.min(0) - voxel
-    ijk = np.floor((Q - lo) / voxel).astype(int)
-    occ = np.zeros(ijk.max(0) + 1, bool)
-    occ[ijk[:, 0], ijk[:, 1], ijk[:, 2]] = True
-    lab, _ = ndimage.label(occ, structure=np.ones((3, 3, 3)))
-    pl = lab[ijk[:, 0], ijk[:, 1], ijk[:, 2]]
-    joint[proud[np.isin(pl, np.unique(pl[seed]))]] = True
+    joint[proud[seed]] = True
     d, _ = cKDTree(P[joint]).query(P, k=1, distance_upper_bound=WITNESS_MM + 1e-9)
     witness = np.isfinite(d) & (dev >= -TOL)
     return joint, witness
@@ -251,7 +253,7 @@ def partoff_analysis(wp, part, dev, po_line, A0):
     joint, witness = tab_witness(part, dev, ts["tops_mask"], ts["grid"])
     a = part.parea
     total = float(a.sum())
-    wit_area = float(a[witness & ~part.pedge].sum())
+    wit_area = float(a[witness].sum())
     tabs = ts["tabs"]
     tot = ts["weakest"]["area_mm2"] if ts["weakest"] else 0.0
     reasons = []
@@ -265,6 +267,11 @@ def partoff_analysis(wp, part, dev, po_line, A0):
         reasons.append(f"{100 * tot / A0:.0f}% of the stub section left (max {100 * PARTOFF_MAX:.0f}%)")
     if len(tabs) > TAB_MAX_COUNT:
         reasons.append(f"{len(tabs)} separate tabs/islands at the weakest plane (max {TAB_MAX_COUNT})")
+    mw = ts.get("max_width_to_part")
+    if mw and mw["width_mm"] > TAB_MAX_WIDTH:
+        reasons.append(f"a tab is {mw['width_mm']:.2f} mm wide in its smallest direction at Z{mw['z']:g}, between the "
+                       f"weakest plane and the part (max {TAB_MAX_WIDTH:g} mm at every height up to the part): the pad "
+                       "left on the part is not removable by hand")
     wide = [t for t in tabs if t["width_mm"] > TAB_MAX_WIDTH]
     if wide:
         reasons.append(f"{len(wide)} tab(s) wider than {TAB_MAX_WIDTH:g} mm in their smallest direction "
@@ -277,7 +284,7 @@ def partoff_analysis(wp, part, dev, po_line, A0):
     ok = not reasons
     return {"ok": ok, "tabs": tabs, "total_mm2": round(tot, 2), "weakest_z": ts["weakest"]["z"] if ts["weakest"] else None,
             "witness_mm2": round(wit_area, 2), "witness_pct": round(wpct, 3), "joint_mm2": round(float(a[joint].sum()), 2),
-            "reasons": reasons, "planes": ts["planes"],
+            "reasons": reasons, "planes": ts["planes"], "max_width_to_part": ts.get("max_width_to_part"),
             "limits": {"total_mm2": [TAB_MIN_MM2, TAB_MAX_MM2], "max_fraction": PARTOFF_MAX, "max_width_mm": TAB_MAX_WIDTH,
                        "max_count": TAB_MAX_COUNT, "witness_mm": WITNESS_MM, "witness_max_pct": WITNESS_MAX_PCT},
             "_witness": witness, "_joint": joint}
@@ -413,7 +420,8 @@ def run(program_text: str, part, verbose=True) -> dict:
                                   f"height of the stub gap until the part-off."})
     # ---- exact workpiece, surface deviation, part-off (tabs + witness)
     wp = Workpiece5(M, frames, part)
-    dev = signed_deviation(wp, part.P, part.N)
+    dev_raw = signed_deviation(wp, part.P, part.N)
+    dev = edge_scored_dev(part, dev_raw)        # v2: edge band scored with the nearest non-band deviation
     po = partoff_analysis(wp, part, dev, po_line, A0)
     if po_line is not None:
         for r_ in po["reasons"]:
@@ -442,12 +450,25 @@ def run(program_text: str, part, verbose=True) -> dict:
               f"errors {metrics['errors']}")
     score_cls = np.zeros(len(dev), np.int8)
     score_cls[witness] = 1
-    score_cls[part.pedge] = 2
     return {"program": prog, "moves": M, "frames": frames, "vol": vol, "thick": thick, "flags": flags, "dev": dev,
-            "score_cls": score_cls, "witness": witness, "joint": joint, "partoff": po,
+            "score_cls": score_cls, "witness": witness, "joint": joint, "partoff": po, "dev_raw": dev_raw,
             "metrics": metrics, "issues": issues, "stats": stats, "workpiece": wp, "segments": seg_info,
             "grids": grids, "rigidity": rigid, "occ": occ, "snapshots": snapshots, "occ_grid": {"x0": vx0, "y0": vy0, "z0": vz0, "res": vr},
             "fixture_xyz": (A, B, D)}
+
+
+def edge_scored_dev(part, dev):
+    """v2: probes in the 0.03 mm face-edge band (where the marched deviation is a metrology artefact) are scored with
+    the deviation of the nearest probe outside the band, so nothing is excluded from the score for being near an edge."""
+    from scipy.spatial import cKDTree
+    edge = part.pedge
+    out = np.asarray(dev, float).copy()
+    if edge is None or not edge.any() or edge.all():
+        return out
+    k = np.where(~edge)[0]
+    _, j = cKDTree(part.P[k]).query(part.P[edge], k=1)
+    out[edge] = out[k[j]]
+    return out
 
 
 def surface_metrics5(part, dev, witness=None):
@@ -458,9 +479,10 @@ def surface_metrics5(part, dev, witness=None):
     n = len(a)
     edge = part.pedge if part.pedge is not None else np.zeros(n, bool)
     witness = np.zeros(n, bool) if witness is None else witness
+    dev = edge_scored_dev(part, dev)                 # v2: the edge band is scored (nearest non-band deviation)
     within = np.abs(dev) <= TOL
-    scored = ~edge & ~witness
-    nonedge = ~edge
+    scored = ~witness
+    nonedge = np.ones(n, bool)
     total = float(a.sum())
 
     def pct(mask, sub):
@@ -472,9 +494,10 @@ def surface_metrics5(part, dev, witness=None):
         "whole_surface_in_tol_pct": round(pct(scored, within), 3),
         "whole_surface_gouge_pct": round(pct(scored, gouged), 3),
         "whole_surface_proud_pct": round(pct(scored, dev > TOL), 3),
-        "tab_witness_pct": round(float(100 * a[witness & nonedge].sum() / total), 3),
-        "tab_witness_mm2": round(float(a[witness & nonedge].sum()), 2),
-        "edge_band_excluded_pct": round(float(100 * a[edge].sum() / total), 3),
+        "tab_witness_pct": round(float(100 * a[witness].sum() / total), 3),
+        "tab_witness_mm2": round(float(a[witness].sum()), 2),
+        "edge_band_excluded_pct": 0.0,
+        "edge_band_scored_by_neighbour_pct": round(float(100 * a[edge].sum() / total), 3),
         "max_gouge_mm": round(float(-dev[nonedge].min()) if nonedge.any() and dev[nonedge].min() < 0 else 0.0, 4),
         "max_proud_mm": round(float(dev[scored].max()) if scored.any() and dev[scored].max() > 0 else 0.0, 4),
         "proud_area_mm2": round(float(a[scored & (dev > TOL)].sum()), 2),

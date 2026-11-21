@@ -153,3 +153,42 @@ Record each change with its date, its reason, and whether it tightens or loosens
   - Final evaluations re-run from a clean checkout of `3ccb111` with `tools/frozen_eval.sh <run>`.
   - The skill `skills/cnc-gcode-3plus2/SKILL.md` and the prompts `docs/LLM_AGENT_PROMPT.md` and
     `docs/reviews/CRITICAL_REVIEWER_PROMPT.md` are frozen at the same commit.
+
+### 2026-11-21: harness v2. Loopholes closed after the critical review (tightening only)
+The fresh adversarial reviewer (`docs/reviews/critical_review_refine.md`) found four evaluator gaps (M1–M4) and an
+edge-band issue. Each fix below makes the evaluation stricter; none loosens a rule. The reviewer's attack tests
+(`tests/test_review_attacks.py`), which were marked xfail, now pass as normal tests.
+
+- **M1: tab width at every height.** Each stub-connected tab must be ≤ 3.0 mm across, in its smallest direction, at
+  every plane from its weakest section up to 0.05 mm below the part, not only at the weakest plane. A neck with a big
+  pad at the part is INVALID.
+- **M2: tab joint definition.** Proud probes count as joint only if they lie over the footprint of a tab body:
+  stub-connected material still present 1.0 mm below the part, dilated by 1.0 mm for the side tool's flare. The joint
+  no longer grows over connected proud regions.
+  - Unfinished skin next to a tab, or an unfinished underside, is failed surface. It is not excused.
+  - Consequence for attack b: an unfinished underside no longer makes the run INVALID through the witness limit. It
+    makes the underside count as failed surface. That is the owner's rule R1, and it is stricter for the score.
+- **M3: generator scan.**
+  - It covers every code file under `work/`: `.py`, `.sh`, `.bash`, `.zsh`, `.ipynb`, and any file starting with
+    `#!`.
+  - It flags `exec(`, `eval(`, `compile(`, `runpy`, `__import__`, `importlib`, `millbill` and `cam_agent`.
+  - It flags any mention of the harness package except the documented CLI calls
+    (`-m cncllm.x5 sim|evaluate|new-run|fixture-suggest`), and the `MILLBILL_DIR=` assignment for the documented
+    evaluate call.
+  - **Residual risk:** an agent with a shell can still reach the simulator by other means. The defences are the
+    logged iterations, this scan, and review of `work/`.
+- **M4: integrity no longer trusts the run's own tree.**
+  - The trusted evaluation always scores the run's own `part/` folder, and ignores `part_dir` in `run.json`.
+  - It regenerates the part from the tracked, unmodified source STEP with the recorded fixture. Volume, area, bounding
+    box, stock, vise and part bounding box must all match.
+  - `tools/frozen_eval.sh` requires the frozen commit and `CNCLLM_EXPECTED_HARNESS=<sha256>` explicitly. Both are
+    taken from this addendum. A harness whose hash differs from the expected one is INVALID.
+- **Edge band.** The 0.03 mm face-edge band is no longer excluded. Its probes are scored with the deviation of the
+  nearest probe outside the band. At ×0.2 scale the band reached 1.32 % on CTC-04, over the 0.9 % review limit; it is
+  now 0 % excluded. `probes.npz` carries both `dev` (the scored value) and `dev_raw`.
+- **Not changed, recorded for the next phase:**
+  - the rigidity check still stops at the `(PART-OFF)` marker;
+  - the chip-load check still uses the tool-centre feed, which flags edge-compensated helical feeds as "rubbing";
+  - the reach hint can miss tools whose radius equals a hole's radius;
+- **Region hints (wording, fixed in v2).** Leftovers over 0.5 mm now say that the pass stops short, the tool cannot
+  form the shape, or the feature was not machined. They no longer say "stepover / scallop".

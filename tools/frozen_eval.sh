@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Trusted final evaluation of a run from a CLEAN checkout of the frozen harness commit (ACCEPTANCE_REFINE I2).
-#   tools/frozen_eval.sh <run_dir> [frozen_commit]
-# The frozen commit defaults to the one recorded in harness_frozen.json. The run directory is evaluated in place
+#   CNCLLM_EXPECTED_HARNESS=<sha256> tools/frozen_eval.sh <run_dir> <frozen_commit> [--iter N] The run directory is evaluated in place
 # (final/ is rewritten); the harness code that runs is the checkout's, never the working tree's.
 set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 RUN="$(cd "$1" && pwd)"
-# default: the commit that last changed harness_frozen.json (= the freeze commit)
-COMMIT="${2:-$(git -C "$REPO" log -1 --format=%H -- harness_frozen.json)}"
+# v2 (review defect M4): the commit and the expected harness sha256 must be given explicitly (from the acceptance
+# addendum committed before the runs), never read from files in the tree being evaluated.
+COMMIT="${2:?usage: frozen_eval.sh <run_dir> <frozen_commit> (and CNCLLM_EXPECTED_HARNESS=<sha256>)}"
+: "${CNCLLM_EXPECTED_HARNESS:?set CNCLLM_EXPECTED_HARNESS to the published frozen harness sha256}"
+export CNCLLM_EXPECTED_HARNESS
 WT="$(mktemp -d /tmp/cncllm-frozen-XXXXXX)"
 git -C "$REPO" worktree add --detach "$WT" "$COMMIT" >/dev/null
 trap 'git -C "$REPO" worktree remove --force "$WT" >/dev/null 2>&1 || true' EXIT

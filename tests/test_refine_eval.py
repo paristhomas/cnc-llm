@@ -46,15 +46,21 @@ def test_ideal_program_is_valid_and_complete(box):
 
 
 def test_score_is_whole_surface_and_recomputable(box):
-    """Headline = in-tolerance share of every probe except edge band and witness; nothing else is excluded."""
+    """Headline = in-tolerance share of every probe except the tab witness (v2: the edge band is scored with the
+    nearest non-band probe's deviation); nothing else is excluded."""
     r = sim(box, "skip_face")
     dev, a = r["dev"], box.parea
     scored = (r["score_cls"] == 0)
-    assert np.array_equal(r["score_cls"] == 2, box.pedge)
-    assert np.array_equal(r["score_cls"] == 1, r["witness"] & ~box.pedge)
+    assert not (r["score_cls"] == 2).any()
+    assert np.array_equal(r["score_cls"] == 1, r["witness"])
     mine = 100 * a[scored & (np.abs(dev) <= TOL)].sum() / a[scored].sum()
     assert abs(mine - r["metrics"]["whole_surface_in_tol_pct"]) < 1e-3
-    # the underside is scored like any face
+    assert r["metrics"]["edge_band_excluded_pct"] == 0.0
+    # edge-band probes carry the deviation of their nearest non-band neighbour
+    from scipy.spatial import cKDTree
+    e = box.pedge
+    _, j = cKDTree(box.P[~e]).query(box.P[e], k=1)
+    assert np.allclose(dev[e], dev[~e][j])
     under = (box.P[:, 2] < 1e-3) & (box.N[:, 2] < -0.99)
     assert scored[under].mean() > 0.95
 
@@ -70,14 +76,14 @@ def test_attack_big_tabs_invalid(box):
 
 
 def test_attack_underside_skipped(box):
-    """Attack b: the underside left 0.4 mm proud and connected to the tabs -> witness blows the 1.5 % limit, run
-    INVALID, and the underside counts as failed surface."""
+    """Attack b: the underside left 0.4 mm proud. v2: a thin skin is not a tab body, so it is not forgiven as tab
+    joint: the whole underside is failed surface (the score drops by its share) and the witness stays small."""
     r = sim(box, "underside_skipped")
     m = r["metrics"]
-    assert not m["valid"]
-    assert any("witness" in e["msg"] for e in r["issues"] if e["kind"] == "part-off")
     assert m["whole_surface_in_tol_pct"] < 75          # 4000 of 13200 mm2 is underside
-    assert m["tab_witness_pct"] == 0.0
+    assert m["tab_witness_pct"] < 1.0
+    under = (box.P[:, 2] < 1e-3) & (box.N[:, 2] < -0.99)
+    assert (r["witness"][under]).mean() < 0.05
 
 
 def test_attack_wall_skin_in_edge_band(box):
@@ -85,7 +91,7 @@ def test_attack_wall_skin_in_edge_band(box):
     r = sim(box, "wall_skin")
     m = r["metrics"]
     assert m["whole_surface_in_tol_pct"] < 65
-    assert m["edge_band_excluded_pct"] < 0.9
+    assert m["edge_band_excluded_pct"] == 0.0
 
 
 def test_attack_skip_face(box):
@@ -134,3 +140,24 @@ def test_generator_scan_catches_dynamic_imports(tmp_path):
         d.mkdir()
         (d / "gen.py").write_text(bad)
         assert not x5.scan_generator5(d)["ok"], bad
+
+
+def test_part_verification_catches_swapped_part(tmp_path):
+    """Attack (review M4, part side): the trusted evaluation scores the run's own part/ folder and re-derives it from
+    the tracked source STEP and the fixture; a changed stock / vise or part file is an integrity failure."""
+    import shutil
+    src = Path(__file__).resolve().parent / "parts" / "simple" / "part.step"
+    run = tmp_path / "run"
+    fx = {"up": "+Z", "gap": 14, "grip": 8, "margin": 3, "top": 1}
+    part5.place(src, fx, run / "part")
+    meta = {"source_step": str(src)}
+    assert x5.verify_part(run, meta) == []
+    s = json.loads((run / "part" / "setup.json").read_text())
+    s["stock"]["hi"][2] -= 0.5                       # a thinner stock than the fixture implies
+    (run / "part" / "setup.json").write_text(json.dumps(s))
+    assert any("stock" in f for f in x5.verify_part(run, meta))
+    part5.place(src, {**fx, "scale": 0.9}, tmp_path / "other")
+    part5.place(src, fx, run / "part")
+    shutil.copy(tmp_path / "other" / "part.step", run / "part" / "part.step")   # a different (smaller) part
+    assert any("part.step differs" in f for f in x5.verify_part(run, meta))
+    assert any("not inside the repository" in f for f in x5.verify_part(run, {"source_step": str(tmp_path / "x.step")}))

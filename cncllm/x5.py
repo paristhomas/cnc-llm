@@ -52,14 +52,15 @@ RULES5 = """\
   down to small tabs. Validity rules, checked on the final material:
   - tabs total between 2 and 30 mm2 at the weakest plane of the stub gap (and <= 15 % of the stub section);
   - at most 4 tabs, each <= 3.0 mm across in its smallest direction (snap / cut by hand, no saw);
-  - tab witness <= 1.5 % of the surface (target 0.5 %): the part surface within 1.0 mm of where proud material
-    connected to the tabs touches the part. An unfinished underside connected to the tabs counts as tab joint, so it
-    blows this limit.
+  - each tab also <= 3.0 mm across at every height from its weakest section up to the part (no big pads);
+  - tab witness <= 1.5 % of the surface (target 0.5 %): the part surface within 1.0 mm of where a tab body (material
+    still present 1 mm below the part, plus 1 mm for the flare of the side tool) meets the part. Unfinished skin next
+    to a tab is NOT witness: it is failed surface.
   Review target (not a validity rule): 2-4 tabs, 20-30 mm2 in total.
 - Cutting data checks as in 3-axis (chip load, cut cross-section, plunges).
-- **Score: share of the WHOLE part surface within +-0.1 mm**, two-sided (proud and gouge both fail). The only areas
-  not scored are the 0.03 mm face-edge band (metrology artefact, < 1 %) and the tab witness (only when the part-off
-  is valid). The underside, undercuts and areas no tool reaches easily are all scored: surface the program did not
+- **Score: share of the WHOLE part surface within +-0.1 mm**, two-sided (proud and gouge both fail). The only area
+  not scored is the tab witness (only when the part-off is valid). Probes in the 0.03 mm face-edge band, where the
+  marched deviation is a metrology artefact, are scored with the deviation of the nearest probe outside the band. The underside, undercuts and areas no tool reaches easily are all scored: surface the program did not
   finish is failed surface. The harness's reach search is a hint only (see `reach_hint.png`).
 """
 
@@ -417,6 +418,10 @@ def _region_hint(r, P, N, cls, area):
         elif near[0]["gap_mm"] > 0.05:
             bits.append(f"failed: no pass reached this; nearest pass line {near[0]['line']} (T{near[0]['tool']}, "
                         f"frame {near[0]['frame']}) missed by {near[0]['gap_mm']:g} mm")
+        elif r["dev_mean"] > 0.5:
+            bits.append(f"failed: a pass (line {near[0]['line']}, T{near[0]['tool']}) touches the edge of this area but "
+                        f"{r['dev_mean']:+.2f} mm is left on average: the pass stops short of it, the tool cannot form "
+                        "this shape, or the feature was not machined")
         else:
             bits.append(f"failed: passes reach the area (line {near[0]['line']}, T{near[0]['tool']}) but leave "
                         f"{r['dev_mean']:+.2f} mm on average: stepover / scallop, the tool radius, or a stop short")
@@ -425,8 +430,8 @@ def _region_hint(r, P, N, cls, area):
                     "face) or with a tilted setup")
     if no_tool > 0.5:
         bits.append(f"the harness's quick reach search found no tool for {100 * no_tool:.0f}% of it (smallest tools, "
-                    "26 cube directions + feature axes): consider another direction, a longer / smaller library tool, "
-                    "or a different fixture orientation. It still counts")
+                    "26 cube directions + feature axes); the search is coarse, so try another direction, a longer or "
+                    "smaller library tool, or a different fixture orientation (the area is scored either way)")
     return "; ".join(bits)
 
 
@@ -602,20 +607,75 @@ FROZEN = REPO / "harness_frozen.json"
 _SCAN_PAT = None
 
 
+_CLI_OK = None
+
+
 def scan_generator5(work: Path) -> dict:
-    """Flag simulator / CAM-library use in the LLM's own generator code: import statements (as the 3-axis scan) plus
-    dynamic imports and any mention of the harness package in code (comments are ignored)."""
+    """Flag simulator / CAM-library use in the agent's own code (v2, closes review defect M3).
+    Scanned: every code file under work/ (*.py, *.sh, *.bash, *.zsh, *.ipynb, and any file starting with '#!').
+    Flagged in code (comments ignored): the harness package name except in the documented CLI calls
+    `-m cncllm.x5 sim|evaluate|new-run|fixture-suggest`, millbill / cam_agent, __import__, importlib, and dynamic
+    code execution (exec / eval / compile / runpy), plus the 3-axis scan's CAM-library imports."""
     import re
     from .cli import scan_generator
     base = scan_generator(work)
     hits = list(base["forbidden_imports"])
-    pat = re.compile(r"\bcncllm\b|__import__|\bimportlib\b|millbill|cam_agent")
-    for f in sorted(work.rglob("*.py")) if work.exists() else []:
+    cli_ok = re.compile(r"-m\s+cncllm\.x5\s+(sim|evaluate|new-run|fixture-suggest)\b")
+    bad = re.compile(r"\bcncllm\b|__import__|\bimportlib\b|\brunpy\b|millbill|cam_agent|\bexec\s*\(|\beval\s*\(|"
+                     r"\bcompile\s*\(")
+    files = []
+    for f in sorted(work.rglob("*")) if work.exists() else []:
+        if not f.is_file() or f.stat().st_size > 5_000_000:
+            continue
+        code_ext = f.suffix.lower() in (".py", ".sh", ".bash", ".zsh", ".ipynb")
+        if not code_ext:
+            try:
+                with open(f, "rb") as fh:
+                    if fh.read(2) != b"#!":
+                        continue
+            except OSError:
+                continue
+        files.append(f.name)
         for ln, line in enumerate(f.read_text(errors="replace").splitlines(), 1):
-            code = line.split("#", 1)[0]
-            if pat.search(code):
-                hits.append(f"{f.name}:{ln}: {code.strip()[:100]}")
-    return {"files": base["files"], "forbidden_imports": sorted(set(hits)), "ok": not hits}
+            code = line.split("#", 1)[0] if not line.lstrip().startswith("#!") else ""
+            code = cli_ok.sub("", code)
+            code = re.sub(r"\bMILLBILL_DIR=\S+", "", code)     # the documented evaluate call sets this
+            if bad.search(code):
+                hits.append(f"{f.relative_to(work)}:{ln}: {code.strip()[:100]}")
+    return {"files": sorted(set(base["files"] + files)), "forbidden_imports": sorted(set(hits)), "ok": not hits}
+
+
+def verify_part(run: Path, meta: dict) -> list[str]:
+    """v2 (closes review defect M4, part side): the part the run is scored on must be the run's own part/ folder and
+    must equal the part regenerated from the tracked, unmodified source STEP with the recorded fixture."""
+    import tempfile
+    out = []
+    src = Path(meta.get("source_step", ""))
+    try:
+        rel = src.resolve().relative_to(REPO.resolve())
+    except ValueError:
+        return [f"source STEP {src} is not inside the repository"]
+    tracked = subprocess.run(["git", "-C", str(REPO), "ls-files", "--error-unmatch", str(rel)], capture_output=True)
+    dirty = subprocess.run(["git", "-C", str(REPO), "status", "--porcelain", "--", str(rel)], capture_output=True,
+                           text=True).stdout.strip()
+    if tracked.returncode != 0 or dirty:
+        out.append(f"source STEP {rel} is not a tracked, unmodified repository file")
+    mine = json.loads((run / "part" / "setup.json").read_text())
+    with tempfile.TemporaryDirectory() as td:
+        ref = part5.place(src, mine["fixture"], Path(td))
+        import cadquery as cq
+        a = cq.importers.importStep(str(run / "part" / "part.step")).val()
+        b = cq.importers.importStep(str(Path(td) / "part.step")).val()
+        va, vb, sa, sb = a.Volume(), b.Volume(), a.Area(), b.Area()
+        ba, bb = a.BoundingBox(), b.BoundingBox()
+        if abs(va - vb) > 1e-6 * max(vb, 1) or abs(sa - sb) > 1e-6 * max(sb, 1) or \
+                max(abs(ba.xmin - bb.xmin), abs(ba.ymin - bb.ymin), abs(ba.zmin - bb.zmin), abs(ba.xmax - bb.xmax),
+                    abs(ba.ymax - bb.ymax), abs(ba.zmax - bb.zmax)) > 1e-6:
+            out.append("the run's part.step differs from the part regenerated from the source STEP and fixture")
+        for k in ("stock", "vise", "part_bbox"):
+            if json.dumps(ref[k], sort_keys=True) != json.dumps(mine[k], sort_keys=True):
+                out.append(f"the run's setup.json '{k}' differs from the one regenerated from the fixture")
+    return out
 
 
 def integrity_failures(hv: dict, meta: dict, part_sha: str, scan: dict, frozen: dict | None) -> list[str]:
@@ -658,13 +718,20 @@ def _trusted_eval(run_dir, n):
     from . import cli, sim5
     run = Path(run_dir)
     meta = json.loads((run / "run.json").read_text())
-    p = part5.load(meta["part_dir"], verbose=False)
+    p = part5.load(run / "part", verbose=False)      # v2: always the run's own part folder, never a path from run.json
     final = run / "final"
     res = sim5.run((final / "program.nc").read_text(), p)
     hv = harness_fp()
     scan = scan_generator5(run / "work")
     frozen = json.loads(FROZEN.read_text()) if FROZEN.exists() else None
     fails = integrity_failures(hv, meta, p.sha, scan, frozen)
+    try:
+        fails += verify_part(run, meta)
+    except Exception as e:
+        fails.append(f"part verification failed to run: {e!r}")
+    exp = os.environ.get("CNCLLM_EXPECTED_HARNESS")
+    if exp and hv.get("sha256") != exp:
+        fails.append(f"harness {hv.get('sha256', '')[:12]} is not the expected published harness {exp[:12]}")
     for f in fails:
         res["issues"].append({"severity": "error", "kind": "integrity", "line": None, "msg": "integrity: " + f})
     m = res["metrics"]
@@ -699,6 +766,7 @@ def save_probes(part, res, out: Path):
     """Probe dump for independent re-computation of the score (reviewer checklist A1)."""
     np.savez_compressed(out / "probes.npz", P=part.P.astype(np.float32), N=part.N.astype(np.float32),
                         area=part.parea, dev=np.asarray(res["dev"], np.float32), edge=part.pedge,
+                        dev_raw=np.asarray(res.get("dev_raw", res["dev"]), np.float32),
                         witness=np.asarray(res["witness"], bool), score_cls=res["score_cls"],
                         reach_hint=part.pclass, face=part.pface.astype(np.int32), tol=np.float64(TOL))
 
