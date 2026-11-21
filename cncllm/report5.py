@@ -207,7 +207,13 @@ def export_data(part, res: dict, final_dir) -> Path:
     V, F = V[used], remap[F]
     arrays["mesh_edges"] = _feature_edges(V, F).astype(np.float32).ravel()
     V, F, TF = _subdivide(V, F, TF)
-    vdev, vcls = _vertex_deviation(part, np.asarray(res["dev"]), V, F, TF)
+    # per-probe score class from the simulator (0 scored, 1 tab witness, 2 edge band). The edge band is a metrology
+    # artefact: _vertex_deviation already colours faces from their interior probes, so class 2 is drawn as class 0.
+    # Without score_cls (runs scored before the whole-surface rule) every vertex is drawn as scored.
+    sc = res.get("score_cls")
+    cls_kind = "score" if sc is not None else "none"
+    sc = np.zeros(len(part.P), np.int8) if sc is None else np.where(np.asarray(sc) == 1, 1, 0).astype(np.int8)
+    vdev, vcls = _vertex_deviation(part, np.asarray(res["dev"]), V, F, TF, pclass=sc)
     arrays["mesh_V"] = V.astype(np.float32).ravel()
     arrays["mesh_F"] = F.astype(np.uint32).ravel()
     arrays["mesh_dev"] = vdev.astype(np.float32)
@@ -247,7 +253,7 @@ def export_data(part, res: dict, final_dir) -> Path:
         "vise": vise, "fixture": part.fixture, "segments": seg_meta,
         "tools": tools, "rapid_rate": MACHINE.rapid_rate, "home": list(MACHINE.home), "index_time_s": INDEX_TIME_S,
         "tolerance": TOL_DEFAULT, "n_lines": text.count("\n") + 1,
-        "mesh": {"n_vertices": int(len(V)), "n_triangles": int(len(F))},
+        "mesh": {"n_vertices": int(len(V)), "n_triangles": int(len(F)), "cls_kind": cls_kind},
         "per_tool": {str(k2): v for k2, v in stats.get("per_tool", {}).items()},
         "rigidity": res.get("rigidity"),
         "arrays": layout, "gzip": True, "blob_bytes": len(blob),
@@ -266,25 +272,57 @@ def export_data(part, res: dict, final_dir) -> Path:
 SETUP_PALETTE = ['#3b7dd8', '#e0703a', '#2fa36b', '#a35cc8', '#d4a017', '#d24f7a', '#2aa5b5', '#7c6b4f', '#5d6fd6', '#8aa82e']
 
 METRIC5 = [
-    ("machinable_in_tol_pct", "3+2-reachable surface in tolerance (score)", "%"),
-    ("machinable_gouge_pct", "Reachable surface gouged (too deep)", "%"),
-    ("machinable_proud_pct", "Reachable surface proud (material left)", "%"),
-    ("all_in_tol_pct", "Whole surface in tolerance (excl. parting face)", "%"),
-    ("unreachable_area_pct", "Not reachable in 3+2 (needs 5-axis / smaller tool)", "%"),
-    ("unreachable_in_tol_pct", "… of which in tolerance anyway", "%"),
-    ("parting_face_pct", "Parting face (hand-finished, not scored)", "%"),
-    ("edge_band_excluded_pct", "Face-boundary band (excluded)", "%"),
-    ("max_gouge_mm", "Max gouge depth (any surface)", "mm"),
-    ("any_gouge_pct", "Any surface gouged", "%"),
+    ("whole_surface_in_tol_pct", "Whole part surface in tolerance (score)", "%"),
+    ("whole_surface_proud_pct", "Whole surface proud (material left): failed", "%"),
+    ("whole_surface_gouge_pct", "Whole surface gouged (cut too deep): failed", "%"),
+    ("proud_area_mm2", "Proud area", "mm²"),
+    ("gouge_area_mm2", "Gouged area", "mm²"),
+    ("max_proud_mm", "Max material left", "mm"),
+    ("max_gouge_mm", "Max gouge depth", "mm"),
+    ("tab_witness_pct", "Tab witness excluded (part-off tab joints)", "%"),
+    ("tab_witness_mm2", "Tab witness area", "mm²"),
+    ("edge_band_excluded_pct", "Edge band (metrology) excluded", "%"),
+    ("tabs", "Part-off tabs", ""),
+    ("tab_total_mm2", "Tab section, total", "mm²"),
+    ("tab_max_width_mm", "Widest tab (smallest direction)", "mm"),
     ("setups", "Setups (contiguous orientations)", ""),
     ("distinct_orientations", "Distinct tool orientations", ""),
-    ("final_connection_mm2", "Connection left after the part-off", "mm²"),
-    ("surface_area_mm2", "Surface area evaluated", "mm²"),
+    ("surface_area_mm2", "Part surface area", "mm²"),
+    ("scored_area_mm2", "Scored area", "mm²"),
     ("probes", "Surface probe points", ""),
     ("cycle_time_min", "Estimated cycle time (incl. indexing)", "min"),
     ("errors", "Errors", ""),
     ("warnings", "Warnings", ""),
 ]
+AGENT_LABEL = "LLM agent (Claude Code subagent)"   # never print model identifiers
+
+
+def _whole_surface(m: dict, res_dir) -> dict:
+    """Headline numbers under the whole-surface rule: from metrics.json, else recomputed from <res_dir>/probes.npz
+    (P, area, dev, edge, witness), else None (a run scored only under the earlier rule)."""
+    keys = ("whole_surface_in_tol_pct", "whole_surface_proud_pct", "whole_surface_gouge_pct")
+    if m.get(keys[0]) is not None:
+        return {k: m.get(k) for k in keys} | {"tab_witness_pct": m.get("tab_witness_pct"),
+                                             "edge_band_excluded_pct": m.get("edge_band_excluded_pct"), "source": "metrics"}
+    pz = Path(res_dir) / "probes.npz" if res_dir else None
+    if pz and pz.exists():
+        z = np.load(pz)
+        tol = float(z["tol"]) if "tol" in z.files else m.get("tolerance_mm", TOL_DEFAULT)
+        a, dev, edge = z["area"], z["dev"].astype(float), z["edge"].astype(bool)
+        wit = z["witness"].astype(bool) if "witness" in z.files else np.zeros(len(a), bool)
+        sc = ~edge & ~wit
+        den = a[sc].sum() or 1.0
+        return {"whole_surface_in_tol_pct": round(float(100 * a[sc & (np.abs(dev) <= tol)].sum() / den), 3),
+                "whole_surface_proud_pct": round(float(100 * a[sc & (dev > tol)].sum() / den), 3),
+                "whole_surface_gouge_pct": round(float(100 * a[sc & (dev < -tol)].sum() / den), 3),
+                "tab_witness_pct": round(float(100 * a[wit].sum() / a.sum()), 3),
+                "edge_band_excluded_pct": round(float(100 * a[edge].sum() / a.sum()), 3), "source": "probes"}
+    return {k: None for k in keys} | {"tab_witness_pct": None, "edge_band_excluded_pct": m.get("edge_band_excluded_pct"),
+                                     "source": None}
+
+
+def _pct(v, nd=2):
+    return "–" if v is None else f"{v:.{nd}f}%"
 
 
 def _axis_icon(d, size=30, color="currentColor"):
@@ -355,10 +393,11 @@ def _region_rows5(regs: list, segs: list) -> str:
                 f'<td class="num" data-l="Worst mm">{r.get("dev_extreme", 0):+.3f}</td>'
                 f'<td data-l="Faces">{_esc(", ".join(r.get("faces", [])[:3]))}<div class="muted small">normal ({", ".join(f"{v:g}" for v in nn)})</div></td>'
                 f'<td class="where" data-l="Where">{where}</td>'
-                f'<td class="lines" data-l="G-code">{("<span class=muted>nearest passes</span> " + lk) if lk else ""}</td></tr>')
+                f'<td class="lines" data-l="Why">{("<div class=hint>" + _esc(r["hint"]) + "</div>") if r.get("hint") else ""}'
+                f'{("<span class=muted>nearest passes</span> " + lk) if lk else ""}</td></tr>')
 
     head = ('<thead><tr><th>Region</th><th>Type</th><th class="num">Area mm²</th><th class="num">Worst mm</th>'
-            '<th>Faces</th><th>Where (bounding box, mm)</th><th>G-code lines</th></tr></thead>')
+            '<th>Faces</th><th>Where (bounding box, mm)</th><th>Why it failed</th></tr></thead>')
     out = f'<div class="tablewrap"><table class="regions">{head}<tbody>{"".join(row(r) for r in regs[:10])}</tbody></table></div>'
     if len(regs) > 10:
         out += (f'<details class="more"><summary>Show {len(regs) - 10} smaller regions</summary>'
@@ -434,6 +473,74 @@ def _rigidity_chart(rg):
             f'({rg.get("stock_section_mm2", 0):g} mm²). Dashed lines: {100 * RIGID_MIN:.0f}% rigidity minimum, {100 * PARTOFF_MAX:.0f}% part-off maximum.</p>')
 
 
+def _partoff_block(po: dict | None, rg: dict, m: dict, img: str | None) -> str:
+    """Tabs left by the part-off (simulator's part-off table), witness area and the close-up render."""
+    checks = rg.get("checks") or []
+    last = checks[-1] if checks else {}
+    measured = bool(po)
+    if po:
+        tabs = po.get("tabs") or []
+        total = po.get("total_mm2")
+        wit_mm2, wit_pct = po.get("witness_mm2"), po.get("witness_pct")
+        ok = po.get("ok")
+        reasons = po.get("reasons") or []
+    else:   # run simulated before tabs were measured: islands of the last connection plane, widths not measured
+        tabs = [{"area_mm2": a, "width_mm": None, "centroid": None} for a in (last.get("islands") or [])]
+        total, wit_mm2, wit_pct, ok, reasons = last.get("area_mm2"), None, None, None, []
+    rows = "".join(
+        f'<tr><td>Tab {i + 1}</td><td class="num">{t.get("area_mm2", 0):g}</td>'
+        f'<td class="num">{"not measured" if t.get("width_mm") is None else format(t["width_mm"], "g")}</td>'
+        f'<td class="num">{"–" if not t.get("centroid") else ", ".join(f"{v + 0.0:g}" for v in t["centroid"])}</td></tr>'
+        for i, t in enumerate(tabs))
+    widths = [t["width_mm"] for t in tabs if t.get("width_mm") is not None]
+    tbl = (f'<div class="tablewrap"><table class="tabs"><thead><tr><th>Tab</th><th class="num">Section mm²</th>'
+           f'<th class="num">Width mm (smallest direction)</th><th class="num">Centre X, Y, Z (G54)</th></tr></thead>'
+           f'<tbody>{rows or "<tr><td colspan=4 class=muted>No tabs: nothing connects the part to the stub.</td></tr>"}</tbody>'
+           f'<tfoot><tr><th>{len(tabs)} tab{"s" if len(tabs) != 1 else ""}</th><th class="num">{total if total is not None else "–"}</th>'
+           f'<th class="num">{f"max {max(widths):g}" if widths else "–"}</th><th></th></tr></tfoot></table></div>')
+    if ok is None:
+        status = '<span class="badge sm neutral">not checked</span>'
+    else:
+        status = f'<span class="badge sm {"valid" if ok else "invalid"}">{"part-off OK" if ok else "part-off fails"}</span>'
+    if wit_pct is None:
+        wit = "Tab witness: not measured in this run."
+    else:
+        excl = m.get("tab_witness_pct")
+        wit = (f'Tab witness (part surface within 1 mm of where a tab joins the part): <b>{wit_mm2:g} mm²</b> = <b>{wit_pct:.2f}%</b> of the surface. '
+               + (f'Only this area and the edge band are left out of the score (tab witness excluded {excl:.2f}%).' if excl
+                  else 'It is not left out of the score here, because the part-off does not pass.' if ok is False else ''))
+    why = "".join(f"<li>{_esc(r)}</li>" for r in reasons)
+    lim = (f'Limits: total 2–30 mm² and at most 15% of the stub section, each tab at most 3 mm across, at most 4 tabs, witness at most 1.5% '
+           f'of the surface (review target 2–4 tabs, 20–30 mm², witness ≤ 0.5%).')
+    fig = (f'<figure class="po-img"><a href="{img}" target="_blank"><img src="{img}" alt="Close-up of the part-off: the tabs left between the part and the stub" loading="lazy"></a>'
+           f'<figcaption>Close-up of the tabs after the part-off (simulated material).</figcaption></figure>') if img else ""
+    return (f'<div class="po"><div class="po-main"><p class="po-status">{status} {len(tabs)} tab{"s" if len(tabs) != 1 else ""}'
+            f'{f", {total:g} mm² in total" if total is not None else ""}{f", widest {max(widths):g} mm" if widths else ""}.'
+            f'{"" if measured else " Tab widths were not measured when this run was simulated."}</p>'
+            f'{tbl}<p class="small">{wit}</p>{f"<ul class=po-why>{why}</ul>" if why else ""}<p class="muted small">{lim}</p></div>{fig}</div>')
+
+
+def _history_svg5(hist: list, final_iter) -> str:
+    """Whole-surface score per iteration; iterations simulated before the whole-surface rule are not plotted."""
+    pts = [h for h in hist if h.get("metrics", {}).get("whole_surface_in_tol_pct") is not None]
+    if not pts:
+        return ('<p class="muted">The iterations of this run were simulated before the whole-surface scoring rule, so their '
+                'scores are not comparable with the headline and are not plotted. The header shows the program re-scored '
+                'under the current rule.</p>')
+    from .report import _line_chart
+    sc = [float(h["metrics"]["whole_surface_in_tol_pct"]) for h in pts]
+    span = 100 - min(sc)
+    step = next(s for s in (0.1, 0.25, 0.5, 1, 2, 5, 10, 20, 25) if span / s <= 5) if span > 0 else 0.1
+    lo = max(0.0, math.floor((min(sc) - step * 0.5) / step) * step)
+    ticks = [lo + k * step for k in range(int(round((100 - lo) / step)) + 1)]
+    nd = 2 if step < 0.5 else 1 if step < 1 else 0
+    a = _line_chart(pts, [("Whole surface in tolerance", "whole_surface_in_tol_pct", "var(--ink)")], lo, 100, ticks,
+                    "Whole-surface score per iteration", 220, final_iter, "whole_surface_in_tol_pct", "{:.%df}%%" % nd)
+    return (f'<div class="legend"><span class="lg"><i style="background:var(--ink)"></i>Whole part surface in tolerance</span>'
+            f'<span class="lg"><i class="dash"></i>evaluated iteration</span></div>{a}'
+            f'<p class="muted small chart-note">Score axis zoomed to {ticks[0]:.{nd}f}–100 %. Values as simulated at each iteration.</p>')
+
+
 def _conn_maps(cm, checks):
     """Small multiples: the connection plane after each setup where it changed (material dark, cut light)."""
     if not cm or not cm.get("masks"):
@@ -464,12 +571,18 @@ def _conn_maps(cm, checks):
             f'Only setups that changed the plane are shown.</p>')
 
 
-def build(run_dir) -> Path:
+def build(run_dir, source: str | None = None) -> Path:
+    """Build run_dir/report/. `source`: result folder inside the run ("final", or "rescore_refine" for a program
+    re-scored under the whole-surface rule); default: rescore_refine when it has metrics, else final."""
     run = Path(run_dir)
     meta = _load(run / "run.json", {})
     hist = _load(run / "history.json", []) or []
-    final = run / "final"
-    ev = _load(final / "evaluation.json")
+    if source is None:
+        source = "rescore_refine" if (run / "rescore_refine" / "metrics.json").exists() else "final"
+    final = run / source
+    rescored = source != "final"
+    ev = _load(final / "evaluation.json") or (_load(run / "final" / "evaluation.json") if rescored else None)
+    rescore = _load(final / "rescore.json") if rescored else None
     out = run / "report"
     if out.exists():
         shutil.rmtree(out)
@@ -477,7 +590,10 @@ def build(run_dir) -> Path:
         (out / d).mkdir(parents=True)
     part_dir = Path(meta.get("part_dir", ""))
     setup = _load(part_dir / "setup.json", {}) if meta.get("part_dir") else {}
-    if ev and (final / "metrics.json").exists():
+    setup = setup or _load(run / "part" / "setup.json", {}) or _load(run / "brief" / "setup.json", {})
+    if rescored and (final / "metrics.json").exists():
+        res_dir, m, final_iter, is_final = final, _load(final / "metrics.json"), (ev or {}).get("iteration"), True
+    elif ev and (final / "metrics.json").exists():
         res_dir, m, final_iter, is_final = final, ev["metrics"], ev.get("iteration"), True
     elif hist:
         last = hist[-1]["iter"]
@@ -489,12 +605,18 @@ def build(run_dir) -> Path:
     setups = _load(res_dir / "setups.json", {}) if res_dir else {}
     segs = setups.get("segments") or []
     rg = setups.get("rigidity") or {}
+    po = setups.get("partoff")
+    ws = _whole_surface(m, res_dir)
 
     # ---- assets
     shutil.copy(VIEWER / "dist" / "viewer5.js", out / "assets" / "viewer5.js")
     shutil.copy(VIEWER / "report.css", out / "assets" / "report.css")
     shutil.copy(VIEWER / "report5.css", out / "assets" / "report5.css")
     vd = final / "viewer_data"
+    if not (vd / "meta.json").exists() and rescored:
+        # same program, same simulated material: the original export (its per-vertex deviation is the same; it only
+        # lacks the tab witness class)
+        vd = run / "final" / "viewer_data"
     have_viewer = is_final and (vd / "meta.json").exists() and (vd / "data.bin.gz").exists()
     vmeta, fixmoves, cm = {}, {}, None
     if have_viewer:
@@ -526,13 +648,19 @@ def build(run_dir) -> Path:
     conn = rg.get("checks") or []
     # ---- images
     gallery = []
-    if res_dir and (res_dir / "deviation_views.png").exists():
+    # plots made under the earlier scoring rule carry its wording in the image: only show plots of whole-surface data
+    if res_dir and (res_dir / "deviation_views.png").exists() and ws["source"]:
         shutil.copy(res_dir / "deviation_views.png", out / "img" / "deviation_views.png")
-        gallery.append(("img/deviation_views.png", "Surface deviation, 4 views (grey = not reachable in 3+2)"))
-    for f, t in (("reachability.png", "3+2 reachability of the target (from the brief)"), ("target_iso.png", "Target part in the vise (iso)")):
+        gallery.append(("img/deviation_views.png", "Surface deviation, 6 views: green in tolerance, orange to red proud, blue gouge, purple tab witness"))
+    for f, t in (("reach_hint.png", "Reach hint from the brief (a diagnostic for the agent; it does not change the score)"),
+                 ("target_iso.png", "Target part in the vise (iso)")):
         if (run / "brief" / f).exists():
             shutil.copy(run / "brief" / f, out / "img" / f)
             gallery.append(("img/" + f, t))
+    po_img = None
+    if res_dir and (res_dir / "partoff_closeup.png").exists():
+        shutil.copy(res_dir / "partoff_closeup.png", out / "img" / "partoff_closeup.png")
+        po_img = "img/partoff_closeup.png"
     final_nc = None
     if res_dir and (res_dir / "program.nc").exists():
         final_nc = "gcode/final.nc"
@@ -553,21 +681,23 @@ def build(run_dir) -> Path:
             shutil.copy(it / "program.nc", dst / "program.txt")
             links.append(f'<a href="iter/{n:02d}/program.txt" target="_blank">G-code</a>'
                          f'<a href="iter/{n:02d}/program.nc" download>download .nc</a>')
-        if (it / "feedback.md").exists():
+        hm = h["metrics"]
+        new_rule = hm.get("whole_surface_in_tol_pct") is not None
+        # feedback and plots of iterations simulated under the earlier scoring rule use its wording: not copied
+        if (it / "feedback.md").exists() and new_rule:
             shutil.copy(it / "feedback.md", dst / "feedback.txt")
             links.append(f'<a href="iter/{n:02d}/feedback.txt" target="_blank">feedback</a>')
         thumb = ""
-        if (it / "deviation_views.png").exists():
+        if (it / "deviation_views.png").exists() and new_rule:
             shutil.copy(it / "deviation_views.png", dst / "deviation_views.png")
             links.append(f'<a href="iter/{n:02d}/deviation_views.png" target="_blank">deviation views</a>')
             thumb = (f'<a class="thumb" href="iter/{n:02d}/deviation_views.png" target="_blank">'
                      f'<img src="iter/{n:02d}/deviation_views.png" alt="Deviation views, iteration {n}" loading="lazy"></a>')
         notes = (it / "notes.md").read_text() if (it / "notes.md").exists() else ""
-        hm = h["metrics"]
         prev = next((x for x in hist if x["iter"] == n - 1), None)
         delta = ""
-        if prev:
-            d = hm.get("machinable_in_tol_pct", 0) - prev["metrics"].get("machinable_in_tol_pct", 0)
+        if prev and new_rule and prev["metrics"].get("whole_surface_in_tol_pct") is not None:
+            d = hm["whole_surface_in_tol_pct"] - prev["metrics"]["whole_surface_in_tol_pct"]
             delta = f'<span class="delta {"up" if d >= 0 else "down"}">{"+" if d >= 0 else ""}{d:.2f} pts</span>'
         badge = '<span class="badge sm valid">valid</span>' if hm.get("valid") else \
             f'<span class="badge sm invalid">invalid · {hm.get("errors", 0)} err</span>'
@@ -583,12 +713,11 @@ def build(run_dir) -> Path:
   <header><h3>Iteration {n}</h3>{badge}{fin}<span class="muted when">{_esc(str(h.get('time', '')).replace('T', ' '))}</span></header>
   <div class="iter-body">
     <div class="iter-stats">
-      <div class="big">{hm.get('machinable_in_tol_pct', 0):.3f}%{delta}</div>
-      <div class="muted small asof">score as simulated at the time</div>
+      <div class="big">{f"{hm['whole_surface_in_tol_pct']:.2f}%" if new_rule else "–"}{delta}</div>
+      <div class="muted small asof">{"whole surface in tolerance, as simulated at the time" if new_rule else "simulated before the whole-surface rule: score not comparable, not shown"}</div>
       <dl>
-        <dt>whole surface</dt><dd>{hm.get('all_in_tol_pct', 0):.2f}%</dd>
-        <dt>gouge</dt><dd>{hm.get('machinable_gouge_pct', 0):.2f}%</dd>
-        <dt>proud</dt><dd>{hm.get('machinable_proud_pct', 0):.2f}%</dd>
+        <dt>proud</dt><dd>{_pct(hm.get('whole_surface_proud_pct'))}</dd>
+        <dt>gouge</dt><dd>{_pct(hm.get('whole_surface_gouge_pct'))}</dd>
         <dt>setups</dt><dd>{hm.get('setups', '–')}</dd>
         <dt>errors</dt><dd>{hm.get('errors', 0)}</dd>
         <dt>cycle</dt><dd>{hm.get('cycle_time_min', 0):.1f} min</dd>
@@ -596,7 +725,7 @@ def build(run_dir) -> Path:
       </dl>
       {thumb}
     </div>
-    <div class="notes">{err_html}{md_to_html(notes) if notes.strip() else '<p class="muted">No notes from the LLM for this iteration.</p>'}</div>
+    <div class="notes">{err_html}{(md_to_html(notes) if new_rule else '<details class="old-notes"><summary>The agent’s own notes for this iteration (verbatim, written under the earlier scoring rule)</summary>' + md_to_html(notes) + '</details>') if notes.strip() else '<p class="muted">No notes from the LLM for this iteration.</p>'}</div>
   </div>
   <footer class="links">{''.join(links)}</footer>
 </article>""")
@@ -604,7 +733,6 @@ def build(run_dir) -> Path:
     # ---- header facts and chips
     name = meta.get("part") or setup.get("name") or run.name
     tol = m.get("tolerance_mm", TOL_DEFAULT)
-    model = meta.get("model") or "unknown"
     created = meta.get("created", "")
     try:
         created_h = dt.datetime.strptime(created, "%Y%m%d-%H%M%S").strftime("%Y-%m-%d %H:%M")
@@ -614,39 +742,58 @@ def build(run_dir) -> Path:
     stock_txt = (" × ".join(f"{st['hi'][i] - st['lo'][i]:g}" for i in range(3)) + " mm") if st.get("lo") else "?"
     fx = setup.get("fixture") or vmeta.get("fixture") or {}
     hold = f"5-axis vise · {fx.get('grip', '?'):g} mm grip · {fx.get('gap', '?'):g} mm stub gap" if fx else "5-axis vise"
-    score = m.get("machinable_in_tol_pct")
+    score = ws["whole_surface_in_tol_pct"]
     valid = bool(m.get("valid"))
     integ = (ev or {}).get("integrity", {})
-    hv = integ.get("harness", {})
-    chips, integrity_note = [], ""
+    hv = (rescore or {}).get("harness") or integ.get("harness", {})
+    chips, integrity_note, integrity_fail = [], "", ""
     kinds = {}
     for i in issues:
         if i.get("severity") == "error":
             kinds.setdefault(i.get("kind"), []).append(i)
-    po = kinds.get("part-off")
-    chips.append(f'<span class="chip {"bad" if po else "good"}" title="{_esc(po[0]["msg"] if po else "part-off leaves tabs / a web of at most 15 % and at least 2 mm²")}">'
-                 f'<b aria-hidden="true">{"✗" if po else "✓"}</b> Part-off {"problem" if po else "OK"}'
-                 + (f' · {conn[-1]["area_mm2"]:g} mm² left' if conn else "") + '</span>')
+    poi = kinds.get("part-off")
+    tabs = (po or {}).get("tabs") or []
+    po_bad = bool(poi) or (po is not None and po.get("ok") is False)
+    po_tip = poi[0]["msg"] if poi else "; ".join((po or {}).get("reasons") or []) or "the part-off leaves small tabs the operator can break"
+    if po is not None:
+        widths = [t["width_mm"] for t in tabs if t.get("width_mm") is not None]
+        po_txt = (f' · {len(tabs)} tab{"s" if len(tabs) != 1 else ""}, {po.get("total_mm2", 0):g} mm²'
+                  + (f', ≤ {max(widths):g} mm wide' if widths else ""))
+    else:
+        po_txt = f' · {conn[-1]["area_mm2"]:g} mm² left' if conn else ""
+    chips.append(f'<span class="chip {"bad" if po_bad else "good"}" title="{_esc(po_tip)}">'
+                 f'<b aria-hidden="true">{"✗" if po_bad else "✓"}</b> Part-off {"fails" if po_bad else "OK"}{po_txt}</span>')
+    from .sim5 import RIGID_MIN
     rig = kinds.get("rigidity")
     pre = [c["fraction"] for c in conn if not c.get("part_off")]
-    chips.append(f'<span class="chip {"bad" if rig else "good"}" title="{_esc(rig[0]["msg"] if rig else "weakest connection to the stub stays >= 30 % of the section until the part-off")}">'
+    chips.append(f'<span class="chip {"bad" if rig else "good"}" title="{_esc(rig[0]["msg"] if rig else f"the weakest connection to the stub stays at least {100 * RIGID_MIN:.0f}% of the stock section until the part-off")}">'
                  f'<b aria-hidden="true">{"✗" if rig else "✓"}</b> Rigidity {"too weak" if rig else "OK"}'
                  + (f' · min {100 * min(pre):.0f}%' if pre else "") + '</span>')
     fxi = kinds.get("fixture")
     chips.append(f'<span class="chip {"bad" if fxi else "good"}" title="{_esc(fxi[0]["msg"] if fxi else "no tool / holder contact with the vise or table")}">'
                  f'<b aria-hidden="true">{"✗" if fxi else "✓"}</b> Vise {"collision" if fxi else "clear"}'
                  + (f' · {fxi[0].get("count", 0)} moves' if fxi else "") + '</span>')
-    if ev:
-        ok = integ.get("harness_unchanged_since_run_start") and integ.get("part_unchanged") and not hv.get("harness_modified")
+    if integ.get("failures"):
+        integrity_fail = ("Integrity check failed: " + "; ".join(_esc(str(f)) for f in integ["failures"])
+                          + ". The score below is not a trusted evaluation.")
+    if rescored:
+        mod = hv.get("harness_modified")
+        chips.append(f'<span class="chip {"warn" if mod else "good"}" title="{_esc("same G-code, re-simulated and re-scored under the whole-surface rule; harness sha256 " + hv.get("sha256", "")[:12] + "…, uncommitted harness changes: " + ("yes" if mod else "no"))}">'
+                     f'<b aria-hidden="true">{"!" if mod else "✓"}</b> Re-scored under the whole-surface rule · git {_esc(hv.get("git_head", "?"))}</span>')
+        if mod:
+            integrity_note = ("Re-scored with a harness that had uncommitted changes (the scoring rule was being implemented). "
+                              "It is a development re-score, not a frozen trusted evaluation.")
+    elif ev:
+        ok = integ.get("ok", integ.get("harness_unchanged_since_run_start") and integ.get("part_unchanged") and not hv.get("harness_modified"))
         tip = (f"harness sha256 {hv.get('sha256', '')[:12]}…, git {hv.get('git_head', '?')}, "
                f"uncommitted harness changes: {'yes' if hv.get('harness_modified') else 'no'}, "
                f"unchanged since run start: {'yes' if integ.get('harness_unchanged_since_run_start') else 'no'}, "
                f"part unchanged: {'yes' if integ.get('part_unchanged') else 'no'}")
-        hcls = "good" if ok else ("warn" if hv.get("harness_modified") else "neutral")
+        hcls = "good" if ok else ("bad" if integ.get("failures") else "warn" if hv.get("harness_modified") else "neutral")
         chips.append(f'<span class="chip {hcls}" title="{_esc(tip)}">'
-                     f'<b aria-hidden="true">{"✓" if ok else "!" if hcls == "warn" else "i"}</b> Harness {"verified" if ok else "changed since run start"}'
+                     f'<b aria-hidden="true">{"✓" if ok else "!"}</b> Harness {"verified" if ok else "changed since run start"}'
                      f' · git {_esc(hv.get("git_head", "?"))}</span>')
-        if not ok:
+        if not ok and not integrity_fail:
             why = []
             if not integ.get("harness_unchanged_since_run_start"):
                 why.append("the harness code changed between the start of the run and the final evaluation")
@@ -655,56 +802,76 @@ def build(run_dir) -> Path:
             if not integ.get("part_unchanged", True):
                 why.append("the part file changed")
             integrity_note = ("Integrity note: " + "; ".join(why) + ". The final score was re-computed by the current "
-                              "harness in a fresh process, so it is consistent; a change is expected while the harness is "
-                              "being developed. Hashes are in the footer.")
+                              "harness in a fresh process. Hashes are in the footer.")
+    if ev:
         cc = ev.get("crosscheck_millbill", {})
+        lbl = "MillBill cross-check" + (" (original evaluation, same program)" if rescored else "")
         if "agreement_pct" in cc:
             good = cc["agreement_pct"] >= 99.99
-            chips.append(f'<span class="chip {"good" if good else "bad"}" title="{cc.get("points", 0)} query points in {cc.get("frames", "?")} frames, '
+            chips.append(f'<span class="chip {"good" if good else "bad"}" title="{lbl}: {cc.get("points", 0)} query points in {cc.get("frames", "?")} frames, '
                          f'{cc.get("disagree_beyond_2um", 0)} disagree beyond 2 µm"><b aria-hidden="true">{"✓" if good else "✗"}</b> '
                          f'MillBill cross-check {cc["agreement_pct"]:.3f}%</span>')
         elif "skipped" in cc:
             chips.append(f'<span class="chip neutral" title="{_esc(cc["skipped"])}">MillBill cross-check skipped</span>')
         elif "error" in cc:
             chips.append(f'<span class="chip bad" title="{_esc(cc["error"])}">MillBill cross-check failed</span>')
-    else:
+    elif not rescored:
         chips.append('<span class="chip warn" title="run python -m cncllm.x5 evaluate RUN">Not yet evaluated (latest iteration shown)</span>')
 
-    # ---- verdict
+    # ---- summary paragraph (what, score, valid, biggest problems, how held and parted off)
     vs = []
+    errs = [i for i in issues if i.get("severity") == "error"]
     if not m:
         verdict = "No simulation results yet."
     else:
         if valid:
-            vs.append("The program is <strong>valid</strong>: no crash, no vise or table contact, the part stays rigid and the part-off leaves breakable tabs.")
+            vs.append("The program is <strong>valid</strong>: no crash, no vise or table contact, the part stays rigid until the part-off, "
+                      "and the part-off leaves only small tabs.")
         else:
-            errs = [i for i in issues if i.get("severity") == "error"]
             first = errs[0] if errs else {}
             fl = (f', first at line <a href="#sim" class="gl" data-gline="{first.get("line")}">{first.get("line")}</a>' if first.get("line") else "")
-            vs.append(f'The program is <strong>invalid</strong>: {m.get("errors", 0)} error(s){fl}: {_esc(first.get("msg", ""))}.')
-        vs.append(f'{m.get("machinable_in_tol_pct", 0):.3f}% of the 3+2-reachable surface is within ±{tol:g} mm '
-                  f'({m.get("machinable_gouge_pct", 0):.2f}% gouged, {m.get("machinable_proud_pct", 0):.2f}% proud); '
-                  f'{m.get("all_in_tol_pct", 0):.2f}% of the whole surface. {m.get("unreachable_area_pct", 0):.1f}% of the surface needs simultaneous 5-axis or a smaller tool '
-                  f'and {m.get("parting_face_pct", 0):.1f}% is the hand-finished parting face.')
+            vs.append(f'The program is <strong>invalid</strong>: {m.get("errors", 0)} error{"s" if m.get("errors", 0) != 1 else ""}{fl}: {_esc(first.get("msg", ""))}.')
+        if score is not None:
+            w_, e_ = ws.get("tab_witness_pct"), ws.get("edge_band_excluded_pct")
+            vs.append(f'<strong>{score:.2f}%</strong> of the whole part surface is within ±{tol:g} mm. Everything else counts as failed: '
+                      f'{_pct(ws["whole_surface_proud_pct"])} is proud (material left) and {_pct(ws["whole_surface_gouge_pct"])} is gouged. '
+                      f'The only areas not scored are the tab witness ({_pct(w_)}) and a 0.03 mm band along face edges '
+                      f'(edge band (metrology) excluded {_pct(e_)}).')
+        else:
+            vs.append("This run was simulated before the whole-surface scoring rule and has not been re-scored yet, so no score is shown.")
         if segs:
-            vs.append(f'{len(segs)} setup{"s" if len(segs) != 1 else ""} in {m.get("distinct_orientations", "?")} orientation{"s" if m.get("distinct_orientations") != 1 else ""}, '
-                      f'about {m.get("cycle_time_min", 0):.1f} min.')
-        g = [r for r in regs if r["type"] == "gouge"]
-        p_ = [r for r in regs if r["type"] == "proud"]
-        if g:
-            vs.append(f'Largest gouge: <button class="region-btn inline" data-region="{g[0]["id"]}">R{g[0]["id"]}</button> {g[0]["area_mm2"]:g} mm² (worst {g[0]["dev_extreme"]:+.2f} mm).')
-        if p_:
-            vs.append(f'Largest proud area: <button class="region-btn inline" data-region="{p_[0]["id"]}">R{p_[0]["id"]}</button> {p_[0]["area_mm2"]:g} mm² (up to {p_[0]["dev_extreme"]:+.2f} mm).')
+            vs.append(f'Held in one vise by {fx.get("grip", "?"):g} mm of extra stock below a {fx.get("gap", "?"):g} mm stub gap, it is machined in '
+                      f'{len(segs)} setup{"s" if len(segs) != 1 else ""} ({m.get("distinct_orientations", "?")} table orientations, about '
+                      f'{m.get("cycle_time_min", 0):.0f} min); the part-off at the end leaves '
+                      + (f'{len(tabs)} tab{"s" if len(tabs) != 1 else ""} ({(po or {}).get("total_mm2", 0):g} mm²)' if po is not None
+                         else f'{conn[-1]["area_mm2"]:g} mm² of connection' if conn else 'the part on tabs')
+                      + ' for the operator to break off and file flush.')
+        top = sorted(regs, key=lambda r: -r.get("area_mm2", 0))[:3]
+        if top:
+            items = []
+            for r in top:
+                h = (r.get("hint") or "").replace("failed: ", "").split(";")[0].strip()
+                items.append(f'<button class="region-btn inline" data-region="{r["id"]}">R{r["id"]}</button> {r["type"]} '
+                             f'{r["area_mm2"]:g} mm² (worst {r["dev_extreme"]:+.2f} mm{"; " + _esc(h) if h else ""})')
+            vs.append("Biggest problems: " + "; ".join(items) + ".")
         verdict = " ".join(vs)
 
-    mrows = "".join(f'<tr><th>{_esc(lbl)}</th><td class="num">{_fmt(m.get(k), 3 if k == "max_gouge_mm" else 2)}{(" " + u) if u and m.get(k) is not None else ""}</td></tr>'
+    def _mfmt(k, v):
+        if v is None:
+            return "–"
+        if isinstance(v, bool):
+            return "yes" if v else "no"
+        return _fmt(v, 3 if k in ("max_gouge_mm", "max_proud_mm") else 2)
+    mrows = "".join(f'<tr><th>{_esc(lbl)}</th><td class="num">{_mfmt(k, m.get(k))}{(" " + u) if u and m.get(k) is not None else ""}</td></tr>'
                     for k, lbl, u in METRIC5 if k in m)
+    if score is not None and "whole_surface_in_tol_pct" not in m:
+        mrows = (f'<tr><th>Whole part surface in tolerance (from the probe dump)</th><td class="num">{score:.2f} %</td></tr>' + mrows)
     trows = []
     for tn, d in (vmeta.get("per_tool") or {}).items():
         t = LIBRARY.get(int(tn))
         if not t:
             continue
-        geo = {"flat": "flat", "ball": "ball", "bull": f"bull r{t.corner_radius:g}", "cone": f"cone {2 * t.half_angle:g}°"}[t.kind]
+        geo = {"flat": "flat", "ball": "ball", "bull": f"bull r{t.corner_radius:g}", "cone": f"cone {2 * t.half_angle:g}°"}.get(t.kind, t.kind)
         trows.append(f'<tr><td><span class="swatch" data-tool="{tn}"></span>T{tn}</td><td>{_esc(t.name)}</td><td>{geo}</td>'
                      f'<td class="num">{t.diameter:g}</td><td class="num">{t.stickout:g}</td><td class="num">{t.holder_diameter:g}</td>'
                      f'<td class="num">{d["time_s"] / 60:.1f}</td><td class="num">{d["cut_mm"] / 1000:.2f}</td>'
@@ -731,6 +898,29 @@ def build(run_dir) -> Path:
   <div class="res-bar" id="resbar"></div>
 </div>""" if have_viewer else "")
     n_or = m.get("distinct_orientations")
+    w_, e_ = ws.get("tab_witness_pct"), ws.get("edge_band_excluded_pct")
+    if score is not None:
+        score_label = (f'of the whole part surface within ±{tol:g} mm'
+                       + (' · same program, re-scored under the whole-surface rule' if rescored else
+                          f' · trusted final evaluation of iteration {final_iter}' if is_final else ' (latest iteration, not evaluated)'))
+    else:
+        score_label = 'no whole-surface score: this run was simulated before the rule and has not been re-scored yet'
+    score2 = (f'<div class="score-2"><span>proud (failed) <b>{_pct(ws["whole_surface_proud_pct"])}</b></span>'
+              f'<span>gouged (failed) <b>{_pct(ws["whole_surface_gouge_pct"])}</b></span></div>'
+              f'<div class="score-3">Not scored: tab witness excluded {_pct(w_)} · edge band (metrology) excluded {_pct(e_)}</div>') if score is not None else ""
+    help_txt = """<details class="help-k"><summary>How the Machine view works</summary>
+  <p>The machine is a trunnion (table-table) 5-axis mill. The spindle always points straight down and only moves in X, Y and Z.
+  The <b>A axis</b> tilts the cradle about the machine X axis; the <b>C axis</b> turns the round platter on the cradle; the vise,
+  the stock and the part sit on the platter and move with it. For each setup the table angles come from the program's
+  <code>G68.2</code> tool axis <i>d</i> (in G54 coordinates, from the tool tip towards the holder): A is the tilt of <i>d</i> from vertical
+  and C its direction around Z (C = 0 when A = 0), the same angles the simulator reports. The table rotation is
+  R = Rx(A)·Rz(90° − C), which turns <i>d</i> exactly to vertical, under the spindle. Because the A axis lies along machine X,
+  the platter sits at 90° when A = C = 0, so the part looks turned a quarter turn compared with the Part view. Between setups the
+  spindle retracts, the table swings (the platter takes the short way round) and the tool comes back down.</p>
+  <p>The readout shows the tool tip in machine coordinates relative to the rotary centre (where the A and C axes cross), the table
+  angles A and C, the tool and the current G-code line. In Part view the part stays still and the tool comes in along each setup's
+  axis instead. Both views replay the same simulated cutting; a self-check in the page confirms that the tool tip relative to the
+  part is identical in the two views for hundreds of moves of every setup and that the spindle stays vertical.</p></details>"""
     page = f"""<!doctype html>
 <html lang="en">
 <head>
@@ -754,20 +944,21 @@ def build(run_dir) -> Path:
         <div><dt>Workholding</dt><dd>{_esc(hold)}</dd></div>
         <div><dt>Setups</dt><dd>{len(segs)}{f' · {n_or} orientation' + ('s' if n_or != 1 else '') if n_or else ''}</dd></div>
         <div><dt>Tolerance</dt><dd>±{tol:g} mm</dd></div>
-        <div><dt>Model / agent</dt><dd>{_esc(model)}</dd></div>
+        <div><dt>Programmed by</dt><dd>{AGENT_LABEL}</dd></div>
         <div><dt>Date</dt><dd>{_esc(created_h)}</dd></div>
         <div><dt>Iterations</dt><dd>{len(hist)}{f' · final = #{final_iter}' if final_iter else ''}</dd></div>
       </dl>
     </div>
     <div class="hero-score" aria-label="Final score">
+      {f'<p class="int-fail" role="alert">{integrity_fail}</p>' if integrity_fail else ''}
       <div class="score-top">
         <span class="badge lg {'valid' if valid else 'invalid'}">{'VALID' if valid else 'INVALID'}</span>
         <span class="muted">{n_err} error{'s' if n_err != 1 else ''} · {n_warn} warning{'s' if n_warn != 1 else ''}</span>
       </div>
-      <div class="score-num">{(f'{score:.3f}' if score is not None else '–')}<span>%</span></div>
-      <div class="score-label">of the 3+2-reachable surface within ±{tol:g} mm{' · trusted final evaluation of iteration ' + str(final_iter) if is_final else ' (latest iteration, not evaluated)'}</div>
+      <div class="score-num">{(f'{score:.2f}' if score is not None else '–')}<span>%</span></div>
+      <div class="score-label">{score_label}</div>
       <div class="meter" aria-hidden="true"><i style="width:{max(0, min(100, score or 0)):.2f}%"></i></div>
-      <div class="score-2"><span>Whole surface <b>{m.get('all_in_tol_pct', 0):.2f}%</b></span><span>needs 5-axis <b>{m.get('unreachable_area_pct', 0):.1f}%</b></span><span>parting face <b>{m.get('parting_face_pct', 0):.1f}%</b></span></div>
+      {score2}
       <div class="chips">{''.join(chips)}</div>
       {f'<p class="int-note">{_esc(integrity_note)}</p>' if integrity_note else ''}
     </div>
@@ -775,30 +966,32 @@ def build(run_dir) -> Path:
   <div class="wrap"><p class="verdict">{verdict}</p></div>
 </header>
 <nav class="toc" aria-label="Sections"><div class="wrap">
-  <a href="#sim">Simulation</a><a href="#setups">Setups</a><a href="#result">Result</a><a href="#rigidity">Rigidity &amp; part-off</a>
-  <a href="#problems">Problems</a><a href="#history">History</a><a href="#metrics">Metrics</a><a href="#images">Images</a><a href="#gcode">G-code</a>
+  <a href="#sim">Simulation</a><a href="#result">Result</a><a href="#partoff">Part-off</a><a href="#problems">Problems</a>
+  <a href="#setups">Setups</a><a href="#history">History</a><a href="#metrics">Metrics</a><a href="#images">Images</a><a href="#gcode">G-code</a>
 </div></nav>
 <main class="wrap">
 <section id="sim">
   <div class="sec-head"><h2>Cutting simulation</h2>
-  <p class="sub">Replay of the evaluated program in the vise: the part stays put and the tool comes in along each setup's tool axis
-  (it swings around the part while the table indexes). The material is the stock cut by every setup's swept volume, replayed in the
-  browser with the simulator's kernel. Drag to orbit, right-drag / two fingers to pan, wheel / pinch to zoom.</p></div>
+  <p class="sub"><b>Machine view</b> (default): the spindle stays vertical and the table moves the work. To reach each side of the part
+  the cradle tilts (A axis) and the platter turns (C axis), carrying the vise, the stock and the part. Press play, or click a setup
+  in the strip under the timeline. <b>Part view</b>: the part stays still and the tool comes in along each setup's axis. The material
+  is the stock cut by every move, replayed in the browser with the simulator's kernel. Drag to orbit, right-drag or two fingers to pan,
+  wheel or pinch to zoom (after a click).</p>{help_txt}</div>
   {sim_block}
-</section>
-<section id="setups">
-  <div class="sec-head"><h2>Setups</h2><p class="sub">Contiguous blocks of one tool orientation (G68.2 … G69). Click a setup to play from it; vise contact is highlighted.</p></div>
-  {_setups_table(segs, conn, fixmoves)}
 </section>
 <section id="result">
   <div class="sec-head"><h2>Final result</h2>
-  <p class="sub">Target part coloured by the signed deviation of the simulated part, or the machined part coloured by setup.
-  Surface no 3+2 direction can reach and the hand-finished parting face are shown in their own colours and are not counted as LLM error.</p></div>
+  <p class="sub">The target part coloured by how far the simulated part is from it, over the whole surface. Green is within ±{tol:g} mm;
+  anything that is not green is a failure (orange to dark red: material left; blue: cut too deep). Purple marks the tab witness, the
+  small areas where a part-off tab joins the part. Click a marker, a region in the Problems table or the surface itself to see why it failed.</p></div>
   {res_block}
 </section>
-<section id="rigidity">
-  <div class="sec-head"><h2>Rigidity &amp; part-off</h2><p class="sub">The part must stay connected to the gripped stub by at least half of the stock section until the
-  <code>(PART-OFF)</code> section{f' (line <button class="gl" data-gline="{rg["part_off_line"]}">{rg["part_off_line"]}</button>)' if rg.get('part_off_line') else ''}, which must leave thin tabs the operator can break.</p></div>
+<section id="partoff">
+  <div class="sec-head"><h2>Holding and part-off</h2><p class="sub">The part is machined out of a block held by its bottom in one vise. It must stay connected to the gripped
+  stub by at least {100 * RIGID_MIN:.0f}% of the stock section until the <code>(PART-OFF)</code> section{f' (line <button class="gl" data-gline="{rg["part_off_line"]}">{rg["part_off_line"]}</button>)' if rg.get('part_off_line') else ''},
+  which machines the underside and leaves only small tabs that the operator breaks by hand and files flush.</p></div>
+  {_partoff_block(po, rg, m, po_img)}
+  <h3 class="sub-h">Rigidity through the program</h3>
   <div class="two rig-two">
     <div class="card chart-card">{_rigidity_chart(rg)}</div>
     <div>{_conn_maps(cm, conn) or '<p class="muted">No connection-plane maps.</p>'}</div>
@@ -807,13 +1000,17 @@ def build(run_dir) -> Path:
 <section id="problems">
   <div class="sec-head"><h2>Problems</h2><p class="sub">Click a line number to jump the G-code listing and the animation there; click a region to locate it in the result view.</p></div>
   <div class="stack">
-    <div><h3>Safety, fixture &amp; plausibility issues <span class="count">{len(issues)}</span></h3>{_issue_rows5(issues)}</div>
     <div><h3>Out-of-tolerance regions <span class="count">{len(regs)}</span></h3>{_region_rows5(regs, segs)}</div>
+    <div><h3>Safety, fixture &amp; plausibility issues <span class="count">{len(issues)}</span></h3>{_issue_rows5(issues)}</div>
   </div>
 </section>
+<section id="setups">
+  <div class="sec-head"><h2>Setups</h2><p class="sub">Contiguous blocks of one tool orientation (G68.2 … G69), with the trunnion angles the table turns to. Click a setup to play from it; vise contact is highlighted.</p></div>
+  {_setups_table(segs, conn, fixmoves)}
+</section>
 <section id="history">
-  <div class="sec-head"><h2>Iteration history</h2><p class="sub">Score per simulated iteration and the LLM's own notes on what it changed.</p></div>
-  <div class="card chart-card">{_history_svg(hist, final_iter)}</div>
+  <div class="sec-head"><h2>Iteration history</h2><p class="sub">Score per simulated iteration and the agent's own notes on what it changed.</p></div>
+  <div class="card chart-card">{_history_svg5(hist, final_iter)}</div>
   <div class="iters">{''.join(cards)}</div>
 </section>
 <section id="metrics">
@@ -826,8 +1023,8 @@ def build(run_dir) -> Path:
   </div>
 </section>
 <section id="images">
-  <div class="sec-head"><h2>Images</h2><p class="sub">2D plots written for the LLM's brief and feedback (the same information as the 3D views above).</p></div>
-  <details class="imgs"><summary>Show simulator plots</summary><div class="gallery">{gal}</div></details>
+  <div class="sec-head"><h2>Images</h2><p class="sub">2D plots written for the agent's brief and feedback (the same information as the 3D views above).</p></div>
+  {f'<details class="imgs"><summary>Show simulator plots</summary><div class="gallery">{gal}</div></details>' if gal else '<p class="muted">No plots for this result.</p>'}
 </section>
 <section id="gcode">
   <div class="sec-head"><h2>G-code</h2><p class="sub">The full listing is in the simulation panel above (search and click to jump).</p></div>
@@ -838,7 +1035,7 @@ def build(run_dir) -> Path:
 </section>
 </main>
 <footer class="foot"><div class="wrap">
-  <span>Harness sha256 <code>{_esc(hv.get('sha256', meta.get('harness', {}).get('sha256', ''))[:16])}</code> · git <code>{_esc(hv.get('git_head', meta.get('harness', {}).get('git_head', '')))}</code></span>
+  <span>Harness sha256 <code>{_esc(hv.get('sha256', meta.get('harness', {}).get('sha256', ''))[:16])}</code> · git <code>{_esc(hv.get('git_head', meta.get('harness', {}).get('git_head', '')))}</code>{' (re-score)' if rescored else ''}</span>
   <span>Part {_esc(meta.get('part_sha256', '')[:12])} · generated {dt.datetime.now().strftime('%Y-%m-%d %H:%M')}</span>
 </div></footer>
 <div id="toast" role="status" aria-live="polite"></div>

@@ -1,26 +1,16 @@
-// 3+2 final result: the target part coloured by the signed deviation of the simulated part (blue gouge / green in
-// tolerance / red proud), with the surface no 3+2 direction reaches (hatched grey) and the parting face that is
-// hand-finished after the part-off (tan) shown as excluded classes; or the machined part itself (exact intersection of
-// the stock and every setup's height field) coloured by setup. Vise / table and stock ghosts can be toggled.
+// 3+2 final result: the target part coloured by the signed deviation of the simulated part over its whole surface
+// (green in tolerance, orange -> dark red proud, blue gouge; the same colours as the simulator's plots), with the tab
+// witness areas the part-off leaves in their own colour; or the machined part itself (exact intersection of the stock
+// and every setup's height field) coloured by setup. Clicking a region (marker, table row or the surface) explains why
+// it failed. Vise and stock ghosts can be toggled.
 import * as THREE from 'three';
 import { Stage } from './scene.js';
-import { devColor, devGradientCSS, hexRgb } from './colors.js';
+import { DEV5, devColor5, devGradient5CSS, hexRgb } from './colors.js';
 import { buildGhost } from './simview.js';
 import { Material5 } from './material5.js';
 import { SETUP_PALETTE, armZoom, buildVise, setupLabel } from './simview5.js';
 
-export const CLS5 = { parting: '#c9a46c', unreach: '#8e939c' };
-
-function hatchMaterial(opts) {
-  const m = new THREE.MeshStandardMaterial(opts);
-  m.onBeforeCompile = (sh) => {
-    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute float aHatch;\nvarying float vHatch;')
-      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvHatch = aHatch;');
-    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vHatch;')
-      .replace('#include <color_fragment>', '#include <color_fragment>\nif (vHatch > 0.5 && mod(gl_FragCoord.x + gl_FragCoord.y, 9.0) < 3.5) diffuseColor.rgb *= 0.55;');
-  };
-  return m;
-}
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 export class ResultView5 {
   constructor(D, els) {
@@ -29,35 +19,40 @@ export class ResultView5 {
     const st = this.stage = new Stage(els.view, meta.stock);
     st.plate.visible = false;
     armZoom(st, els.view);
+    // the part (target bounding box), not the stock or the vise, frames the view
+    const P = D.meshV;
+    const lo = new THREE.Vector3(Infinity, Infinity, Infinity), hi = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+    for (let i = 0; i < P.length; i += 3) { lo.min(new THREE.Vector3(P[i], P[i + 1], P[i + 2])); hi.max(new THREE.Vector3(P[i], P[i + 1], P[i + 2])); }
+    this.partLo = lo; this.partHi = hi;
+    st.fitLo = lo.clone(); st.fitHi = hi.clone();
     // frame the whole part when the view first scrolls in (unless the reader already moved the camera)
     this.touched = false;
     els.view.addEventListener('pointerdown', () => { this.touched = true; });
     const io = new IntersectionObserver((e) => { if (e[0].isIntersecting) { if (!this.touched) { st.resize(); this.view('iso', false); } io.disconnect(); } });
     io.observe(els.view);
-    const lo = new THREE.Vector3(...meta.stock.lo), hi = new THREE.Vector3(...meta.stock.hi);
-    this.partLo = lo.clone(); this.partHi = hi.clone();
-    for (const b of meta.vise || []) if (b.kind === 'jaw') { lo.min(new THREE.Vector3(...b.lo)); hi.max(new THREE.Vector3(...b.hi)); }
-    st.fitLo = this.partLo.clone(); st.fitHi = this.partHi.clone();
-    st.view('iso', false);
+    this.view('iso', false);
     const k = st.key.shadow.camera, s = st.diag * 1.1;
     Object.assign(k, { left: -s, right: s, top: s, bottom: -s, far: st.diag * 6 });
     k.updateProjectionMatrix();
-    // target coloured by deviation / class
+    // target coloured by deviation; tab witness (score class 1, only in data scored under the whole-surface rule)
+    this.hasCls = meta.mesh?.cls_kind === 'score';
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(D.meshV, 3));
     g.setIndex(new THREE.BufferAttribute(D.meshF, 1));
     g.computeVertexNormals();
-    const nv = D.meshDev.length, col = new Float32Array(nv * 3), hatch = new Float32Array(nv);
-    const PART = hexRgb(CLS5.parting), UNR = hexRgb(CLS5.unreach), tmp = new THREE.Color();
+    const nv = D.meshDev.length, col = new Float32Array(nv * 3), tmp = new THREE.Color();
+    const WIT = hexRgb(DEV5.witness);
+    let nWit = 0;
     for (let i = 0; i < nv; i++) {
-      const c = D.meshCls[i] === 1 ? PART : D.meshCls[i] === 2 ? UNR : devColor(D.meshDev[i], tol);
+      const w = this.hasCls && D.meshCls[i] === 1;
+      if (w) nWit++;
+      const c = w ? WIT : devColor5(D.meshDev[i], tol);
       tmp.setRGB(c[0], c[1], c[2], THREE.SRGBColorSpace);
       col[i * 3] = tmp.r; col[i * 3 + 1] = tmp.g; col[i * 3 + 2] = tmp.b;
-      hatch[i] = D.meshCls[i] === 2 ? 1 : 0;
     }
+    this.nWit = nWit;
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
-    g.setAttribute('aHatch', new THREE.BufferAttribute(hatch, 1));
-    this.target = new THREE.Mesh(g, hatchMaterial({ vertexColors: true, metalness: 0.1, roughness: 0.55, side: THREE.DoubleSide }));
+    this.target = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, metalness: 0.1, roughness: 0.55, side: THREE.DoubleSide }));
     this.target.castShadow = true; this.target.receiveShadow = true;
     st.scene.add(this.target);
     // machined part: every setup final
@@ -73,17 +68,14 @@ export class ResultView5 {
     this.ghost = buildGhost(D);
     this.ghost.visible = false;
     st.scene.add(this.ghost);
-    // vise / table and stock ghosts
+    // vise and stock ghosts (the machine table slab would haze every view from below: not drawn here)
     this.vise = buildVise(meta.vise);
     this.vise.group.traverse((o) => { if (o.material) { o.material.transparent = true; o.material.opacity = o.isMesh ? 0.3 : 0.15; o.material.depthWrite = false; } if (o.isMesh) o.castShadow = false; });
-    // the machine table is huge and would haze every view from below: only the jaws and the vise body here
     this.vise.group.traverse((o) => { if (o.userData.kind === 'table') o.visible = false; });
     st.scene.add(this.vise.group);
-    const bg = new THREE.BoxGeometry(hi.x - lo.x, 1, 1);
-    const sl = this.partLo, sh = this.partHi;
+    const sl = new THREE.Vector3(...meta.stock.lo), sh = new THREE.Vector3(...meta.stock.hi);
     const sb = new THREE.BoxGeometry(sh.x - sl.x, sh.y - sl.y, sh.z - sl.z);
     sb.translate((sl.x + sh.x) / 2, (sl.y + sh.y) / 2, (sl.z + sh.z) / 2);
-    bg.dispose();
     this.stockGhost = new THREE.Group();
     const sm = new THREE.Mesh(sb, new THREE.MeshBasicMaterial({ color: 0xf0a030, transparent: true, opacity: 0.1, depthWrite: false }));
     const se = new THREE.LineSegments(new THREE.EdgesGeometry(sb), new THREE.LineBasicMaterial({ color: 0xe08a10 }));
@@ -93,6 +85,7 @@ export class ResultView5 {
     this.mode = 'dev';
     this.buildBar(els.bar);
     this.buildMarkers(els.view);
+    this.buildCard(els.view);
     this.buildPick(els.view);
     st.onFrame = () => { this.placeMarkers(); return false; };
     els.view.querySelector('.vp-msg')?.remove();
@@ -125,9 +118,9 @@ export class ResultView5 {
     const st = this.stage;
     const dirs = { iso: st.camera.aspect < 0.9 ? [-0.6, -1.0, 1.55] : [-0.85, -1.25, 1.05], top: [0, -0.0001, 1], front: [0, -1, 0.28], back: [0.0, 1, 0.28], right: [1, 0.0, 0.28], left: [-1, 0, 0.28], under: [-0.6, -1.0, -0.9] };
     const v = new THREE.Vector3(...(dirs[name] || dirs.iso)).normalize();
-    const box = [this.partLo, this.partHi];
-    const { pos, target } = st.fitBox(v, box[0], box[1], name === 'top' ? 1.06 : 1.12);
+    const { pos, target } = st.fitBox(v, this.partLo, this.partHi, name === 'top' ? 1.06 : 1.15);
     st.flyTo(pos, target, animate);
+    if (this.markers) this.markers.forEach((m) => m.el.classList.remove('active'));
   }
   buildBar(bar) {
     this.bar = bar;
@@ -146,13 +139,15 @@ export class ResultView5 {
         <span class="seg views" role="group" aria-label="View"><button type="button" data-view="iso" title="Reset to the isometric overview">Iso</button><button type="button" data-view="top">Top</button><button type="button" data-view="front">Front</button><button type="button" data-view="back">Back</button><button type="button" data-view="right">Side</button><button type="button" data-view="under">Below</button></span>
       </div>
       <div class="cbar dev-legend">
-        <div class="cb-title">Signed deviation of the machined part at the target surface (mm)</div>
-        <div class="cb-grad" style="background:${devGradientCSS(t)}"></div>
+        <div class="cb-title">Signed deviation of the machined part from the target surface (mm). Anything not green is out of tolerance.</div>
+        <div class="cb-grad" style="background:${devGradient5CSS(t)}"></div>
         <div class="cb-ticks">${ticks.map((v) => `<span style="left:${50 + v * 50}%">${v === 0 ? '±' + t : (v > 0 ? '+' : '') + (Math.abs(v) < 1 ? v.toFixed(1) : v.toFixed(0))}</span>`).join('')}</div>
-        <div class="cb-ends"><span>◀ gouge (too deep)</span><span class="mid">in tolerance</span><span>proud (left) ▶</span></div>
+        <div class="cb-ends"><span>◀ gouge (cut too deep)</span><span class="mid">in tolerance</span><span>proud (material left) ▶</span></div>
         <div class="cls-legend">
-          <span><i class="sw hatch" style="background:${CLS5.unreach}"></i>not reachable in 3+2 – needs simultaneous 5-axis or a smaller tool (reported separately, not in the score)</span>
-          <span><i class="sw" style="background:${CLS5.parting}"></i>parting face – sawn / broken off and hand-finished after the part-off (not scored)</span>
+          <span><i class="sw" style="background:${DEV5.ok}"></i>in tolerance (±${t} mm)</span>
+          <span><i class="sw" style="background:linear-gradient(90deg, ${DEV5.proudLo}, ${DEV5.proudHi})"></i>proud: failed, material left</span>
+          <span><i class="sw" style="background:${DEV5.gouge}"></i>gouge: failed, cut too deep</span>
+          <span><i class="sw" style="background:${DEV5.witness}"></i>tab witness: where a part-off tab joins the part${this.hasCls ? (this.nWit ? '' : ' (none on this part)') : ' (not measured in this run)'}</span>
         </div>
       </div>
       <div class="cbar mach-legend" hidden>
@@ -166,11 +161,20 @@ export class ResultView5 {
     bar.querySelector('.mk').onchange = (e) => { this.markerLayer.hidden = !e.target.checked; };
     bar.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => this.view(b.dataset.view)));
   }
+  regionPoint(r) {
+    const b = r.bbox, nn = r.normal || [0, 0, 1];
+    // pin on the bbox face the region's mean normal points out of
+    const c = [(b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2];
+    const ax = [0, 1, 2].reduce((a, i) => (Math.abs(nn[i]) > Math.abs(nn[a]) ? i : a), 2);
+    c[ax] = nn[ax] >= 0 ? b[ax + 3] : b[ax];
+    return new THREE.Vector3(...c);
+  }
   buildMarkers(view) {
     const layer = this.markerLayer = document.createElement('div');
     layer.className = 'markers';
     view.appendChild(layer);
-    this.markers = (this.D.meta.regions || []).slice(0, 12).map((r) => {
+    this.regions = this.D.meta.regions || [];
+    this.markers = this.regions.slice(0, 12).map((r) => {
       const el = document.createElement('button');
       el.type = 'button';
       el.className = 'marker ' + r.type;
@@ -178,12 +182,7 @@ export class ResultView5 {
       el.title = `R${r.id}: ${r.type} ${r.area_mm2} mm², worst ${r.dev_extreme > 0 ? '+' : ''}${r.dev_extreme} mm`;
       el.onclick = () => this.focusRegion(r.id, false);
       layer.appendChild(el);
-      const b = r.bbox, nn = r.normal || [0, 0, 1];
-      // pin on the bbox face the region's mean normal points out of
-      const c = [(b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2];
-      const ax = [0, 1, 2].reduce((a, i) => (Math.abs(nn[i]) > Math.abs(nn[a]) ? i : a), 2);
-      c[ax] = nn[ax] >= 0 ? b[ax + 3] : b[ax];
-      return { r, el, p: new THREE.Vector3(...c) };
+      return { r, el, p: this.regionPoint(r) };
     });
   }
   placeMarkers() {
@@ -193,19 +192,64 @@ export class ResultView5 {
       mk.el.style.transform = `translate(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px)`;
       mk.el.hidden = s.behind;
     }
+    if (this.focus && !this.card.hidden) {
+      const s = this.stage.project(this.focus);
+      this.pin.style.transform = `translate(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px)`;
+      this.pin.hidden = s.behind;
+    }
+  }
+  buildCard(view) {
+    const c = this.card = document.createElement('div');
+    c.className = 'region-card';
+    c.hidden = true;
+    c.setAttribute('role', 'dialog');
+    c.setAttribute('aria-label', 'Region details');
+    view.appendChild(c);
+    const pin = this.pin = document.createElement('div');
+    pin.className = 'region-pin';
+    pin.hidden = true;
+    view.appendChild(pin);
+  }
+  showCard(r) {
+    const segs = this.D.segs, fr2seg = {};
+    segs.forEach((s, i) => { if (!(s.frame in fr2seg)) fr2seg[s.frame] = i + 1; });
+    const passes = (r.nearest_passes || []).slice(0, 5).map((p) => `<button class="gl" type="button" data-gline="${p.line}" title="T${p.tool}, setup ${fr2seg[p.frame] ?? '?'}, missed by ${p.gap_mm} mm">${p.line}</button>`).join(' ');
+    const why = r.type === 'gouge' ? 'cut too deep: the surface is below the target' : 'material left: no pass finished this surface to size';
+    this.card.innerHTML = `<button type="button" class="rc-x" aria-label="Close">×</button>
+      <div class="rc-h"><span class="pill ${esc(r.type)}">${esc(r.type)}</span> <b>R${r.id}</b> · ${r.area_mm2} mm² · worst ${r.dev_extreme > 0 ? '+' : ''}${(+r.dev_extreme).toFixed(3)} mm</div>
+      <div class="rc-why">Failed: ${why}.</div>
+      ${r.hint ? `<div class="rc-hint"><b>Why:</b> ${esc(r.hint)}</div>` : ''}
+      <div class="rc-f muted">${esc((r.faces || []).slice(0, 3).join(', '))}</div>
+      ${passes ? `<div class="rc-p"><span class="muted">Nearest passes (G-code line):</span> ${passes}</div>` : '<div class="rc-p muted">No pass of the program came near this region.</div>'}`;
+    this.card.hidden = false;
+    this.card.querySelector('.rc-x').onclick = () => { this.card.hidden = true; this.pin.hidden = true; this.markers.forEach((m) => m.el.classList.remove('active')); };
   }
   focusRegion(id, scroll = true) {
-    const mk = this.markers.find((m) => m.r.id === id);
-    if (!mk) return;
+    const r = this.regions.find((x) => x.id === id);
+    if (!r) return;
     if (scroll) this.stage.container.scrollIntoView({ behavior: 'smooth', block: 'center' });
     if (this.mode !== 'dev') this.setMode('dev');
-    const b = mk.r.bbox, nn = mk.r.normal || [0, 0, 1];
+    const b = r.bbox, nn = r.normal || [0, 0, 1];
     const c = new THREE.Vector3((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2);
     const ext = Math.max(b[3] - b[0], b[4] - b[1], b[5] - b[2], 6);
     const dir = new THREE.Vector3(...nn).normalize().add(new THREE.Vector3(-0.3, -0.4, 0.4)).normalize();
     this.touched = true;
     this.stage.flyTo(c.clone().addScaledVector(dir, ext * 1.6 + this.stage.diag * 0.3), c);
-    this.markers.forEach((m) => m.el.classList.toggle('active', m === mk));
+    this.markers.forEach((m) => m.el.classList.toggle('active', m.r.id === id));
+    this.focus = this.regionPoint(r);
+    this.showCard(r);
+    this.stage.invalidate();
+  }
+  // nearest region (by bounding box) to a picked surface point
+  regionAt(p) {
+    let best = null, bd = Infinity;
+    for (const r of this.regions) {
+      const b = r.bbox;
+      const dx = Math.max(b[0] - p.x, 0, p.x - b[3]), dy = Math.max(b[1] - p.y, 0, p.y - b[4]), dz = Math.max(b[2] - p.z, 0, p.z - b[5]);
+      const d = Math.hypot(dx, dy, dz);
+      if (d < bd) { bd = d; best = r; }
+    }
+    return bd < 1.5 ? best : null;
   }
   buildPick(view) {
     const tip = this.tip = document.createElement('div');
@@ -217,7 +261,7 @@ export class ResultView5 {
     view.addEventListener('pointerdown', (e) => { down = [e.clientX, e.clientY]; });
     view.addEventListener('pointerup', (e) => {
       if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 4) return;
-      if (e.target.closest('.marker') || this.mode !== 'dev') return;
+      if (e.target.closest('.marker, .region-card') || this.mode !== 'dev') return;
       const r = view.getBoundingClientRect();
       const ndc = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       ray.setFromCamera(ndc, this.stage.camera);
@@ -227,12 +271,13 @@ export class ResultView5 {
       const bary = new THREE.Vector3();
       THREE.Triangle.getBarycoord(p, new THREE.Vector3().fromArray(D.meshV, f.a * 3), new THREE.Vector3().fromArray(D.meshV, f.b * 3), new THREE.Vector3().fromArray(D.meshV, f.c * 3), bary);
       const d = D.meshDev[f.a] * bary.x + D.meshDev[f.b] * bary.y + D.meshDev[f.c] * bary.z;
-      const cls = D.meshCls[f.a];
-      const kind = cls === 2 ? 'not reachable in 3+2 (excluded)' : cls === 1 ? 'parting face (hand-finished)' :
-        d > this.tol ? 'proud' : d < -this.tol ? 'gouge' : 'in tolerance';
-      tip.innerHTML = `<b>${d > 0 ? '+' : ''}${d.toFixed(3)} mm</b> ${kind}<br><span class="mono">X${p.x.toFixed(2)} Y${p.y.toFixed(2)} Z${p.z.toFixed(2)}</span>`;
-      tip.style.transform = `translate(${e.clientX - r.left + 12}px, ${e.clientY - r.top + 12}px)`;
+      const wit = this.hasCls && D.meshCls[f.a] === 1;
+      const kind = wit ? 'tab witness (where a part-off tab joins the part)' : d > this.tol ? 'proud: failed, material left' : d < -this.tol ? 'gouge: failed, cut too deep' : 'in tolerance';
+      const reg = (!wit && Math.abs(d) > this.tol) ? this.regionAt(p) : null;
+      tip.innerHTML = `<b>${d > 0 ? '+' : ''}${d.toFixed(3)} mm</b> ${kind}<br><span class="mono">X${p.x.toFixed(2)} Y${p.y.toFixed(2)} Z${p.z.toFixed(2)}</span>${reg ? `<br>part of region R${reg.id}` : ''}`;
+      tip.style.transform = `translate(${Math.min(e.clientX - r.left + 12, r.width - 270)}px, ${e.clientY - r.top + 12}px)`;
       tip.hidden = false;
+      if (reg) { this.focus = this.regionPoint(reg); this.showCard(reg); this.markers.forEach((m) => m.el.classList.toggle('active', m.r.id === reg.id)); }
     });
   }
 }
