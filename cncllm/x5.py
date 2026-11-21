@@ -66,7 +66,7 @@ RULES5 = """\
 
 def harness_fp():
     from . import cli
-    cli.CORE[:] = sorted(set(cli.CORE + ["part5.py", "sim5.py", "kernel5.py", "x5.py", "crosscheck5.py"]))
+    cli.CORE[:] = sorted(set(cli.CORE + ["part5.py", "sim5.py", "kernel5.py", "x5.py", "crosscheck5.py", "cli.py"]))
     return cli.harness_fingerprint()
 
 
