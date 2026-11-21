@@ -39,7 +39,7 @@ def test_ideal_program_is_valid_and_complete(box):
     assert m["valid"], [i for i in r["issues"] if i["severity"] == "error"]
     assert m["whole_surface_in_tol_pct"] > 99.9
     assert po["ok"] and len(po["tabs"]) == 2
-    assert all(abs(t["area_mm2"] - 11.7) < 1.0 and t["width_mm"] <= 2.7 for t in po["tabs"])
+    assert all(2.0 < t["area_mm2"] < 6.0 and t["width_mm"] <= 2.7 for t in po["tabs"])
     assert 2.0 <= po["total_mm2"] <= 30.0
     assert 0.2 < m["tab_witness_pct"] < 1.0      # two small joints with a 1 mm ring
     assert m["edge_band_excluded_pct"] < 0.9
@@ -150,7 +150,7 @@ def test_part_verification_catches_swapped_part(tmp_path):
     run = tmp_path / "run"
     fx = {"up": "+Z", "gap": 14, "grip": 8, "margin": 3, "top": 1}
     part5.place(src, fx, run / "part")
-    meta = {"source_step": str(src)}
+    meta = {"source_step": str(src), "part": "simple"}
     assert x5.verify_part(run, meta) == []
     s = json.loads((run / "part" / "setup.json").read_text())
     s["stock"]["hi"][2] -= 0.5                       # a thinner stock than the fixture implies
@@ -161,3 +161,8 @@ def test_part_verification_catches_swapped_part(tmp_path):
     shutil.copy(tmp_path / "other" / "part.step", run / "part" / "part.step")   # a different (smaller) part
     assert any("part.step differs" in f for f in x5.verify_part(run, meta))
     assert any("not inside the repository" in f for f in x5.verify_part(run, {"source_step": str(tmp_path / "x.step")}))
+    # v3: a part name / scale not in the committed manifest is an integrity failure
+    part5.place(src, fx, run / "part")
+    assert any("not in parts/manifest.json" in f for f in x5.verify_part(run, {"source_step": str(src), "part": "nope"}))
+    part5.place(src, {**fx, "scale": 1.3}, run / "part")
+    assert any("scale" in f for f in x5.verify_part(run, meta))

@@ -1,0 +1,633 @@
+{
+ "tag": "ftc_1440_light",
+ "ready_s": 4.06,
+ "first_frame_s": 4.89,
+ "scrollWidth": 1440,
+ "doc_title": "ftc10 \u00b7 3+2 CNC run report",
+ "mode": {
+  "mode": "machine",
+  "cursor": 23619,
+  "caught": true,
+  "u": 0.08639349636180342,
+  "segments": 8,
+  "playing": false,
+  "pose": {
+   "phase": "cut",
+   "A": 0,
+   "C": 0,
+   "tip": [
+    23.5,
+    -2.5000000000000013,
+    108.24999994999999
+   ]
+  }
+ },
+ "sim_default": "ftc_1440_light_sim_default.png",
+ "_t": {
+  "sim_default": 0.9,
+  "sim_section": 1.3,
+  "overflow": 0.0,
+  "machineCheck": 0.0,
+  "swing_s2_before": 4.7,
+  "swing_s2_mid": 4.5,
+  "swing_s2_after": 6.7,
+  "swing_s3_before": 8.2,
+  "swing_s3_mid": 7.8,
+  "swing_s3_after": 7.8,
+  "swing_s5_before": 10.3,
+  "swing_s5_mid": 12.5,
+  "swing_s5_after": 10.2,
+  "indep": 0.0,
+  "tilted": 66.0,
+  "cta": 128.0,
+  "result_default": 42.2,
+  "region_R1": 231.4
+ },
+ "sim_section": "ftc_1440_light_sim_section.png",
+ "overflow": [
+  [
+   "dro-tool",
+   "T13 \u00b7 2 mm ball long-neck endmill, neck 20 mm",
+   "ellipsis"
+  ],
+  [
+   "sb-l",
+   "A0 C0 \u00b7 T1 T5 T10 T11 T13 T14",
+   "ellipsis"
+  ],
+  [
+   "sb-l",
+   "A90 C0 \u00b7 T1 T2 T3 T4 T7 T13",
+   "ellipsis"
+  ],
+  [
+   "sb-l",
+   "A90 C-90 \u00b7 T1 T2 T3 T7 T10 T12",
+   "ellipsis"
+  ],
+  [
+   "sb-l",
+   "A90 C90 \u00b7 T1 T2 T7 T10 T12",
+   "ellipsis"
+  ],
+  [
+   "sb-l",
+   "A90 C0 \u00b7 T1 T3",
+   "ellipsis"
+  ],
+  [
+   "sb-l",
+   "A90 C-180 \u00b7 T1 T2 T5 T7 T13 T14",
+   "ellipsis"
+  ],
+  [
+   "sb-l",
+   "A90 C0 \u00b7 T1 T2 T3 T4",
+   "ellipsis"
+  ]
+ ],
+ "machineCheck": {
+  "maxSpindleDirErr": 1.5700924586837752e-16,
+  "maxToolAxisInPartErr": 3.510833468576701e-16,
+  "maxTipErrMm": 4.9227844771419234e-14,
+  "maxAngleErrDeg": 0,
+  "maxAngleVsSetupsJsonDeg": 0,
+  "samples": 641,
+  "swingSamples": 35,
+  "setups": [
+   {
+    "segment": 1,
+    "A": 0,
+    "C": 0,
+    "A_expected": 0,
+    "C_expected": 0,
+    "A_sim": 0,
+    "C_sim": 0,
+    "A_table": 0,
+    "C_table": 0,
+    "maxTipErrMm": 1.0048591735576161e-14
+   },
+   {
+    "segment": 2,
+    "A": 90,
+    "C": -0.0,
+    "A_expected": 90,
+    "C_expected": -0.0,
+    "A_sim": 90,
+    "C_sim": -0.0,
+    "A_table": 90,
+    "C_table": 0,
+    "maxTipErrMm": 3.8958546965271006e-14
+   },
+   {
+    "segment": 3,
+    "A": 90,
+    "C": -180,
+    "A_expected": 90,
+    "C_expected": -180,
+    "A_sim": 90,
+    "C_sim": -180,
+    "A_table": 90,
+    "C_table": -180,
+    "maxTipErrMm": 4.081757258616412e-14
+   },
+   {
+    "segment": 4,
+    "A": 90,
+    "C": -90,
+    "A_expected": 90,
+    "C_expected": -90,
+    "A_sim": 90,
+    "C_sim": -90,
+    "A_table": 90,
+    "C_table": -90,
+    "maxTipErrMm": 4.0194366942304644e-14
+   },
+   {
+    "segment": 5,
+    "A": 90,
+    "C": 90,
+    "A_expected": 90,
+    "C_expected": 90,
+    "A_sim": 90,
+    "C_sim": 90,
+    "A_table": 90,
+    "C_table": 90,
+    "maxTipErrMm": 4.0194366942304644e-14
+   },
+   {
+    "segment": 6,
+    "A": 90,
+    "C": -0.0,
+    "A_expected": 90,
+    "C_expected": -0.0,
+    "A_sim": 90,
+    "C_sim": -0.0,
+    "A_table": 90,
+    "C_table": 0,
+    "maxTipErrMm": 4.9227844771419234e-14
+   },
+   {
+    "segment": 7,
+    "A": 90,
+    "C": -180,
+    "A_expected": 90,
+    "C_expected": -180,
+    "A_sim": 90,
+    "C_sim": -180,
+    "A_table": 90,
+    "C_table": -180,
+    "maxTipErrMm": 4.081757258616412e-14
+   },
+   {
+    "segment": 8,
+    "A": 90,
+    "C": -0.0,
+    "A_expected": 90,
+    "C_expected": -0.0,
+    "A_sim": 90,
+    "C_sim": -0.0,
+    "A_table": 90,
+    "C_table": -0.0,
+    "maxTipErrMm": 4.7265781317840344e-14
+   }
+  ],
+  "pass": true,
+  "method": "three.js matrixWorld of the rendered tool and part group; reference tip = Part view pose() in G54",
+  "ms": 48
+ },
+ "swings": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7
+ ],
+ "seg_angles": [
+  {
+   "i": 0,
+   "A": 0,
+   "C": 0,
+   "phi": 0
+  },
+  {
+   "i": 1,
+   "A": 90,
+   "C": 0,
+   "phi": 0.9593323469161987
+  },
+  {
+   "i": 2,
+   "A": 90,
+   "C": -180,
+   "phi": 0.9591533541679382
+  },
+  {
+   "i": 3,
+   "A": 90,
+   "C": -90,
+   "phi": 0.98212730884552
+  },
+  {
+   "i": 4,
+   "A": 90,
+   "C": 90,
+   "phi": 0.98212730884552
+  },
+  {
+   "i": 5,
+   "A": 90,
+   "C": 0,
+   "phi": 0.973547637462616
+  },
+  {
+   "i": 6,
+   "A": 90,
+   "C": -180,
+   "phi": 0.9755241870880127
+  },
+  {
+   "i": 7,
+   "A": 90,
+   "C": -0.0,
+   "phi": 0.9699169397354126
+  }
+ ],
+ "swing_s2_before": {
+  "state": {
+   "phase": "cut",
+   "A": 0,
+   "C": 0,
+   "tip": [
+    23.5,
+    -2.5000000000000013,
+    108.24999994999999
+   ]
+  },
+  "phase": "Setup 1/8 \u00b7 G0 rapid \u00b7 spindle off",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "swing_s2_mid": {
+  "state": {
+   "phase": "swing",
+   "A": 45,
+   "C": 0,
+   "tip": [
+    23.5,
+    -2.5000000000000013,
+    174.2955194403628
+   ]
+  },
+  "phase": "Re-orienting to setup 2 \u00b7 cradle tilts A 0\u00b0 \u2192 90\u00b0",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "swing_s2_after": {
+  "state": {
+   "phase": "cut",
+   "A": 90,
+   "C": -0.0,
+   "tip": [
+    9.184850993605149e-15,
+    61.75000005000002,
+    150
+   ]
+  },
+  "phase": "Setup 2/8 \u00b7 G0 rapid \u00b7 S18000",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "swing_s3_before": {
+  "state": {
+   "phase": "cut",
+   "A": 90,
+   "C": -0.0,
+   "tip": [
+    15.500000000000009,
+    -31.249999949999978,
+    150
+   ]
+  },
+  "phase": "Setup 2/8 \u00b7 G0 rapid \u00b7 spindle off",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "swing_s3_mid": {
+  "state": {
+   "phase": "swing",
+   "A": 90,
+   "C": -90,
+   "tip": [
+    15.500000000000009,
+    -31.249999949999978,
+    174.2955194403628
+   ]
+  },
+  "phase": "Re-orienting to setup 3 \u00b7 platter turns C 0\u00b0 \u2192 -180\u00b0",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "swing_s3_after": {
+  "state": {
+   "phase": "cut",
+   "A": 90,
+   "C": -180,
+   "tip": [
+    2.7554552980815446e-14,
+    61.75000005000002,
+    150
+   ]
+  },
+  "phase": "Setup 3/8 \u00b7 G0 rapid \u00b7 S18000",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "swing_s5_before": {
+  "state": {
+   "phase": "cut",
+   "A": 90,
+   "C": -90,
+   "tip": [
+    -8.999999999999982,
+    -83.24999994999997,
+    150
+   ]
+  },
+  "phase": "Setup 4/8 \u00b7 G0 rapid \u00b7 spindle off",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "swing_s5_mid": {
+  "state": {
+   "phase": "swing",
+   "A": 90,
+   "C": 0,
+   "tip": [
+    -8.999999999999982,
+    -83.24999994999997,
+    174.2955194403628
+   ]
+  },
+  "phase": "Re-orienting to setup 5 \u00b7 platter turns C -90\u00b0 \u2192 90\u00b0",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "swing_s5_after": {
+  "state": {
+   "phase": "cut",
+   "A": 90,
+   "C": 90,
+   "tip": [
+    0,
+    61.75000005000002,
+    150
+   ]
+  },
+  "phase": "Setup 5/8 \u00b7 G0 rapid \u00b7 S18000",
+  "status": "\u2713 replay matches simulator on 100.00% of cells"
+ },
+ "indep": {
+  "dir": 1.5700924586837752e-16,
+  "n": 320,
+  "swingN": 133,
+  "setups": [
+   {
+    "seg": 1,
+    "err": 0,
+    "dispA": 0,
+    "dispC": 0,
+    "simA": 0,
+    "simC": 0
+   },
+   {
+    "seg": 2,
+    "err": 3.1401849173675503e-16,
+    "dispA": 90,
+    "dispC": -0.0,
+    "simA": 90,
+    "simC": -0.0
+   },
+   {
+    "seg": 3,
+    "err": 3.1401849173675503e-16,
+    "dispA": 90,
+    "dispC": -180,
+    "simA": 90,
+    "simC": -180
+   },
+   {
+    "seg": 4,
+    "err": 2.535772158592562e-16,
+    "dispA": 90,
+    "dispC": -90,
+    "simA": 90,
+    "simC": -90
+   },
+   {
+    "seg": 5,
+    "err": 2.220446049250313e-16,
+    "dispA": 90,
+    "dispC": 90,
+    "simA": 90,
+    "simC": 90
+   },
+   {
+    "seg": 6,
+    "err": 3.1401849173675503e-16,
+    "dispA": 90,
+    "dispC": -0.0,
+    "simA": 90,
+    "simC": -0.0
+   },
+   {
+    "seg": 7,
+    "err": 3.1401849173675503e-16,
+    "dispA": 90,
+    "dispC": -180,
+    "simA": 90,
+    "simC": -180
+   },
+   {
+    "seg": 8,
+    "err": 3.1401849173675503e-16,
+    "dispA": 90,
+    "dispC": -0.0,
+    "simA": 90,
+    "simC": -0.0
+   }
+  ]
+ },
+ "tilted": {
+  "dro0": "X\n  -23.281\nY\n  -57.630\nZ\n    8.326\nA\n   90.000\nC\n -180.000\nT3 \u00b7 3 mm 2-flute flat endmill\nN70005 G3 X23.75 Y119.5 Z8.2 I-0.25 J0\nSetup 3/8 \u00b7 F137 \u00b7 S24000",
+  "dro1": "X\n   19.521\nY\n  -74.372\nZ\n    3.948\nA\n   90.000\nC\n -180.000\nT4 \u00b7 1.5 mm 2-flute flat endmill\nN70491 G3 X-19.52 Y136.1 Z3.7 I-0.48 J0\nSetup 3/8 \u00b7 F187 \u00b7 S24000"
+ },
+ "cta": {
+  "cta_visible": true,
+  "poses": [
+   [
+    {
+     "mode": "machine",
+     "cursor": 23619.062487420597,
+     "caught": true,
+     "u": 0.08644832232283303,
+     "segments": 8,
+     "playing": true,
+     "pose": {
+      "phase": "retract",
+      "A": 0,
+      "C": 0,
+      "tip": [
+       23.5,
+       -2.5000000000000013,
+       113.53129165054055
+      ]
+     }
+    },
+    "Re-orienting to setup 2 \u00b7 retract (Z up)"
+   ],
+   [
+    {
+     "mode": "machine",
+     "cursor": 23619.71657765713,
+     "caught": true,
+     "u": 0.08702221584372935,
+     "segments": 8,
+     "playing": true,
+     "pose": {
+      "phase": "swing",
+      "A": 89.9943157899576,
+      "C": 0,
+      "tip": [
+       23.5,
+       -2.5000000000000013,
+       174.2955194403628
+      ]
+     }
+    },
+    "Re-orienting to setup 2 \u00b7 cradle tilts A 0\u00b0 \u2192 90\u00b0"
+   ],
+   [
+    {
+     "mode": "machine",
+     "cursor": 57019.2034497654,
+     "caught": true,
+     "u": 0.2090958859812624,
+     "segments": 8,
+     "playing": true,
+     "pose": {
+      "phase": "retract",
+      "A": 90,
+      "C": 0,
+      "tip": [
+       15.500000000000009,
+       -31.249999949999978,
+       174.1430736390925
+      ]
+     }
+    },
+    "Re-orienting to setup 3 \u00b7 retract (Z up)"
+   ],
+   [
+    {
+     "mode": "machine",
+     "cursor": 57019.61026158121,
+     "caught": true,
+     "u": 0.20945288602398737,
+     "segments": 8,
+     "playing": true,
+     "pose": {
+      "phase": "swing",
+      "A": 90,
+      "C": -170.29590055235042,
+      "tip": [
+       15.500000000000009,
+       -31.249999949999978,
+       174.2955194403628
+      ]
+     }
+    },
+    "Re-orienting to setup 3 \u00b7 platter turns C 0\u00b0 \u2192 -180\u00b0"
+   ],
+   [
+    {
+     "mode": "machine",
+     "cursor": 116390.87868290434,
+     "caught": true,
+     "u": 0.35262271829774106,
+     "segments": 8,
+     "playing": true,
+     "pose": {
+      "phase": "cut",
+      "A": 90,
+      "C": -180,
+      "tip": [
+       29.58733297970737,
+       -60.39474958553231,
+       6.428700393967595
+      ]
+     }
+    },
+    "Setup 3/8 \u00b7 F187 \u00b7 S24000"
+   ],
+   [
+    {
+     "mode": "machine",
+     "cursor": 128702.93543978324,
+     "caught": true,
+     "u": 0.3807928615495355,
+     "segments": 8,
+     "playing": true,
+     "pose": {
+      "phase": "cut",
+      "A": 90,
+      "C": -180,
+      "tip": [
+       19.6745217741766,
+       -62.997369512949646,
+       2.2328426973948363
+      ]
+     }
+    },
+    "Setup 3/8 \u00b7 F187 \u00b7 S24000"
+   ],
+   [
+    {
+     "mode": "machine",
+     "cursor": 135148.65105214706,
+     "caught": true,
+     "u": 0.4077275982128134,
+     "segments": 8,
+     "playing": true,
+     "pose": {
+      "phase": "cut",
+      "A": 90,
+      "C": -180,
+      "tip": [
+       19.795000076293945,
+       -52.34999842412108,
+       3.743999673532476
+      ]
+     }
+    },
+    "Setup 3/8 \u00b7 F96 \u00b7 S24000"
+   ],
+   [
+    {
+     "mode": "machine",
+     "cursor": 138212.65236440094,
+     "caught": false,
+     "u": 0.426704018016348,
+     "segments": 8,
+     "playing": true,
+     "pose": {
+      "phase": "cut",
+      "A": 90,
+      "C": -180,
+      "tip": [
+       27.950153350830078,
+       -85.32707209355468,
+       -9.45886516571045
+      ]
+     }
+    },
+    "Setup 3/8 \u00b7 F1152 \u00b7 S24000"
+   ]
+  ]
+ },
+ "region_R1_ERR": ".py\", line 398, in _mapped\n    return mapper(await awaitable)\n                  ^^^^^^^^^^^^^^^\n  File \"/home/paris/cnc-llm/.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py\", line 387, in finish\n    raise e from None\n  File \"/home/paris/cnc-llm/.venv/lib/python3.12/site-packages/playwright/_impl/channel_owner.py\", line 352, in finish\n    result = await zone.run_async(lambda: awaitable)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/paris/cnc-llm/.venv/lib/python3.12/site-packages/playwright/_impl/utils/zones.py\", line 58, in run_async\n    return await func()\n           ^^^^^^^^^^^^\nplaywright._impl._errors.TimeoutError: Page.screenshot: Timeout 180000ms exceeded.\nCall log:\n  - taking page screenshot\n  - waiting for fonts to load...\n  - fonts loaded\n\n"
+}

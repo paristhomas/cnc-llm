@@ -198,7 +198,8 @@ def tab_sections(wp, part, res=TAB_RES, dz=0.5):
         _, cisl = _islands(conn, res)
         planes.append({"z": round(float(zc), 3), "area_mm2": round(area, 2),
                        "connected_mm2": round(float(conn.sum() * res * res), 2), "islands": len(isl),
-                       "conn_max_width_mm": round(max((c["width_mm"] for c in cisl), default=0.0), 2)})
+                       "conn_max_width_mm": round(max((c["width_mm"] for c in cisl), default=0.0), 2),
+                       "conn_islands": len(cisl)})
         if abs(zc - TAB_BODY_Z) < 1e-6:
             body_mask = conn.copy()
         if weakest is None or area < weakest[0]:
@@ -267,6 +268,16 @@ def partoff_analysis(wp, part, dev, po_line, A0):
         reasons.append(f"{100 * tot / A0:.0f}% of the stub section left (max {100 * PARTOFF_MAX:.0f}%)")
     if len(tabs) > TAB_MAX_COUNT:
         reasons.append(f"{len(tabs)} separate tabs/islands at the weakest plane (max {TAB_MAX_COUNT})")
+    # v3 (closes review N1): total and count also on every plane from the weakest section up to 0.2 mm below the part
+    wz = ts["weakest"]["z"] if ts["weakest"] else 0.0
+    upper = [p_ for p_ in ts["planes"] if wz - 1e-9 <= p_["z"] <= -0.2 + 1e-9]
+    big = max(upper, key=lambda p_: p_["connected_mm2"]) if upper else None
+    if big and big["connected_mm2"] > TAB_MAX_MM2:
+        reasons.append(f"tabs total {big['connected_mm2']:.1f} mm2 at Z{big['z']:g} between the weakest plane and the part "
+                       f"(max {TAB_MAX_MM2:g} mm2 at every height up to 0.2 mm below the part)")
+    many = max(upper, key=lambda p_: p_["conn_islands"]) if upper else None
+    if many and many["conn_islands"] > TAB_MAX_COUNT:
+        reasons.append(f"{many['conn_islands']} separate tabs at Z{many['z']:g} (max {TAB_MAX_COUNT})")
     mw = ts.get("max_width_to_part")
     if mw and mw["width_mm"] > TAB_MAX_WIDTH:
         reasons.append(f"a tab is {mw['width_mm']:.2f} mm wide in its smallest direction at Z{mw['z']:g}, between the "

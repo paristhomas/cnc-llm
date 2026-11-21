@@ -201,3 +201,18 @@ edge-band issue. Each fix below makes the evaluation stricter; none loosens a ru
   path with the root of the frozen checkout. It now looks up the same tracked file inside the evaluating checkout,
   which is the frozen commit's copy. The check is unchanged otherwise. Frozen sha256 `f99d775150b78d84ac985e5a024b05bb6414960ecf0f1eedc7f85dd7b5dce6cd`, freeze commit `29abeb2`.
   The v2 freeze `6423e06` is superseded.
+
+### 2026-11-21: harness v3. Loopholes closed after the re-review (tightening only)
+The re-review (`docs/reviews/critical_review_refine_v2.md`) found these gaps. All fixes are stricter. The reviewer's
+attack tests (`tests/test_review_v2_attacks.py`) were marked xfail and now pass.
+- **N1: tab total and count at every height.** The 2–30 mm² total and the ≤ 4-tab count now apply on every plane
+  from the weakest section up to 0.2 mm below the part, as checklist B1 says, not only at the weakest plane. A long
+  rib joining the part is INVALID.
+- **N2: generator scan.** It now also flags `pkgutil`, `builtins` / `__builtins__`, `sys.modules`, `python -c` in
+  shell code, and `-m $VAR`. The residual risk is still disclosed.
+- **N3: parts manifest.** The trusted evaluation requires the run's part name, its source STEP and its fixture scale to
+  match `parts/manifest.json` of the evaluating checkout, which is the frozen commit. Files the run wrote can no
+  longer rescale or swap the part.
+- **Other changes.**
+  - `regions.json` now lists up to 100 regions; it used to stop at 30.
+  - `tools/frozen_eval.sh` is executable.

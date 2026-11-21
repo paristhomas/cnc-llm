@@ -73,7 +73,7 @@ def box_program(variant: str = "ideal") -> str:
         g += ["G0 X-62 Y%g Z10" % fy, f"G1 Z{fz:g} F{F_PLUNGE}", f"G1 X62 F{F_CUT}", "G0 Z10"]
     g += [_end_frame()]
     if variant != "bigtabs":
-        tab_x = 9.5
+        tab_x = 6.5
         # from -X (frame x = -Y, frame y = Z+5, frame z = -43 - X) and +X (frame x = Y, frame z = X - 43)
         for ijk, sgn in (((-90, 90, 0), -1), ((90, 90, 0), 1)):
             g += [_index(ijk, (sgn * sx, 0, -5))]

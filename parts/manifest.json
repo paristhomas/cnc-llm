@@ -1,0 +1,19 @@
+{
+ "_note": "Parts that may be scored by the trusted evaluation, with their source STEP and scale. Fixed before the runs that use them (review N3). The orientation is the agent's choice; the part and scale are not.",
+ "ftc10": {
+  "step": "parts/incoming/nist/nist_ftc_10_asme1_rb.stp",
+  "scale": 1.0
+ },
+ "ctc04_x0p2": {
+  "step": "parts/incoming/nist/nist_ctc_04_asme1_rd.stp",
+  "scale": 0.2
+ },
+ "ftc08": {
+  "step": "parts/incoming/nist/nist_ftc_08_asme1_rc.stp",
+  "scale": 0.5
+ },
+ "simple": {
+  "step": "tests/parts/simple/part.step",
+  "scale": 1.0
+ }
+}

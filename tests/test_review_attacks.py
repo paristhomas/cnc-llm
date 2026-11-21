@@ -106,8 +106,10 @@ def errors(r):
 
 
 def test_review_baseline_program_is_valid(box):
-    """The builder reproduces the developer's ideal box program: VALID, two 2.6 mm tabs."""
-    r = sim(box, "base")
+    """The builder reproduces the developer's ideal box program: VALID, two small tabs. (Harness v3 checks the tab
+    total at every height up to 0.2 mm below the part, where these side-milled tabs flare; the tab ends moved from
+    X+-9.5 to X+-6.5 so the flared joint stays under 30 mm2, as in tests/refine_fixture.py.)"""
+    r = sim(box, "base", tab_x=6.5)
     assert r["metrics"]["valid"], errors(r)
     assert len(r["partoff"]["tabs"]) == 2 and r["metrics"]["whole_surface_in_tol_pct"] > 99.9
 

@@ -354,7 +354,7 @@ def _views_png(P, dev, cls, path, title, mode="dev", score_cls=None):
 
 
 # ------------------------------------------------------------------------------------------------ feedback
-def regions5(part, res, voxel=1.0, max_regions=30):
+def regions5(part, res, voxel=1.0, max_regions=100):
     from scipy import ndimage
     from .feedback import _normal_class
 
@@ -622,7 +622,8 @@ def scan_generator5(work: Path) -> dict:
     hits = list(base["forbidden_imports"])
     cli_ok = re.compile(r"-m\s+cncllm\.x5\s+(sim|evaluate|new-run|fixture-suggest)\b")
     bad = re.compile(r"\bcncllm\b|__import__|\bimportlib\b|\brunpy\b|millbill|cam_agent|\bexec\s*\(|\beval\s*\(|"
-                     r"\bcompile\s*\(")
+                     r"\bcompile\s*\(|\bpkgutil\b|\bbuiltins\b|__builtins__|\bsys\.modules\b|"
+                     r"\bpython[0-9.]*\s+-c\b|-m\s+[\"']?\$")
     files = []
     for f in sorted(work.rglob("*")) if work.exists() else []:
         if not f.is_file() or f.stat().st_size > 5_000_000:
@@ -668,6 +669,18 @@ def verify_part(run: Path, meta: dict) -> list[str]:
     if tracked.returncode != 0 or dirty:
         out.append(f"source STEP {rel} is not a tracked, unmodified repository file")
     mine = json.loads((run / "part" / "setup.json").read_text())
+    # v3 (closes review N3): the part name, source STEP and scale must match the committed parts manifest of the
+    # evaluating checkout (the frozen commit), not just files the run wrote
+    man_f = REPO / "parts" / "manifest.json"
+    man = json.loads(man_f.read_text()) if man_f.exists() else {}
+    ent = man.get(meta.get("part", ""))
+    if ent is None:
+        out.append(f"part '{meta.get('part')}' is not in parts/manifest.json of the evaluating checkout")
+    else:
+        if Path(ent["step"]) != rel:
+            out.append(f"source STEP {rel} is not the manifest's {ent['step']} for part '{meta.get('part')}'")
+        if abs(float(mine["fixture"].get("scale", 1.0)) - float(ent["scale"])) > 1e-12:
+            out.append(f"fixture scale {mine['fixture'].get('scale', 1.0)} is not the manifest's {ent['scale']}")
     with tempfile.TemporaryDirectory() as td:
         ref = part5.place(src, mine["fixture"], Path(td))
         import cadquery as cq
