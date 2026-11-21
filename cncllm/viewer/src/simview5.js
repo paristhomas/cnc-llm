@@ -812,7 +812,7 @@ export class SimView5 {
       const err = s.fixHits ? ' has-err' : '';
       const mins = (this.tl.t1[i] - this.tl.t0[i]) / 60;
       return `<button type="button" class="sblk${err}" data-seg="${i}" style="flex:${(100 * this.tl.w[i]).toFixed(4)} 1 0;--sc:${col}" title="Setup ${i + 1} · ${setupLabel(s)} · ${mins < 1 ? Math.round(mins * 60) + ' s' : mins.toFixed(1) + ' min'} · tool axis (${s.tool_axis.map((v) => +v.toFixed(3)).join(', ')}) · ${tl} · lines ${s.first_line}–${s.last_line}${s.fixHits ? ' · touches the vise' : ''}">` +
-        `${axisIcon(s.tool_axis, 18, col)}<span class="sb-n">${i + 1}</span><span class="sb-l">${setupLabel(s)} · ${tl}</span></button>`;
+        `${axisIcon(s.tool_axis, 18, col)}<span class="sb-n">${i + 1}</span><span class="sb-l">${setupLabel(s)}</span></button>`;
     }).join('');
     strip.querySelectorAll('[data-seg]').forEach((b) => (b.onclick = () => { stop(); this.gotoSeg(+b.dataset.seg); }));
     this.strip = strip;

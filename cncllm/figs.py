@@ -101,3 +101,51 @@ def partoff_closeup(res_dir: Path, gap: float, out_png: Path) -> bool:
     fig.savefig(out_png)
     plt.close(fig)
     return True
+
+
+def hero_png(res_dir: Path, out_png: Path, size_px: int = 900) -> bool:
+    """Hero picture for the top of the report: the finished part (the evaluation's probe cloud), shaded, one iso view
+    from the side with the most surface, coloured by result (green in tolerance, orange/red proud, blue gouge, purple
+    tab witness), tightly cropped on a transparent background so it works in light and dark mode."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from scipy.spatial import cKDTree
+
+    from .x5 import _zbuffer, dev_colors
+
+    pz = Path(res_dir) / "probes.npz"
+    if not pz.exists():
+        return False
+    z = np.load(pz)
+    P, N = z["P"].astype(float), z["N"].astype(float)
+    base = dev_colors(z["dev"].astype(float), z["score_cls"])
+    best = None
+    for az in (-45.0, 45.0, 135.0, -135.0):
+        a, el = np.radians(az), np.radians(28.0)
+        view = np.array([np.cos(el) * np.cos(a), np.cos(el) * np.sin(a), np.sin(el)])
+        vis = float(z["area"][(N @ view) > 0.2].sum())
+        if best is None or vis > best[0]:
+            best = (vis, a, el, view)
+    _, a, el, view = best
+    right = np.array([-np.sin(a), np.cos(a), 0.0])
+    up = np.cross(view, right)
+    light = view * 0.55 + up * 0.7 + right * 0.25
+    light /= np.linalg.norm(light)
+    shade = 0.42 + 0.58 * np.clip(N @ light, 0, 1)
+    col = np.clip(base * shade[:, None], 0, 1)
+    facing = (N @ view) > -0.05
+    Q = P[facing]
+    ext = P.max(0) - P.min(0)
+    sub = Q[np.random.default_rng(0).choice(len(Q), size=min(len(Q), 20000), replace=False)]
+    px = max(ext.max() / 1000.0, 1.05 * float(np.median(cKDTree(P).query(sub, k=2)[0][:, 1])))
+    img, extent = _zbuffer(Q @ right, Q @ up, Q @ view, col[facing], px)
+    h, w = img.shape[:2]
+    fig = plt.figure(figsize=(size_px / 100, size_px / 100 * h / w), dpi=100)
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.imshow(img, origin="lower", extent=extent, interpolation="bilinear")
+    ax.set_aspect("equal")
+    ax.axis("off")
+    fig.savefig(out_png, transparent=True)
+    plt.close(fig)
+    return True

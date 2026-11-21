@@ -126,6 +126,7 @@ export class ResultView5 {
     }
   }
   setMode(m) {
+    if (this.markers && m !== this.mode) this.closeCard();
     this.mode = m;
     this.target.visible = m === 'dev';
     this.bar.querySelectorAll('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
@@ -149,8 +150,7 @@ export class ResultView5 {
     const v = new THREE.Vector3(...(dirs[name] || dirs.iso)).normalize();
     const { pos, target } = st.fitBox(v, this.partLo, this.partHi, name === 'top' ? 1.06 : 1.15);
     st.flyTo(pos, target, animate);
-    if (this.target && this.xray) this.setXray(false);
-    if (this.markers) this.markers.forEach((m) => m.el.classList.remove('active'));
+    if (this.markers) this.closeCard();
   }
   buildBar(bar) {
     this.bar = bar;
@@ -212,28 +212,51 @@ export class ResultView5 {
       el.title = `R${r.id}: ${r.type} ${r.area_mm2} mm², worst ${r.dev_extreme > 0 ? '+' : ''}${r.dev_extreme} mm`;
       el.onclick = () => this.focusRegion(r.id, false);
       layer.appendChild(el);
-      return { r, el, p: this.regionPoint(r) };
+      return { r, el, p: this.regionPoint(r), n: new THREE.Vector3(...(r.normal || [0, 0, 1])).normalize() };
     });
+  }
+  // labels: only for regions that face the camera and are not hidden behind other faces (ray test, done once the
+  // camera has settled); labels that would overlap a larger region's label are merged into it ("R4·R5"); while a
+  // region is focused only its own label is shown
+  updateOcclusion() {
+    const cam = this.stage.camera.position, ray = new THREE.Raycaster();
+    for (const mk of this.markers) {
+      const to = mk.p.clone().sub(cam), d = to.length();
+      ray.set(cam, to.normalize()); ray.far = d;
+      const hit = ray.intersectObject(this.target, false)[0];
+      mk.occluded = !!hit && hit.distance < d - Math.max(1.0, d * 0.01);
+    }
+    this.occT = performance.now();
   }
   placeMarkers() {
     if (this.markerLayer.hidden) return;
-    // labels in region order; a label that would overlap an earlier one is pushed down until it is clear
+    const cam = this.stage.camera.position;
+    const key = cam.toArray().map((v) => v.toFixed(2)).join(',');
+    if (key !== this.camKey) { this.camKey = key; this.camMoved = performance.now(); this.occDirty = true; }
+    if (this.occDirty && performance.now() - this.camMoved > 180 && this.mode === 'dev') { this.occDirty = false; this.updateOcclusion(); }
+    const focusId = this.card && !this.card.hidden ? this.focusId : null;
     const placed = [];
     for (const mk of this.markers) {
       const s = this.stage.project(mk.p);
-      let x = s.x, y = s.y;
-      for (let k = 0; k < 8; k++) {
-        const hit = placed.find((q) => Math.abs(q[0] - x) < 34 && Math.abs(q[1] - y) < 22);
-        if (!hit) break;
-        y = hit[1] + 23;
+      const n = mk.n, facing = cam.clone().sub(mk.p).dot(n) > 0;
+      let show = !s.behind && (focusId == null ? facing && !mk.occluded : mk.r.id === focusId);
+      if (show && focusId == null) {
+        const hit = placed.find((q) => Math.abs(q.x - s.x) < 30 && Math.abs(q.y - s.y) < 20);
+        if (hit) { hit.ids.push(mk.r.id); show = false; }
+        else placed.push({ x: s.x, y: s.y, mk, ids: [mk.r.id] });
       }
-      placed.push([x, y]);
-      mk.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-      mk.el.hidden = s.behind;
+      mk.el.hidden = !show;
+      // the focused region keeps its label above the ring, off the region itself
+      if (show) mk.el.style.transform = `translate(${s.x.toFixed(1)}px, ${(s.y - (focusId != null ? 46 : 0)).toFixed(1)}px)`;
     }
+    for (const q of placed) {
+      const t = q.ids.map((i) => 'R' + i).join('·');
+      if (q.mk.el.textContent !== t) q.mk.el.textContent = t;
+    }
+    for (const mk of this.markers) if (!placed.find((q) => q.mk === mk) && mk.el.textContent !== 'R' + mk.r.id) mk.el.textContent = 'R' + mk.r.id;
     if (this.focus && !this.card.hidden) {
       const s = this.stage.project(this.focus);
-      this.pin.style.transform = `translate(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px)`;
+      this.pin.style.transform = `translate(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px)`;   // CSS draws a ring with a gap at the centre
       this.pin.hidden = s.behind;
     }
   }
@@ -265,7 +288,7 @@ export class ResultView5 {
       <div class="rc-f muted">${esc((r.faces || []).slice(0, 3).join(', '))}</div>
       ${passes ? `<div class="rc-p"><span class="muted">Nearest passes (G-code line):</span> ${passes}</div>` : '<div class="rc-p muted">No pass of the program came near this region.</div>'}`;
     this.card.hidden = false;
-    this.card.querySelector('.rc-x').onclick = () => { this.card.hidden = true; this.pin.hidden = true; this.setXray(false); this.markers.forEach((m) => m.el.classList.remove('active')); };
+    this.card.querySelector('.rc-x').onclick = () => this.closeCard();
   }
   focusRegion(id, scroll = true) {
     const r = this.regions.find((x) => x.id === id);
@@ -280,7 +303,8 @@ export class ResultView5 {
     const n = new THREE.Vector3(...nn).normalize();
     const side = Math.abs(n.z) > 0.9 ? new THREE.Vector3(-0.6, -0.8, 0) : new THREE.Vector3(0, 0, 1);
     const dir = n.clone().addScaledVector(side.sub(n.clone().multiplyScalar(side.dot(n))).normalize(), 0.06).normalize();
-    const dist = ext * 1.6 + this.stage.diag * 0.3;
+    // frame the region itself: about 4x its size, at least 14 mm (small failures must fill a good part of the view)
+    const dist = Math.max(ext * 4, 14) / Math.tan((this.stage.camera.fov * Math.PI) / 360) * 0.5;
     const pos = c.clone().addScaledVector(dir, dist);
     // anything of the part between the camera and the region? then show the part see-through while it is focused
     const ray = new THREE.Raycaster(pos, c.clone().sub(pos).normalize(), 0, dist);
@@ -290,7 +314,15 @@ export class ResultView5 {
     this.stage.flyTo(pos, c);
     this.markers.forEach((m) => m.el.classList.toggle('active', m.r.id === id));
     this.focus = this.regionPoint(r);
+    this.focusId = id;
     this.showCard(r);
+    this.stage.invalidate();
+  }
+  closeCard() {
+    if (!this.card) return;
+    this.card.hidden = true; this.pin.hidden = true; this.focusId = null;
+    if (this.target && this.xray) this.setXray(false);
+    this.markers.forEach((m) => m.el.classList.remove('active'));
     this.stage.invalidate();
   }
   setXray(on) {
@@ -303,7 +335,7 @@ export class ResultView5 {
   viewTabs(k = 0) {
     const tabs = (this.D.meta.partoff && this.D.meta.partoff.tabs) || [];
     if (!tabs.length) return;
-    this.setXray(false);
+    this.closeCard();
     if (this.mode !== 'mach') this.setMode('mach');
     const sel = k < 0 ? tabs : [tabs[Math.min(k, tabs.length - 1)]];
     const lo = new THREE.Vector3(Infinity, Infinity, Infinity), hi = new THREE.Vector3(-Infinity, -Infinity, -Infinity);

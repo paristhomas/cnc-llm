@@ -378,6 +378,12 @@ def display_hint(r: dict) -> str:
 
 def where_words(r: dict) -> str:
     """Plain-language location of a region from its B-rep face types and mean normal."""
+    kind, side = where_parts(r)
+    return f"{kind}, {side}"
+
+
+def where_parts(r: dict) -> tuple:
+    """(kind, side) of a region: kind = what surface it is in plain words, side = facing up / underside / a side."""
     import re as _re
     faces = r.get("faces") or []
     n = r.get("normal") or [0, 0, 1]
@@ -403,7 +409,119 @@ def where_words(r: dict) -> str:
             kinds.append(k)
     nz = n[2] if len(n) > 2 else 0
     side = "facing up" if nz > 0.7 else "on the underside" if nz < -0.7 else "on a side"
-    return (" and ".join(kinds[:2]) or "part surface") + f", {side}"
+    return (" and ".join(kinds[:2]) or "part surface"), side
+
+
+def limit_overshoot(msg: str):
+    """'... total 31.2 mm2 ... (max 30 mm2 ...' -> (31.2, 30.0); None if the message has no such pair."""
+    import re as _re
+    a = _re.search(r"total ([\d.]+) mm2", msg or "")
+    b = _re.search(r"max ([\d.]+) mm2", msg or "")
+    return (float(a.group(1)), float(b.group(1))) if a and b else None
+
+
+def plain_leftovers(regs: list, m: dict) -> str:
+    """One or two plain sentences on what is not finished, from the region list (no string surgery on descriptions):
+    areas left more than 1 mm proud on average are called 'not machined'; elsewhere the largest leftover is stated."""
+    if not regs:
+        return ""
+    proud = [r for r in regs if r.get("type") == "proud"]
+    gouge = [r for r in regs if r.get("type") == "gouge"]
+    out = []
+    unm = sorted([r for r in proud if (r.get("dev_mean") or 0) > 1.0], key=lambda r: -r.get("area_mm2", 0))
+    rest = [r for r in proud if (r.get("dev_mean") or 0) <= 1.0]
+    if unm:
+        kinds = {}
+        for r in unm:
+            k = where_parts(r)[0]
+            kinds[k] = kinds.get(k, 0) + 1
+        top = sorted(kinds.items(), key=lambda kv: -kv[1])[:2]
+        what = " and ".join(_kind_count(k, c) for k, c in top)
+        area = sum(r.get("area_mm2", 0) for r in unm)
+        mx = max(r.get("dev_extreme", 0) for r in unm)
+        out.append(f' {len(unm)} area{"s were" if len(unm) != 1 else " was"} not machined, mostly {what}: '
+                   f'{area:.0f} mm² in all, with up to {mx:g} mm of metal left.')
+    if rest:
+        big = max(rest, key=lambda r: r.get("area_mm2", 0))
+        mx = max(r.get("dev_extreme", 0) for r in rest)
+        lead = "Elsewhere" if unm else "What is not finished is extra metal:"
+        out.append(f' {lead} the areas left are smaller; the largest is {big["area_mm2"]:g} mm² on '
+                   f'{where_parts(big)[0]}.' if unm else
+                   f' {lead} at most {mx:.2f} mm, the largest area being {big["area_mm2"]:g} mm² on {where_parts(big)[0]}.')
+    if gouge:
+        g = min(gouge, key=lambda r: r.get("dev_extreme", 0))
+        out.append(f' {len(gouge)} area{"s are" if len(gouge) != 1 else " is"} cut too deep (worst {g["dev_extreme"]:+.2f} mm).')
+    return "".join(out)
+
+
+def _kind_count(k: str, c: int) -> str:
+    """'a small rounded edge or fillet (…)' x 4 -> '4 small rounded edges or fillets (…)'."""
+    if c <= 1:
+        return k
+    head, sep, tail = k.partition(" (")
+    for a, b in (("edge or fillet", "edges or fillets"), ("conical bottom of a drilled hole", "conical bottoms of drilled holes"),
+                 ("chamfer or conical face", "chamfers or conical faces"), ("blended / fillet surface", "blended / fillet surfaces"),
+                 ("curved wall", "curved walls"), ("flat face", "flat faces")):
+        head = head.replace(a, b)
+    for art in ("a ", "the "):
+        if head.startswith(art):
+            head = head[len(art):]
+            break
+    return f"{c} {head}" + (sep + tail if sep else "")
+
+
+def note_reason(notes: str, limit: int = 110) -> str:
+    """One short reason from an iteration note: the first statement after any heading, without file paths or long
+    parentheticals, cut at a word boundary."""
+    import re as _re
+    lines = [l.strip(" -*#") for l in notes.strip().splitlines() if l.strip(" -*#")]
+    if not lines:
+        return ""
+    txt = " ".join(lines[:3])
+    txt = _re.sub(r"\s*\([^()]*\)", "", txt)                       # drop parentheticals (paths, numbers, asides)
+    txt = _re.sub(r"^Iteration \d+:\s*", "", txt)
+    head = _re.match(r"^([A-Z][A-Z0-9 \-]{6,}?)\s*:\s*", txt)           # "POST-REVIEW REVISION 1:" heading
+    prefix = ""
+    if head:
+        prefix = head.group(1).strip().capitalize() + ": "
+        txt = txt[head.end():]
+    first = _re.split(r"(?<=[.;])\s|,\s(?=to |and |so |which )", txt, maxsplit=1)[0].rstrip(".;: ")
+    out = prefix + first
+    if len(out) > limit:
+        cut = out[:limit].rsplit(" ", 1)[0].rstrip(",;:")
+        out = cut + "…"
+    return out
+
+
+def annotate_notes(notes: str, regs: list) -> str:
+    """Mark the agent's 'cannot reach / no tool fits' remarks in place: the area still counts as failed, with the region
+    it became when the note gives coordinates."""
+    import re as _re
+    rx = _re.compile(r"(not reachable[^.;\n]*|cannot reach[^.;\n]*|can't reach[^.;\n]*|no [\w\- ]+ fits there)", _re.I)
+
+    def region_near(sentence):
+        m = _re.search(r"\(\s*([-\d.]+)\s*,\s*([-\d.]+)", sentence)
+        z = _re.search(r"Z\s*([-\d.]+)", sentence)
+        if not m:
+            return None
+        x, y = float(m.group(1)), float(m.group(2))
+        best, bd = None, 1e9
+        for r in regs:
+            b = r.get("bbox") or [0] * 6
+            c = [(b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2]
+            d = ((c[0] - x) ** 2 + (c[1] - y) ** 2 + ((c[2] - float(z.group(1))) ** 2 if z else 0)) ** 0.5
+            if d < bd:
+                best, bd = r, d
+        return best if bd < 8 else None
+
+    out = []
+    for line in notes.splitlines():
+        def sub(mo):
+            r = region_near(line)
+            tag = (f" (→ R{r['id']}, {r['area_mm2']:g} mm², counted as failed)" if r else " (→ still counted as failed in the score)")
+            return mo.group(0) + tag
+        out.append(rx.sub(sub, line))
+    return "\n".join(out)
 
 
 def _issue_rows5(issues: list) -> str:
@@ -498,7 +616,7 @@ def _rigidity_chart(rg):
     y = lambda v: T + (H - T - B) * (1 - min(max(v, 0), 1))  # noqa: E731
     p = [f'<svg class="chart rig" width="100%" height="{H}" role="img" aria-label="Connection area after each setup">']
     ylab = []
-    for g in (0, .15, .5, 1.0):
+    for g in sorted({0, PARTOFF_MAX, RIGID_MIN, .5, 1.0}):
         p.append(f'<line class="grid" x1="0" x2="100%" y1="{y(g):.1f}" y2="{y(g):.1f}"/>')
         ylab.append(f'<span style="top:{y(g) - 8:.1f}px">{100 * g:.0f}%</span>')
     p.append(f'<line class="lim rig" x1="0" x2="100%" y1="{y(RIGID_MIN):.1f}" y2="{y(RIGID_MIN):.1f}"/>')
@@ -563,7 +681,9 @@ def _partoff_block(po: dict | None, rg: dict, m: dict, img: str | None) -> str:
     else:
         excl = m.get("tab_witness_pct")
         wit = (f'Tab witness (part surface within 1 mm of where a tab joins the part): <b>{wit_mm2:g} mm²</b> = <b>{wit_pct:.2f}%</b> of the surface. '
-               + (f'Only this area and the edge band are left out of the score (tab witness excluded {excl:.2f}%).' if excl
+               + ((f'Only this area is left out of the score (tab witness excluded {excl:.2f}%); the edge band is scored by its neighbours.'
+                   if m.get("edge_band_scored_by_neighbour_pct") is not None else
+                   f'Only this area and the edge band are left out of the score (tab witness excluded {excl:.2f}%).') if excl
                   else 'It is not left out of the score here, because the part-off does not pass.' if ok is False else ''))
     why = "".join(f"<li>{_esc(r)}</li>" for r in reasons)
     mw = (po or {}).get("max_width_to_part") or {}
@@ -754,6 +874,7 @@ def build(run_dir, source: str | None = None) -> Path:
         shutil.copy(res_dir / "program.nc", out / "gcode" / "final.txt")
     # ---- iteration cards
     cards = []
+    cyc_jumps = []
     for h in reversed(hist):
         n = h["iter"]
         it = run / f"iter_{n:02d}"
@@ -785,10 +906,13 @@ def build(run_dir, source: str | None = None) -> Path:
         if prev and hm.get("cycle_time_min") and prev["metrics"].get("cycle_time_min"):
             dc = hm["cycle_time_min"] - prev["metrics"]["cycle_time_min"]
             if abs(dc) >= max(5.0, 0.1 * prev["metrics"]["cycle_time_min"]):
-                first = (notes.strip().splitlines() or [""])[0][:160]
+                why = note_reason(notes)
+                same = abs(hm.get("whole_surface_in_tol_pct", 0) - prev["metrics"].get("whole_surface_in_tol_pct", 0)) < 1e-6
                 cyc_note = (f'<p class="cyc-note"><b>Cycle time {"+" if dc > 0 else ""}{dc:.1f} min</b> against iteration {n - 1}'
-                            + (f' (score {"unchanged" if abs(hm.get("whole_surface_in_tol_pct", 0) - prev["metrics"].get("whole_surface_in_tol_pct", 0)) < 1e-6 else "changed"})' if new_rule else '')
-                            + (f': {_esc(first)}' if first else '') + '</p>')
+                            + (f', score {"unchanged" if same else "changed"}' if new_rule else '') + '.'
+                            + (f' Main change: {_esc(why)}.' if why else '') + '</p>')
+                if same:   # header note only for a time change that did not come with a score change
+                    cyc_jumps.append((dc, n, note_reason(notes, 72)))
         delta = ""
         if prev and new_rule and prev["metrics"].get("whole_surface_in_tol_pct") is not None:
             d = hm["whole_surface_in_tol_pct"] - prev["metrics"]["whole_surface_in_tol_pct"]
@@ -819,7 +943,7 @@ def build(run_dir, source: str | None = None) -> Path:
       </dl>
       {thumb}
     </div>
-    <div class="notes">{cyc_note}{err_html}{(md_to_html(notes) if new_rule else '<details class="old-notes"><summary>The agent’s own notes for this iteration (verbatim, written under the earlier scoring rule)</summary>' + md_to_html(notes) + '</details>') if notes.strip() else '<p class="muted">No notes from the LLM for this iteration.</p>'}</div>
+    <div class="notes">{cyc_note}{err_html}{(md_to_html(annotate_notes(notes, regs)) if new_rule else '<details class="old-notes"><summary>The agent’s own notes for this iteration (verbatim, written under the earlier scoring rule)</summary>' + md_to_html(notes) + '</details>') if notes.strip() else '<p class="muted">No notes from the LLM for this iteration.</p>'}</div>
   </div>
   <footer class="links">{''.join(links)}</footer>
 </article>""")
@@ -930,7 +1054,9 @@ def build(run_dir, source: str | None = None) -> Path:
             nb = m.get("edge_band_scored_by_neighbour_pct")
             vs.append(f'<strong>{score:.2f}%</strong> of the whole part surface is within ±{tol:g} mm. Everything else counts as failed: '
                       f'{_pct(ws["whole_surface_proud_pct"])} is proud (material left) and {_pct(ws["whole_surface_gouge_pct"])} is gouged. '
-                      + (f'The only area not scored is the tab witness ({_pct(w_)}); the 0.03 mm band along face edges ({_pct(nb)}) is scored '
+                      + (f'Nothing is left out of the score because the part-off fails; the 0.03 mm band along face edges ({_pct(nb)}) is scored '
+                       f'with the deviation of the nearest interior point.' if nb is not None and po_bad else
+                       f'The only area not scored is the tab witness ({_pct(w_)}); the 0.03 mm band along face edges ({_pct(nb)}) is scored '
                        f'with the deviation of the nearest interior point.' if nb is not None else
                        f'The only areas not scored are the tab witness ({_pct(w_)}) and a 0.03 mm band along face edges '
                        f'(edge band (metrology) excluded {_pct(e_)}).'))
@@ -1015,7 +1141,10 @@ def build(run_dir, source: str | None = None) -> Path:
         score_label = 'no whole-surface score: this run was simulated before the rule and has not been re-scored yet'
     score2 = (f'<div class="score-2"><span>proud (failed) <b>{_pct(ws["whole_surface_proud_pct"])}</b></span>'
               f'<span>gouged (failed) <b>{_pct(ws["whole_surface_gouge_pct"])}</b></span></div>'
-              + (f'<div class="score-3">Not scored: tab witness excluded {_pct(w_)} only. The edge band ({_pct(m.get("edge_band_scored_by_neighbour_pct"))}) is scored by its neighbours.</div>'
+              + (f'<div class="score-3">Nothing is left out of this score: the part-off fails, so the tab witness is scored too. '
+               f'The edge band ({_pct(m.get("edge_band_scored_by_neighbour_pct"))}) is scored by its neighbours.</div>'
+               if po_bad and m.get("edge_band_scored_by_neighbour_pct") is not None else
+               f'<div class="score-3">Left out of the score: only the tab witness ({_pct(w_)}). The edge band ({_pct(m.get("edge_band_scored_by_neighbour_pct"))}) is scored by its neighbours.</div>'
                if m.get("edge_band_scored_by_neighbour_pct") is not None else
                f'<div class="score-3">Not scored: tab witness excluded {_pct(w_)} · edge band (metrology) excluded {_pct(e_)}</div>')) if score is not None else ""
     # human title from the run description ("NIST FTC-10 (ASME …), …" -> "NIST FTC-10 test part")
@@ -1024,22 +1153,30 @@ def build(run_dir, source: str | None = None) -> Path:
     title = (t0 + " test part") if t0 and t0.lower() != name.lower() and not t0.lower().startswith(name.lower() + " ") else (t0 or name)
     if "held-out" in (desc or "").lower():
         title += " (held-out validation)"
-    hero_img = ('<figure class="hero-img"><img src="img/target_iso.png" alt="The finished part (target model, shaded)" '
-                'width="640" height="480"><figcaption>The part to be made (target model)</figcaption></figure>'
-                if (out / "img" / "target_iso.png").exists() else "")
-    dev_fig = ('<figure class="dev-map"><a href="img/deviation_views.png" target="_blank"><img src="img/deviation_views.png" '
-               'alt="Deviation of the machined part, six orthographic views" loading="lazy"></a><figcaption>The same deviation in six flat '
+    hero_ok = False
+    if res_dir and (res_dir / "probes.npz").exists():
+        try:
+            from . import figs
+            hero_ok = bool(figs.hero_png(res_dir, out / "img" / "hero.png"))
+        except Exception as e:
+            print(f"WARNING: hero picture not drawn ({e!r})")
+    if hero_ok:
+        hero_img = ('<figure class="hero-img hero-render"><img src="img/hero.png" alt="The simulated finished part, coloured by result: '
+                    'green within tolerance, orange to red material left, blue cut too deep, purple tab witness">'
+                    '<figcaption>The simulated part, coloured by result (green = within ±0.1 mm)</figcaption></figure>')
+    elif (out / "img" / "target_iso.png").exists():
+        hero_img = ('<figure class="hero-img"><img src="img/target_iso.png" alt="The part to be made (target model, shaded)">'
+                    '<figcaption>The part to be made (target model)</figcaption></figure>')
+    else:
+        hero_img = ""
+    dev_fig = ('<figure class="dev-map"><div class="dev-scroll"><a href="img/deviation_views.png" target="_blank"><img src="img/deviation_views.png" '
+               'alt="Deviation of the machined part, six orthographic views" loading="lazy"></a></div><figcaption>The same deviation in six flat '
                'views (top, bottom, front, back, left, right): small failures inside holes and on the underside are easier to spot '
-               'here. Open the image for full size.</figcaption></figure>' if (out / "img" / "deviation_views.png").exists() else "")
+               'here. <a href="img/deviation_views.png" target="_blank">Open full size</a><span class="phone-only"> or scroll sideways</span>.'
+               '</figcaption></figure>' if (out / "img" / "deviation_views.png").exists() else "")
     # two plain sentences for a non-machinist
     if score is not None:
-        proud_mm2 = m.get("proud_area_mm2")
-        top = sorted(regs, key=lambda r: -r.get("area_mm2", 0))[:2]
-        groups = {}
-        for r in top:
-            groups.setdefault(where_words(r).split(",")[0], []).append(f'{r["area_mm2"]:g}')
-        where = "; ".join(f'{" and ".join(v)} mm² on {k}' for k, v in groups.items())
-        left = (f' What is not finished is mostly a little extra metal ({where}).' if top else '')
+        left = plain_leftovers(regs, m)
         if po is not None and not po_bad:
             wtab = [t.get("width_mm") for t in tabs if t.get("width_mm") is not None]
             off = (f' It comes off the block on {len(tabs)} tab{"s" if len(tabs) != 1 else ""} about {max(wtab):g} mm wide, '
@@ -1048,11 +1185,35 @@ def build(run_dir, source: str | None = None) -> Path:
             off = ' The final part-off does not yet pass its checks (see Holding and part-off).'
         else:
             off = ''
+        why_bad = ""
+        if not valid:
+            e0 = next((i for i in issues if i.get("severity") == "error"), {})
+            ov = limit_overshoot(e0.get("msg", ""))
+            if e0.get("kind") == "part-off" and ov:
+                why_bad = (f' The program is <b>invalid</b>: its part-off leaves {ov[0]:g} mm² of tab section at one height, '
+                           f'over the {ov[1]:g} mm² limit by {ov[0] - ov[1]:.1f} mm².')
+            else:
+                why_bad = f' The program is <b>invalid</b>: {_esc(e0.get("msg", "it breaks a safety or part-off rule"))}.'
+            if "held-out" in (desc or "").lower():
+                why_bad += (' This is the held-out validation run, so the program is reported as it is and was not changed '
+                            'after this result.')
+            if po_bad:
+                off = (' Because the part-off fails, nothing is left out of the score: the tab witness area is scored too.')
         plain = (f'The {title.replace(" (held-out validation)", "")} was cut, in simulation, by a program the agent wrote: '
-                 f'<b>{score:.2f}%</b> of its surface ends within a tenth of a millimetre of the drawing'
-                 f'{"" if valid else ", but the program breaks a safety or part-off rule"}.{left}{off}')
+                 f'<b>{score:.2f}%</b> of its surface ends within a tenth of a millimetre of the drawing.{why_bad}{left}{off}')
     else:
         plain = 'This run was simulated before the whole-surface scoring rule; it has no headline score.'
+    tot_bad = (m.get("proud_area_mm2") or 0) + (m.get("gouge_area_mm2") or 0)
+    listed = sum(r.get("area_mm2", 0) for r in regs)
+    regs_note = (f'<p class="muted small">The table lists the {len(regs)} largest connected regions ({listed:.1f} mm²). '
+                 f'The other {max(tot_bad - listed, 0):.1f} mm² of the {tot_bad:.1f} mm² out of tolerance is in smaller patches, '
+                 f'shown in the 3D view and the six-view map.</p>' if regs and tot_bad > listed + 0.05 else "")
+    # cycle time in the header, with the reason for the largest increase
+    jump = max(cyc_jumps, default=None)
+    cyc_fact = f'{m.get("cycle_time_min", 0):.0f} min' if m.get("cycle_time_min") else "–"
+    if jump and jump[0] >= 10:
+        cyc_fact += (f'<span class="fact-note">+{jump[0]:.0f} min in iteration {jump[1]}'
+                     + (f': {_esc(jump[2])}' if jump[2] else '') + '</span>')
     help_txt = """<details class="help-k"><summary>How the Machine view works</summary>
   <p>The machine is a trunnion (table-table) 5-axis mill. The spindle always points straight down and only moves in X, Y and Z.
   The <b>A axis</b> tilts the cradle about the machine X axis; the <b>C axis</b> turns the round platter on the cradle; the vise,
@@ -1072,7 +1233,7 @@ def build(run_dir, source: str | None = None) -> Path:
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
-<title>{_esc(name)} · 3+2 CNC run report</title>
+<title>{_esc(title)} · CNC run report</title>
 <link rel="stylesheet" href="assets/report.css">
 <link rel="stylesheet" href="assets/report5.css">
 </head>
@@ -1090,6 +1251,7 @@ def build(run_dir, source: str | None = None) -> Path:
         <div><dt>Material</dt><dd>AL6061 billet</dd></div>
         <div><dt>Stock</dt><dd>{_esc(stock_txt)}</dd></div>
         <div><dt>Workholding</dt><dd>{_esc(hold)}</dd></div>
+        <div class="fact-wide"><dt>Cycle time (simulated)</dt><dd>{cyc_fact}</dd></div>
         <div><dt>Setups</dt><dd>{len(segs)}{f' · {n_or} orientation' + ('s' if n_or != 1 else '') if n_or else ''}</dd></div>
         <div><dt>Tolerance</dt><dd>±{tol:g} mm</dd></div>
         <div><dt>Programmed by</dt><dd>{AGENT_LABEL}</dd></div>
@@ -1148,7 +1310,7 @@ def build(run_dir, source: str | None = None) -> Path:
 <section id="problems">
   <div class="sec-head"><h2>Problems</h2><p class="sub">Click a line number to jump the G-code listing and the animation there; click a region to locate it in the result view.</p></div>
   <div class="stack">
-    <div><h3>Out-of-tolerance regions <span class="count">{len(regs)}</span></h3>{_region_rows5(regs, segs)}</div>
+    <div><h3>Out-of-tolerance regions <span class="count">{len(regs)}</span></h3>{regs_note}{_region_rows5(regs, segs)}</div>
     <div><h3>Safety, fixture &amp; plausibility issues <span class="count">{len(issues)}</span></h3>{_issue_rows5(issues)}</div>
   </div>
 </section>
