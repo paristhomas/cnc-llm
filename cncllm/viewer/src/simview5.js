@@ -554,7 +554,7 @@ export class SimView5 {
     if (this.mode === 'machine') {
       lo = this.mFitLo; hi = this.mFitHi; margin = 1.08;
       const portrait = st.camera.aspect < 0.9;
-      const dirs = { machine: portrait ? [-0.75, -1.0, 0.9] : [-1.0, -1.15, 0.72], iso: [-1.0, -1.15, 0.72], front: [0, -1, 0.3], side: [-1, -0.08, 0.3], top: [0, -0.0001, 1], back: [0.6, 1, 0.55] };
+      const dirs = { machine: portrait ? [-0.7, -1.0, 0.9] : [-0.78, -1.2, 0.74], iso: [-0.78, -1.2, 0.74], front: [0, -1, 0.3], side: [-1, -0.08, 0.3], top: [0, -0.0001, 1], back: [0.6, 1, 0.55] };
       v = new THREE.Vector3(...(dirs[name] || dirs.machine));
       if (name === 'top') margin = 1.02;
     } else {
@@ -878,7 +878,7 @@ export class SimView5 {
     this.shownPos = undefined;
     this.path.visible = v !== 'none';
     u.uFuture.value = v === 'past' || v === 'recent' ? 0 : 1;
-    u.uWin.value = v === 'recent' || v === 'next' ? Math.max(400, this.n * 0.02) : 1e9;
+    u.uWin.value = v === 'recent' || v === 'next' ? Math.max(300, this.n * 0.006) : 1e9;
     u.uFutA.value = v === 'next' ? 0.12 : 0.22;
     u.uOldA.value = 0.1;
     this.stage.invalidate();

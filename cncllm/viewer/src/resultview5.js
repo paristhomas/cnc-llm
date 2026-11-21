@@ -75,6 +75,7 @@ export class ResultView5 {
     this.vise = buildVise(meta.vise);
     this.vise.group.traverse((o) => { if (o.material) { o.material.transparent = true; o.material.opacity = o.isMesh ? 0.3 : 0.15; o.material.depthWrite = false; } if (o.isMesh) o.castShadow = false; });
     this.vise.group.traverse((o) => { if (o.userData.kind === 'table') o.visible = false; });
+    this.vise.group.visible = false;   // off by default: it hazes the views from below
     st.scene.add(this.vise.group);
     const sl = new THREE.Vector3(...meta.stock.lo), sh = new THREE.Vector3(...meta.stock.hi);
     const sb = new THREE.BoxGeometry(sh.x - sl.x, sh.y - sl.y, sh.z - sl.z);
@@ -161,7 +162,7 @@ export class ResultView5 {
           <button type="button" data-mode="mach" aria-pressed="false">Machined part (by setup)</button>
         </span>
         <label class="chk"><input type="checkbox" class="ovl"> <i class="sw ovl-sw" style="background:#9aa3ad"></i><span class="ovl-label">machined part overlay</span></label>
-        <label class="chk"><input type="checkbox" class="vise" checked> <i class="sw" style="background:#6f7c8c"></i>vise</label>
+        <label class="chk"><input type="checkbox" class="vise"> <i class="sw" style="background:#6f7c8c"></i>vise</label>
         <label class="chk"><input type="checkbox" class="stk"> <i class="sw" style="background:#f0a030"></i>stock outline</label>
         <label class="chk"><input type="checkbox" class="mk" checked> region labels</label>
         <span class="seg views" role="group" aria-label="View"><button type="button" data-view="iso" title="Reset to the isometric overview">Iso</button><button type="button" data-view="top">Top</button><button type="button" data-view="front">Front</button><button type="button" data-view="back">Back</button><button type="button" data-view="right">Side</button><button type="button" data-view="under">Below</button></span>
