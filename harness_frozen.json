@@ -1,0 +1,36 @@
+{
+ "sha256": "2cd650702824b77451be6ed2b5bb3c8072d514de470514c7edf17377c3fd354a",
+ "date": "2026-11-21 00:56 UTC",
+ "parent_commit": "2e7e6ea",
+ "files": [
+  "crosscheck.py",
+  "crosscheck5.py",
+  "feedback.py",
+  "gcode.py",
+  "kernel.py",
+  "kernel5.py",
+  "part.py",
+  "part5.py",
+  "sim.py",
+  "sim5.py",
+  "tools.py",
+  "x5.py"
+ ],
+ "tools": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14
+ ],
+ "note": "Frozen harness for the refine-phase LLM runs (docs/ACCEPTANCE_REFINE.md I1). The trusted evaluation is INVALID if the core-file hash differs. Changing this file needs a dated entry in the acceptance addendum."
+}
