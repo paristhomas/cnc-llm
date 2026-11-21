@@ -12,6 +12,12 @@ import { SETUP_PALETTE, armZoom, buildVise, setupLabel } from './simview5.js';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
+// Ra grades (ISO 1302 N5..N10) and a sequential colour per bin (smooth = light, rough = dark)
+const RA_BINS = [{ hi: 0.4, c: '#e9f5ec' }, { hi: 0.8, c: '#b9e0c3' }, { hi: 1.6, c: '#7fc597' }, { hi: 3.2, c: '#f2c14e' },
+  { hi: 6.3, c: '#e8833a' }, { hi: 12.5, c: '#c2412f' }, { hi: Infinity, c: '#7a1f1f' }];
+const RA_RGB = RA_BINS.map((b) => hexRgb(b.c));
+function raColor(v) { for (let i = 0; i < RA_BINS.length; i++) if (v <= RA_BINS[i].hi) return RA_RGB[i]; return RA_RGB[RA_RGB.length - 1]; }
+
 export class ResultView5 {
   constructor(D, els) {
     this.D = D;
@@ -55,6 +61,17 @@ export class ResultView5 {
     }
     this.nWit = nWit;
     g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    this.devCol = col;
+    // estimated roughness Ra per vertex (when the run has a roughness estimate): binned by ISO grade
+    if (D.meshRa && D.meshRa.length === nv) {
+      const rc = new Float32Array(nv * 3);
+      for (let i = 0; i < nv; i++) {
+        const c = raColor(D.meshRa[i]);
+        tmp.setRGB(c[0], c[1], c[2], THREE.SRGBColorSpace);
+        rc[i * 3] = tmp.r; rc[i * 3 + 1] = tmp.g; rc[i * 3 + 2] = tmp.b;
+      }
+      this.raCol = rc;
+    }
     this.target = new THREE.Mesh(g, new THREE.MeshStandardMaterial({ vertexColors: true, metalness: 0.1, roughness: 0.55, side: THREE.DoubleSide }));
     this.target.castShadow = true; this.target.receiveShadow = true;
     st.scene.add(this.target);
@@ -128,7 +145,13 @@ export class ResultView5 {
   setMode(m) {
     if (this.markers && m !== this.mode) this.closeCard();
     this.mode = m;
-    this.target.visible = m === 'dev';
+    this.target.visible = m === 'dev' || m === 'ra';
+    if (this.raCol) {
+      const a = this.target.geometry.getAttribute('color');
+      a.array.set(m === 'ra' ? this.raCol : this.devCol); a.needsUpdate = true;
+    }
+    if (this.markerLayer) this.markerLayer.style.display = m === 'dev' ? '' : 'none';
+    const rl = this.bar.querySelector('.ra-legend'); if (rl) rl.hidden = m !== 'ra';
     this.bar.querySelectorAll('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
     this.bar.querySelector('.ovl-label').textContent = m === 'dev' ? 'machined part overlay' : 'target part overlay';
     this.bar.querySelector('.ovl-sw').style.background = m === 'dev' ? '#9aa3ad' : '#2f8cff';
@@ -160,7 +183,7 @@ export class ResultView5 {
       <div class="res-ctl">
         <span class="seg" role="group" aria-label="Result display">
           <button type="button" data-mode="dev" aria-pressed="true">Deviation on target</button>
-          <button type="button" data-mode="mach" aria-pressed="false">Machined part (by setup)</button>
+          <button type="button" data-mode="mach" aria-pressed="false">Machined part (by setup)</button>${D.meshRa ? '<button type="button" data-mode="ra" aria-pressed="false">Roughness (Ra)</button>' : ''}
         </span>
         <label class="chk"><input type="checkbox" class="ovl"> <i class="sw ovl-sw" style="background:#9aa3ad"></i><span class="ovl-label">machined part overlay</span></label>
         <label class="chk"><input type="checkbox" class="vise"> <i class="sw" style="background:#6f7c8c"></i>vise</label>
@@ -180,6 +203,8 @@ export class ResultView5 {
           <span><i class="sw" style="background:${DEV5.witness}"></i>tab witness: where a part-off tab joins the part${this.hasCls ? (this.nWit ? '' : ' (none on this part)') : ' (not drawn here: this 3D data was exported before the witness was measured)'}</span>
         </div>
       </div>
+      ${D.meshRa ? `<div class="cbar ra-legend" hidden><div class="cb-title">Estimated surface roughness Ra (µm), kinematic: tool shape, stepover and feed marks only</div>
+        <div class="cls-legend">${RA_BINS.map((b, i) => `<span><i class="sw" style="background:${b.c}"></i>${i === 0 ? '≤ ' + b.hi : i === RA_BINS.length - 1 ? '> ' + RA_BINS[i - 1].hi : RA_BINS[i - 1].hi + '–' + b.hi} µm</span>`).join('')}</div></div>` : ''}
       <div class="cbar mach-legend" hidden>
         <div class="cb-title">Machined part = stock ∩ every setup's cut, coloured by the setup that cut each surface last</div>
         <div class="cls-legend setup-legend">${D.segs.map((s, i) => `<span><i class="sw" style="background:${SETUP_PALETTE[i % SETUP_PALETTE.length]}"></i>${i + 1} · ${setupLabel(s)}</span>`).join('')}<span><i class="sw" style="background:#8c9097"></i>uncut stock face</span></div>

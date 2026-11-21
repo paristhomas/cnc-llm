@@ -83,7 +83,7 @@ async function decode(raw) {
   for (const sg of segs) { sg.fixHits = 0; for (let m = sg.a; m < sg.b; m++) if (A.mv_fix[m]) sg.fixHits++; }
   return {
     meta, segs, segOf, S, E, SZ, EZ, FS, FE, TL, cum, phi, gcode, firstMove, toolsUsed, line: lines, feed, crash: A.mv_crash, fix: A.mv_fix,
-    meshV: A.mesh_V, meshF: A.mesh_F, meshDev: A.mesh_dev, meshCls: A.mesh_cls, meshEdges: A.mesh_edges,
+    meshV: A.mesh_V, meshF: A.mesh_F, meshDev: A.mesh_dev, meshCls: A.mesh_cls, meshRa: A.mesh_ra || null, meshEdges: A.mesh_edges,
   };
 }
 

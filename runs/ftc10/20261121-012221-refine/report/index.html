@@ -9,16 +9,56 @@
 <link rel="stylesheet" href="assets/report5.css">
 </head>
 <body class="x5">
-<header class="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-main">
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <div class="tb-title">
       <div class="eyebrow">CNC-LLM run report · 3+2 indexed 5-axis · ftc10 · 20261121-012221-refine</div>
       <h1>NIST FTC-10 test part</h1>
+      <p class="tb-cap">Simulated machining by an LLM agent's program. Press play to watch the 5-axis table move the part.</p>
+    </div>
+    <div class="tb-score" aria-label="Final score">
+      <span class="badge lg valid">VALID</span>
+      <div class="tb-num">99.89<span>%</span></div>
+      <div class="tb-lbl">of the whole surface within ±0.1 mm</div>
+    </div>
+  </div>
+  
+</header>
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#sim">Simulation</a><a href="#result">Result</a><a href="#details">Details</a><a href="#partoff">Part-off</a><a href="#problems">Problems</a>
+  <a href="#setups">Setups</a><a href="#history">History</a><a href="#metrics">Metrics</a><a href="#images">Images</a><a href="#gcode">G-code</a>
+</div></nav>
+<main class="wrap">
+<section id="sim" class="sim-top">
+  <h2 class="sr-only">Cutting simulation</h2>
+  
+<div class="sim" id="simroot">
+  <div class="viewer-col">
+    <div class="viewport" id="simview"><div class="vp-msg" id="simmsg">Loading 3D viewer…</div></div>
+    <div class="controls" id="simcontrols"></div>
+  </div>
+  <aside class="side" id="simside"></aside>
+</div>
+  <p class="sim-cap">The spindle stays vertical; the table tilts (A) and turns (C) to bring each side of the part under the tool.
+  Drag to orbit, wheel or pinch to zoom after a click. <a href="#sim-more">More about this view</a></p>
+</section>
+<section id="result">
+  <div class="sec-head"><h2>Final result</h2>
+  <p class="sub">Green is within ±0.1 mm; anything else is a failure (orange to red: metal left, blue: cut too deep, purple: where a tab joined). Click a marker to see why.</p></div>
+  <div class="result-row"><figure class="hero-img hero-render"><img src="img/hero.png" alt="The simulated finished part, coloured by result: green within tolerance, orange to red material left, blue cut too deep, purple tab witness"><figcaption>The simulated part, coloured by result (green = within ±0.1 mm)</figcaption></figure><div class="result-main">
+<div class="result">
+  <div class="viewport tall" id="resview"><div class="vp-msg">Loading…</div></div>
+  <div class="res-bar" id="resbar"></div>
+</div></div></div>
+  
+</section>
+<section id="details">
+  <div class="sec-head"><h2>Details</h2></div>
+  <div class="details-grid">
+    <div class="details-main">
       <p class="desc">NIST FTC-10 (ASME Y14.5 test case), native scale, AL6061</p>
       <p class="plain">The NIST FTC-10 test part was cut, in simulation, by a program the agent wrote: <b>99.89%</b> of its surface ends within a tenth of a millimetre of the drawing. What is not finished is extra metal: at most 1.24 mm, the largest area being 13.21 mm² on the conical bottom of a drilled hole (drill point). It comes off the block on 2 tabs about 2.6 mm wide, which the operator snaps off and files flush.</p>
-    </div>
-    <figure class="hero-img hero-render"><img src="img/hero.png" alt="The simulated finished part, coloured by result: green within tolerance, orange to red material left, blue cut too deep, purple tab witness"><figcaption>The simulated part, coloured by result (green = within ±0.1 mm)</figcaption></figure>
-    <dl class="facts">
+      <dl class="facts">
         <div><dt>Material</dt><dd>AL6061 billet</dd></div>
         <div><dt>Stock</dt><dd>37 × 81 × 195.5 mm</dd></div>
         <div><dt>Workholding</dt><dd>5-axis vise · 12 mm grip · 24 mm stub gap</dd></div>
@@ -28,35 +68,27 @@
         <div><dt>Programmed by</dt><dd>LLM agent (Claude Code subagent)</dd></div>
         <div><dt>Date</dt><dd>2026-11-21 01:22</dd></div>
         <div><dt>Iterations</dt><dd>10 · final = #10</dd></div>
-    </dl>
-    <div class="hero-score" aria-label="Final score">
-      
+      </dl>
+    </div>
+    <div class="hero-score">
       <div class="score-top">
-        <span class="badge lg valid">VALID</span>
+        <span class="badge valid">VALID</span>
         <span class="muted">0 errors · 4 warnings</span>
       </div>
-      <div class="score-num">99.89<span>%</span></div>
-      <div class="score-label">of the whole part surface within ±0.1 mm · trusted final evaluation of iteration 10</div>
+      <div class="score-label"><b>99.89%</b> of the whole part surface within ±0.1 mm · trusted final evaluation of iteration 10</div>
       <div class="meter" aria-hidden="true"><i style="width:99.89%"></i></div>
       <div class="score-2"><span>proud (failed) <b>0.11%</b></span><span>gouged (failed) <b>0.00%</b></span></div><div class="score-3">Left out of the score: only the tab witness (0.16%). The edge band (0.85%) is scored by its neighbours.</div>
       <div class="chips"><span class="chip good" title="the part-off leaves small tabs the operator can break"><b aria-hidden="true">✓</b> Part-off OK · 2 tabs, 22.88 mm², ≤ 2.6 mm wide</span><span class="chip good" title="the weakest connection to the stub stays at least 30% of the stock section until the part-off"><b aria-hidden="true">✓</b> Rigidity OK · min 100%</span><span class="chip good" title="no tool / holder contact with the vise or table"><b aria-hidden="true">✓</b> Vise clear</span><span class="chip good" title="harness sha256 63bd0ddc6479…, git 2a3b37d, uncommitted harness changes: no, unchanged since run start: no, part unchanged: yes"><b aria-hidden="true">✓</b> Harness verified · git 2a3b37d</span><span class="chip good" title="MillBill cross-check: 250000 query points in 8 frames, 0 disagree beyond 2 µm"><b aria-hidden="true">✓</b> MillBill cross-check 100.000%</span></div>
       
     </div>
   </div>
-  <div class="wrap"><p class="verdict">The program is <strong>valid</strong>: no crash, no vise or table contact, the part stays rigid until the part-off, and the part-off leaves only small tabs. <strong>99.89%</strong> of the whole part surface is within ±0.1 mm. Everything else counts as failed: 0.11% is proud (material left) and 0.00% is gouged. The only area not scored is the tab witness (0.16%); the 0.03 mm band along face edges (0.85%) is scored with the deviation of the nearest interior point. Held in one vise by 12 mm of extra stock below a 24 mm stub gap, it is machined in 8 setups (5 table orientations, about 118 min); the part-off at the end leaves 2 tabs (22.88 mm²) for the operator to break off and file flush. Warnings: 65,676 moves are flagged as "rubbing" (feed per tooth below 0.2× the recommended chip load, tools T11, T12, T3, T4). The checker computes the chip load at the tool centre, which under-reads helical and edge-compensated moves whose feed is programmed for the wall, so many of these are an artefact of the check; they are listed under Problems, not hidden. Biggest problems: <button class="region-btn inline" data-region="1">R1</button> the conical bottom of a drilled hole (drill point), facing up: proud 13.21 mm² (worst +1.24 mm; a pass (line 6988, T11) touches the edge of this area but +0.54 mm is left on average: the pass stops short of it, the tool cannot form this shape, or the feature was not machined); <button class="region-btn inline" data-region="2">R2</button> a blended / fillet surface and a curved wall (radius 6 mm: a hole, bore or round), on a side: proud 2.72 mm² (worst +0.15 mm; passes reach the area (line 79200, T6) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short); <button class="region-btn inline" data-region="3">R3</button> a small rounded edge or fillet (radius 1 mm) and a blended / fillet surface, on the underside: proud 2.72 mm² (worst +0.33 mm; passes reach the area (line 110521, T14) but leave +0.18 mm on average: stepover / scallop, the tool radius, or a stop short).</p></div>
-</header>
-<nav class="toc" aria-label="Sections"><div class="wrap">
-  <a href="#sim">Simulation</a><a href="#result">Result</a><a href="#partoff">Part-off</a><a href="#problems">Problems</a>
-  <a href="#setups">Setups</a><a href="#history">History</a><a href="#metrics">Metrics</a><a href="#images">Images</a><a href="#gcode">G-code</a>
-</div></nav>
-<main class="wrap">
-<section id="sim">
-  <div class="sec-head"><h2>Cutting simulation</h2>
+  <p class="verdict">The program is <strong>valid</strong>: no crash, no vise or table contact, the part stays rigid until the part-off, and the part-off leaves only small tabs. <strong>99.89%</strong> of the whole part surface is within ±0.1 mm. Everything else counts as failed: 0.11% is proud (material left) and 0.00% is gouged. The only area not scored is the tab witness (0.16%); the 0.03 mm band along face edges (0.85%) is scored with the deviation of the nearest interior point. Held in one vise by 12 mm of extra stock below a 24 mm stub gap, it is machined in 8 setups (5 table orientations, about 118 min); the part-off at the end leaves 2 tabs (22.88 mm²) for the operator to break off and file flush. Warnings: 65,676 moves are flagged as "rubbing" (feed per tooth below 0.2× the recommended chip load, tools T11, T12, T3, T4). The checker computes the chip load at the tool centre, which under-reads helical and edge-compensated moves whose feed is programmed for the wall, so many of these are an artefact of the check; they are listed under Problems, not hidden. Biggest problems: <button class="region-btn inline" data-region="1">R1</button> the conical bottom of a drilled hole (drill point), facing up: proud 13.21 mm² (worst +1.24 mm; a pass (line 6988, T11) touches the edge of this area but +0.54 mm is left on average: the pass stops short of it, the tool cannot form this shape, or the feature was not machined); <button class="region-btn inline" data-region="2">R2</button> a blended / fillet surface and a curved wall (radius 6 mm: a hole, bore or round), on a side: proud 2.72 mm² (worst +0.15 mm; passes reach the area (line 79200, T6) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short); <button class="region-btn inline" data-region="3">R3</button> a small rounded edge or fillet (radius 1 mm) and a blended / fillet surface, on the underside: proud 2.72 mm² (worst +0.33 mm; passes reach the area (line 110521, T14) but leave +0.18 mm on average: stepover / scallop, the tool radius, or a stop short).</p>
+  <figure class="dev-map"><div class="dev-scroll"><a href="img/deviation_views.png" target="_blank"><img src="img/deviation_views.png" alt="Deviation of the machined part, six orthographic views" loading="lazy"></a></div><figcaption>The same deviation in six flat views (top, bottom, front, back, left, right): small failures inside holes and on the underside are easier to spot here. <a href="img/deviation_views.png" target="_blank">Open full size</a><span class="phone-only"> or scroll sideways</span>.</figcaption></figure>
+  <div id="sim-more" class="sim-more"><h3>About the cutting simulation</h3>
   <p class="sub"><b>Machine view</b> (default): the spindle stays vertical and the table moves the work. To reach each side of the part
   the cradle tilts (A axis) and the platter turns (C axis), carrying the vise, the stock and the part. Press play, or click a setup
   in the strip under the timeline. <b>Part view</b>: the part stays still and the tool comes in along each setup's axis. The material
-  is the stock cut by every move, replayed in the browser with the simulator's kernel. Drag to orbit, right-drag or two fingers to pan,
-  wheel or pinch to zoom (after a click).</p><details class="help-k"><summary>How the Machine view works</summary>
+  is the stock cut by every move, replayed in the browser with the simulator's kernel.</p><details class="help-k"><summary>How the Machine view works</summary>
   <p>The machine is a trunnion (table-table) 5-axis mill. The spindle always points straight down and only moves in X, Y and Z.
   The <b>A axis</b> tilts the cradle about the machine X axis; the <b>C axis</b> turns the round platter on the cradle; the vise,
   the stock and the part sit on the platter and move with it. For each setup the table angles come from the program's
@@ -69,26 +101,6 @@
   angles A and C, the tool and the current G-code line. In Part view the part stays still and the tool comes in along each setup's
   axis instead. Both views replay the same simulated cutting; a self-check in the page confirms that the tool tip relative to the
   part is identical in the two views for hundreds of moves of every setup and that the spindle stays vertical.</p></details></div>
-  
-<div class="sim" id="simroot">
-  <div class="viewer-col">
-    <div class="viewport" id="simview"><div class="vp-msg" id="simmsg">Loading 3D viewer…</div></div>
-    <div class="controls" id="simcontrols"></div>
-  </div>
-  <aside class="side" id="simside"></aside>
-</div>
-</section>
-<section id="result">
-  <div class="sec-head"><h2>Final result</h2>
-  <p class="sub">The target part coloured by how far the simulated part is from it, over the whole surface. Green is within ±0.1 mm;
-  anything that is not green is a failure (orange to dark red: material left; blue: cut too deep). Purple marks the tab witness, the
-  small areas where a part-off tab joins the part. Click a marker, a region in the Problems table or the surface itself to see why it failed.</p></div>
-  
-<div class="result">
-  <div class="viewport tall" id="resview"><div class="vp-msg">Loading…</div></div>
-  <div class="res-bar" id="resbar"></div>
-</div>
-  <figure class="dev-map"><div class="dev-scroll"><a href="img/deviation_views.png" target="_blank"><img src="img/deviation_views.png" alt="Deviation of the machined part, six orthographic views" loading="lazy"></a></div><figcaption>The same deviation in six flat views (top, bottom, front, back, left, right): small failures inside holes and on the underside are easier to spot here. <a href="img/deviation_views.png" target="_blank">Open full size</a><span class="phone-only"> or scroll sideways</span>.</figcaption></figure>
 </section>
 <section id="partoff">
   <div class="sec-head"><h2>Holding and part-off</h2><p class="sub">The part is machined out of a block held by its bottom in one vise. It must stay connected to the gripped
@@ -341,7 +353,7 @@
 </main>
 <footer class="foot"><div class="wrap">
   <span>Harness sha256 <code>63bd0ddc6479d309</code> · git <code>2a3b37d</code></span>
-  <span>Part 28ab89473d74 · generated 2026-11-21 10:19</span>
+  <span>Part 28ab89473d74 · generated 2026-11-21 10:59</span>
 </div></footer>
 <div id="toast" role="status" aria-live="polite"></div>
 <script src="assets/data.js"></script>

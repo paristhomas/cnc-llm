@@ -228,6 +228,16 @@ def export_data(part, res: dict, final_dir) -> Path:
     arrays["mesh_F"] = F.astype(np.uint32).ravel()
     arrays["mesh_dev"] = vdev.astype(np.float32)
     arrays["mesh_cls"] = vcls.astype(np.uint8)
+    rv = Path(final_dir) / "roughness_vertex.npy"
+    if rv.exists():
+        try:   # per-vertex Ra (part.V order) -> viewer mesh vertices by nearest vertex
+            from scipy.spatial import cKDTree
+            ra = np.asarray(np.load(rv), np.float64).ravel()
+            if len(ra) == len(part.V):
+                _, nn = cKDTree(np.asarray(part.V, np.float64)).query(V)
+                arrays["mesh_ra"] = ra[nn].astype(np.float32)
+        except Exception as e:
+            print(f"WARNING: roughness not exported ({e!r})")
     # ---- G-code text
     prog = res.get("program")
     text = getattr(prog, "text", None)
@@ -522,6 +532,50 @@ def annotate_notes(notes: str, regs: list) -> str:
             return mo.group(0) + tag
         out.append(rx.sub(sub, line))
     return "\n".join(out)
+
+RA_GRADES = [0.4, 0.8, 1.6, 3.2, 6.3, 12.5]   # um, ISO 1302 N5..N10
+
+
+def _roughness_block(res_dir, out) -> str:
+    """Roughness (Ra) panel from <res_dir>/roughness_summary.json (+ roughness_views.png, roughness_model.glb), written
+    by the roughness estimator; empty when those files are absent."""
+    if not res_dir:
+        return ""
+    sj = Path(res_dir) / "roughness_summary.json"
+    if not sj.exists():
+        return ""
+    try:
+        sm = json.loads(sj.read_text())
+    except Exception:
+        return ""
+    links = []
+    for f, lbl in (("roughness_model.glb", "Download the 3D model coloured by Ra (.glb)"), ("roughness_views.png", "Roughness map, flat views (.png)")):
+        if (Path(res_dir) / f).exists():
+            shutil.copy(Path(res_dir) / f, out / "img" / f)
+            links.append(f'<a href="img/{f}" target="_blank"{" download" if f.endswith(".glb") else ""}>{lbl}</a>')
+
+    def num(*keys):
+        for k in keys:
+            for kk, v in sm.items():
+                if kk.lower() == k.lower() and isinstance(v, (int, float)):
+                    return float(v)
+        return None
+    stats = []
+    for lbl, keys in (("median Ra", ("Ra_median_um", "ra_median_um", "median_Ra_um", "Ra_median")),
+                      ("area-weighted mean Ra", ("Ra_mean_um", "ra_mean_um", "mean_Ra_um", "Ra_mean")),
+                      ("95 % of the surface below", ("Ra_p95_um", "ra_p95_um", "p95_Ra_um", "Ra_p95")),
+                      ("max Ra", ("Ra_max_um", "ra_max_um", "max_Ra_um", "Ra_max"))):
+        v = num(*keys)
+        if v is not None:
+            stats.append(f"{lbl} <b>{v:.2f} µm</b>")
+    cav = sm.get("caveat") or sm.get("note") or "Kinematic roughness only (tool shape, stepover and feed marks); vibration, tool wear and deflection are not modelled."
+    img = (f'<a class="rough-img" href="img/roughness_views.png" target="_blank"><img src="img/roughness_views.png" alt="Estimated surface roughness Ra, flat views" loading="lazy"></a>'
+           if (out / "img" / "roughness_views.png").exists() else "")
+    return (f'<div class="rough"><h3>Surface roughness (Ra, estimated)</h3>'
+            f'<p class="small">{" · ".join(stats) if stats else "Per-area estimate from the tool paths."} '
+            f'Switch the 3D view above to <b>Roughness (Ra)</b> to see where.</p>'
+            f'<p class="muted small">{_esc(cav)}</p>{img}'
+            f'<p class="small rough-links">{" · ".join(links)}</p></div>')
 
 
 def _issue_rows5(issues: list) -> str:
@@ -1169,6 +1223,7 @@ def build(run_dir, source: str | None = None) -> Path:
                     '<figcaption>The part to be made (target model)</figcaption></figure>')
     else:
         hero_img = ""
+    rough_block = _roughness_block(res_dir, out)
     dev_fig = ('<figure class="dev-map"><div class="dev-scroll"><a href="img/deviation_views.png" target="_blank"><img src="img/deviation_views.png" '
                'alt="Deviation of the machined part, six orthographic views" loading="lazy"></a></div><figcaption>The same deviation in six flat '
                'views (top, bottom, front, back, left, right): small failures inside holes and on the underside are easier to spot '
@@ -1214,6 +1269,13 @@ def build(run_dir, source: str | None = None) -> Path:
     if jump and jump[0] >= 10:
         cyc_fact += (f'<span class="fact-note">+{jump[0]:.0f} min in iteration {jump[1]}'
                      + (f': {_esc(jump[2])}' if jump[2] else '') + '</span>')
+    short_bad = ""
+    if not valid:
+        e0 = next((i for i in issues if i.get("severity") == "error"), {})
+        ov = limit_overshoot(e0.get("msg", ""))
+        short_bad = (f"part-off tabs {ov[0]:g} mm² at one height, limit {ov[1]:g} mm²" if e0.get("kind") == "part-off" and ov
+                     else _esc((e0.get("msg") or "a rule is broken")[:90]))
+    top_caption = "Simulated machining by an LLM agent's program. Press play to watch the 5-axis table move the part."
     help_txt = """<details class="help-k"><summary>How the Machine view works</summary>
   <p>The machine is a trunnion (table-table) 5-axis mill. The spindle always points straight down and only moves in X, Y and Z.
   The <b>A axis</b> tilts the cradle about the machine X axis; the <b>C axis</b> turns the round platter on the cradle; the vise,
@@ -1238,16 +1300,45 @@ def build(run_dir, source: str | None = None) -> Path:
 <link rel="stylesheet" href="assets/report5.css">
 </head>
 <body class="x5">
-<header class="hero">
-  <div class="wrap hero-grid">
-    <div class="hero-main">
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <div class="tb-title">
       <div class="eyebrow">CNC-LLM run report · 3+2 indexed 5-axis · {_esc(name)} · {_esc(run.name)}</div>
       <h1>{_esc(title)}</h1>
+      <p class="tb-cap">{top_caption}</p>
+    </div>
+    <div class="tb-score" aria-label="Final score">
+      <span class="badge lg {'valid' if valid else 'invalid'}">{'VALID' if valid else 'INVALID'}</span>
+      <div class="tb-num">{(f'{score:.2f}' if score is not None else '–')}<span>%</span></div>
+      <div class="tb-lbl">of the whole surface within ±{tol:g} mm{('<br><b class="tb-bad">' + short_bad + '</b>') if short_bad else ''}</div>
+    </div>
+  </div>
+  {f'<div class="wrap"><p class="int-fail" role="alert">{integrity_fail}</p></div>' if integrity_fail else ''}
+</header>
+<nav class="toc" aria-label="Sections"><div class="wrap">
+  <a href="#sim">Simulation</a><a href="#result">Result</a><a href="#details">Details</a><a href="#partoff">Part-off</a><a href="#problems">Problems</a>
+  <a href="#setups">Setups</a><a href="#history">History</a><a href="#metrics">Metrics</a><a href="#images">Images</a><a href="#gcode">G-code</a>
+</div></nav>
+<main class="wrap">
+<section id="sim" class="sim-top">
+  <h2 class="sr-only">Cutting simulation</h2>
+  {sim_block}
+  <p class="sim-cap">The spindle stays vertical; the table tilts (A) and turns (C) to bring each side of the part under the tool.
+  Drag to orbit, wheel or pinch to zoom after a click. <a href="#sim-more">More about this view</a></p>
+</section>
+<section id="result">
+  <div class="sec-head"><h2>Final result</h2>
+  <p class="sub">Green is within ±{tol:g} mm; anything else is a failure (orange to red: metal left, blue: cut too deep, purple: where a tab joined). Click a marker to see why.</p></div>
+  <div class="result-row">{hero_img}<div class="result-main">{res_block}</div></div>
+  {rough_block}
+</section>
+<section id="details">
+  <div class="sec-head"><h2>Details</h2></div>
+  <div class="details-grid">
+    <div class="details-main">
       <p class="desc">{_esc(desc)}</p>
       <p class="plain">{plain}</p>
-    </div>
-    {hero_img}
-    <dl class="facts">
+      <dl class="facts">
         <div><dt>Material</dt><dd>AL6061 billet</dd></div>
         <div><dt>Stock</dt><dd>{_esc(stock_txt)}</dd></div>
         <div><dt>Workholding</dt><dd>{_esc(hold)}</dd></div>
@@ -1257,44 +1348,27 @@ def build(run_dir, source: str | None = None) -> Path:
         <div><dt>Programmed by</dt><dd>{AGENT_LABEL}</dd></div>
         <div><dt>Date</dt><dd>{_esc(created_h)}</dd></div>
         <div><dt>Iterations</dt><dd>{len(hist)}{f' · final = #{final_iter}' if final_iter else ''}</dd></div>
-    </dl>
-    <div class="hero-score" aria-label="Final score">
-      {f'<p class="int-fail" role="alert">{integrity_fail}</p>' if integrity_fail else ''}
+      </dl>
+    </div>
+    <div class="hero-score">
       <div class="score-top">
-        <span class="badge lg {'valid' if valid else 'invalid'}">{'VALID' if valid else 'INVALID'}</span>
+        <span class="badge {'valid' if valid else 'invalid'}">{'VALID' if valid else 'INVALID'}</span>
         <span class="muted">{n_err} error{'s' if n_err != 1 else ''} · {n_warn} warning{'s' if n_warn != 1 else ''}{' · under the checks of the time (no part-off tab checks yet)' if score is None else ''}</span>
       </div>
-      <div class="score-num">{(f'{score:.2f}' if score is not None else '–')}<span>%</span></div>
-      <div class="score-label">{score_label}</div>
+      <div class="score-label">{(f'<b>{score:.2f}%</b> ' if score is not None else '')}{score_label}</div>
       <div class="meter" aria-hidden="true"><i style="width:{max(0, min(100, score or 0)):.2f}%"></i></div>
       {score2}
       <div class="chips">{''.join(chips)}</div>
       {f'<p class="int-note">{_esc(integrity_note)}</p>' if integrity_note else ''}
     </div>
   </div>
-  <div class="wrap"><p class="verdict">{verdict}</p></div>
-</header>
-<nav class="toc" aria-label="Sections"><div class="wrap">
-  <a href="#sim">Simulation</a><a href="#result">Result</a><a href="#partoff">Part-off</a><a href="#problems">Problems</a>
-  <a href="#setups">Setups</a><a href="#history">History</a><a href="#metrics">Metrics</a><a href="#images">Images</a><a href="#gcode">G-code</a>
-</div></nav>
-<main class="wrap">
-<section id="sim">
-  <div class="sec-head"><h2>Cutting simulation</h2>
+  <p class="verdict">{verdict}</p>
+  {dev_fig}
+  <div id="sim-more" class="sim-more"><h3>About the cutting simulation</h3>
   <p class="sub"><b>Machine view</b> (default): the spindle stays vertical and the table moves the work. To reach each side of the part
   the cradle tilts (A axis) and the platter turns (C axis), carrying the vise, the stock and the part. Press play, or click a setup
   in the strip under the timeline. <b>Part view</b>: the part stays still and the tool comes in along each setup's axis. The material
-  is the stock cut by every move, replayed in the browser with the simulator's kernel. Drag to orbit, right-drag or two fingers to pan,
-  wheel or pinch to zoom (after a click).</p>{help_txt}</div>
-  {sim_block}
-</section>
-<section id="result">
-  <div class="sec-head"><h2>Final result</h2>
-  <p class="sub">The target part coloured by how far the simulated part is from it, over the whole surface. Green is within ±{tol:g} mm;
-  anything that is not green is a failure (orange to dark red: material left; blue: cut too deep). Purple marks the tab witness, the
-  small areas where a part-off tab joins the part. Click a marker, a region in the Problems table or the surface itself to see why it failed.</p></div>
-  {res_block}
-  {dev_fig}
+  is the stock cut by every move, replayed in the browser with the simulator's kernel.</p>{help_txt}</div>
 </section>
 <section id="partoff">
   <div class="sec-head"><h2>Holding and part-off</h2><p class="sub">The part is machined out of a block held by its bottom in one vise. It must stay connected to the gripped
