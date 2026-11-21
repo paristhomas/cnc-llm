@@ -2,8 +2,10 @@ TOP T1 rough levels 6 rings 30
 TOP T5 area w=141.500 rings 4
 TOP T10 drill (-2.50,-23.50) 141.50->119.50
 TOP T10 drill (0.50,25.00) 141.50->119.50
-TOP T11 helix hole (-2.50,-23.50) r0.75 141.50->114.00
-TOP T11 helix hole (0.50,25.00) r0.75 141.50->106.50
+TOP pre-drilled part T11 helix hole (-2.50,-23.50) r0.75 141.50->119.80
+TOP T11 helix hole (-2.50,-23.50) r0.75 119.80->114.00
+TOP pre-drilled part T11 helix hole (0.50,25.00) r0.75 141.50->119.80
+TOP T11 helix hole (0.50,25.00) r0.75 119.80->106.50
 PX face T1 area w=15.500 rings 8
 PX T1 rough levels 3 rings 21
 PX pocket T1 rough levels 3 rings 12
@@ -160,6 +162,6 @@ PO3 lobes fin T3 contour w=12.000 runs 5
 PO3 lobes fin T3 contour w=8.500 runs 5
 PO3 corners T4 contour w=11.000 runs 2
 PO3 corners T4 contour w=8.500 runs 2
-[(np.float64(11.6), ('MX', 1)), (np.float64(11.2), ('MX', 14)), (np.float64(11.2), ('MX', 6)), (np.float64(9.3), ('MX', 7)), (np.float64(6.3), ('MX', 13)), (np.float64(4.2), ('PX', 1)), (np.float64(3.9), ('MX', 4)), (np.float64(3.0), ('PX', 7)), (np.float64(3.0), ('PX', 3)), (np.float64(2.6), ('TOP', 1)), (np.float64(2.5), ('MX', 3)), (np.float64(2.3), ('PY', 7)), (np.float64(2.2), ('MY', 7)), (np.float64(2.0), ('PX', 2)), (np.float64(1.8), ('TOP', 11)), (np.float64(1.8), ('MY', 3)), (np.float64(1.7), ('PX', 13)), (np.float64(1.5), ('MX', 5)), (np.float64(0.8), ('MX', 2)), (np.float64(0.5), ('PY', 1)), (np.float64(0.5), ('MY', 1)), (np.float64(0.3), ('PY', 12)), (np.float64(0.3), ('MY', 12)), (np.float64(0.2), ('PY', 2)), (np.float64(0.2), ('PX', 4)), (np.float64(0.2), ('MY', 2)), (np.float64(0.1), ('TOP', 10)), (np.float64(0.1), ('TOP', 5)), (np.float64(0.1), ('PY', 10)), (np.float64(0.1), ('MY', 10))]
-lines 124682 cut time 85.6 min, rapid 2.5 min, total 32.5 s gen
+[(np.float64(11.6), ('MX', 1)), (np.float64(11.2), ('MX', 14)), (np.float64(11.2), ('MX', 6)), (np.float64(9.3), ('MX', 7)), (np.float64(6.3), ('TOP', 11)), (np.float64(6.3), ('MX', 13)), (np.float64(6.1), ('MX', 4)), (np.float64(5.8), ('PY', 12)), (np.float64(5.8), ('MY', 12)), (np.float64(4.8), ('MX', 3)), (np.float64(4.5), ('PX', 13)), (np.float64(4.2), ('PX', 1)), (np.float64(4.0), ('PX', 3)), (np.float64(3.1), ('TOP', 1)), (np.float64(3.0), ('PX', 7)), (np.float64(2.3), ('PY', 7)), (np.float64(2.2), ('MY', 7)), (np.float64(2.0), ('PX', 2)), (np.float64(1.8), ('MY', 3)), (np.float64(1.5), ('MX', 5)), (np.float64(0.9), ('MX', 2)), (np.float64(0.5), ('PY', 2)), (np.float64(0.5), ('PY', 1)), (np.float64(0.5), ('MY', 2)), (np.float64(0.5), ('MY', 1)), (np.float64(0.2), ('PX', 4)), (np.float64(0.1), ('TOP', 10)), (np.float64(0.1), ('TOP', 5)), (np.float64(0.1), ('PY', 10)), (np.float64(0.1), ('MY', 10))]
+lines 124934 cut time 110.8 min, rapid 2.6 min, total 30.6 s gen
 EXIT 0

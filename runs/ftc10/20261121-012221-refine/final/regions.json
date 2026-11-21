@@ -22,31 +22,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 6961,
+    "line": 6988,
     "tool": 11,
     "frame": 1,
     "gap_mm": 0.0
    },
    {
-    "line": 70255,
+    "line": 70119,
     "tool": 4,
     "frame": 3,
     "gap_mm": 4.899
    },
    {
-    "line": 70254,
+    "line": 70118,
     "tool": 4,
     "frame": 3,
     "gap_mm": 4.899
    },
    {
-    "line": 70259,
+    "line": 70120,
     "tool": 4,
     "frame": 3,
-    "gap_mm": 4.906
+    "gap_mm": 4.899
    }
   ],
-  "hint": "failed: passes reach the area (line 6961, T11) but leave +0.54 mm on average: stepover / scallop, the tool radius, or a stop short; the harness's quick reach search found no tool for 91% of it (smallest tools, 26 cube directions + feature axes): consider another direction, a longer / smaller library tool, or a different fixture orientation. It still counts",
+  "hint": "failed: passes reach the area (line 6988, T11) but leave +0.54 mm on average: stepover / scallop, the tool radius, or a stop short; the harness's quick reach search found no tool for 91% of it (smallest tools, 26 cube directions + feature axes): consider another direction, a longer / smaller library tool, or a different fixture orientation. It still counts",
   "id": 1
  },
  {
@@ -72,31 +72,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 70078,
+    "line": 69970,
     "tool": 3,
     "frame": 3,
     "gap_mm": 4.278
    },
    {
-    "line": 70077,
+    "line": 69971,
     "tool": 3,
     "frame": 3,
     "gap_mm": 4.278
    },
    {
-    "line": 45248,
+    "line": 44583,
     "tool": 1,
     "frame": 3,
     "gap_mm": 12.714
    },
    {
-    "line": 46260,
+    "line": 45977,
     "tool": 1,
     "frame": 3,
     "gap_mm": 12.714
    }
   ],
-  "hint": "failed: no pass reached this; nearest pass line 70078 (T3, frame 3) missed by 4.278 mm",
+  "hint": "failed: no pass reached this; nearest pass line 69970 (T3, frame 3) missed by 4.278 mm",
   "id": 2
  },
  {
@@ -122,31 +122,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 70272,
+    "line": 70133,
     "tool": 4,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 70271,
+    "line": 70132,
     "tool": 4,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 70273,
+    "line": 70134,
     "tool": 4,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 6931,
+    "line": 6955,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.606
    }
   ],
-  "hint": "failed: passes reach the area (line 70272, T4) but leave +0.25 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 70133, T4) but leave +0.25 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 3
  },
  {
@@ -172,31 +172,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 79416,
+    "line": 79115,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 79444,
+    "line": 79143,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 79417,
+    "line": 79116,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 79477,
+    "line": 79176,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 79416, T6) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 79115, T6) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 4
  },
  {
@@ -224,31 +224,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 110224,
+    "line": 110467,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 110165,
+    "line": 110408,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 110164,
+    "line": 110407,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 110225,
+    "line": 110468,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 110224, T14) but leave +0.18 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 110467, T14) but leave +0.18 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 5
  },
  {
@@ -276,31 +276,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 110222,
+    "line": 110465,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 110223,
+    "line": 110466,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 110168,
+    "line": 110411,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 110224,
+    "line": 110467,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 110222, T14) but leave +0.20 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 110465, T14) but leave +0.20 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 6
  },
  {
@@ -326,31 +326,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 110224,
+    "line": 110467,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 110165,
+    "line": 110408,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 124059,
+    "line": 124305,
     "tool": 3,
     "frame": 8,
     "gap_mm": 0.0
    },
    {
-    "line": 124058,
+    "line": 124304,
     "tool": 3,
     "frame": 8,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 110224, T14) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 110467, T14) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 7
  },
  {
@@ -376,31 +376,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 70777,
+    "line": 70473,
     "tool": 4,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 6909,
+    "line": 6954,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.901
    },
    {
-    "line": 6902,
+    "line": 6915,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.901
    },
    {
-    "line": 6858,
+    "line": 6900,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.901
    }
   ],
-  "hint": "failed: passes reach the area (line 70777, T4) but leave +0.20 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 70473, T4) but leave +0.20 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 8
  },
  {
@@ -426,31 +426,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 6907,
+    "line": 6900,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.781
    },
    {
-    "line": 6917,
+    "line": 6937,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.781
    },
    {
-    "line": 6927,
+    "line": 6930,
     "tool": 11,
     "frame": 1,
-    "gap_mm": 2.047
+    "gap_mm": 1.781
    },
    {
-    "line": 6916,
+    "line": 6904,
     "tool": 11,
     "frame": 1,
     "gap_mm": 2.047
    }
   ],
-  "hint": "failed: no pass reached this; nearest pass line 6907 (T11, frame 1) missed by 1.781 mm",
+  "hint": "failed: no pass reached this; nearest pass line 6900 (T11, frame 1) missed by 1.781 mm",
   "id": 9
  },
  {
@@ -477,31 +477,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 88505,
+    "line": 88208,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 88569,
+    "line": 88272,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 88506,
+    "line": 88209,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 88622,
+    "line": 88325,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 88505, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 88208, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 10
  },
  {
@@ -527,31 +527,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 78240,
+    "line": 77939,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 78213,
+    "line": 77912,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 78239,
+    "line": 77938,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 78176,
+    "line": 77875,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 78240, T6) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 77939, T6) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 11
  },
  {
@@ -577,31 +577,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 70574,
+    "line": 70336,
     "tool": 4,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 70575,
+    "line": 70337,
     "tool": 4,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 6928,
+    "line": 6951,
     "tool": 11,
     "frame": 1,
     "gap_mm": 2.202
    },
    {
-    "line": 6926,
+    "line": 6954,
     "tool": 11,
     "frame": 1,
     "gap_mm": 2.202
    }
   ],
-  "hint": "failed: passes reach the area (line 70574, T4) but leave +0.32 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 70336, T4) but leave +0.32 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 12
  },
  {
@@ -627,31 +627,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 6918,
+    "line": 6956,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.81
    },
    {
-    "line": 6885,
+    "line": 6951,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.81
    },
    {
-    "line": 6925,
+    "line": 6946,
     "tool": 11,
     "frame": 1,
-    "gap_mm": 1.963
+    "gap_mm": 1.81
    },
    {
-    "line": 6910,
+    "line": 6950,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.963
    }
   ],
-  "hint": "failed: no pass reached this; nearest pass line 6918 (T11, frame 1) missed by 1.81 mm",
+  "hint": "failed: no pass reached this; nearest pass line 6956 (T11, frame 1) missed by 1.81 mm",
   "id": 13
  },
  {
@@ -677,31 +677,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 6893,
+    "line": 6928,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.7
    },
    {
-    "line": 6918,
+    "line": 6892,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.7
    },
    {
-    "line": 6909,
+    "line": 6902,
     "tool": 11,
     "frame": 1,
     "gap_mm": 1.7
    },
    {
-    "line": 6888,
+    "line": 6929,
     "tool": 11,
     "frame": 1,
     "gap_mm": 2.23
    }
   ],
-  "hint": "failed: no pass reached this; nearest pass line 6893 (T11, frame 1) missed by 1.7 mm",
+  "hint": "failed: no pass reached this; nearest pass line 6928 (T11, frame 1) missed by 1.7 mm",
   "id": 14
  },
  {
@@ -727,31 +727,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 109486,
+    "line": 109729,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 109494,
+    "line": 109737,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 109358,
+    "line": 109601,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 109487,
+    "line": 109730,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 109486, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 109729, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 15
  },
  {
@@ -777,31 +777,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 110224,
+    "line": 110467,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 110165,
+    "line": 110408,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 124080,
+    "line": 124326,
     "tool": 3,
     "frame": 8,
     "gap_mm": 0.0
    },
    {
-    "line": 124079,
+    "line": 124325,
     "tool": 3,
     "frame": 8,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 110224, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 110467, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 16
  },
  {
@@ -827,31 +827,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 77727,
+    "line": 77426,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 77703,
+    "line": 77402,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 77638,
+    "line": 77337,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 77592,
+    "line": 77291,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 77727, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 77426, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 17
  },
  {
@@ -877,31 +877,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 15522,
+    "line": 15550,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15523,
+    "line": 15551,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15521,
+    "line": 15549,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15524,
+    "line": 15552,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 15522, T1) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 15550, T1) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 18
  },
  {
@@ -927,31 +927,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 15714,
+    "line": 15742,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15713,
+    "line": 15741,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15712,
+    "line": 15740,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15715,
+    "line": 15743,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 15714, T1) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 15742, T1) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 19
  },
  {
@@ -977,31 +977,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 80120,
+    "line": 79819,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80144,
+    "line": 79843,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80209,
+    "line": 79908,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80231,
+    "line": 79930,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 80120, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 79819, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 20
  },
  {
@@ -1027,31 +1027,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 77727,
+    "line": 77426,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 77703,
+    "line": 77402,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 77638,
+    "line": 77337,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 77592,
+    "line": 77291,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 77727, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 77426, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 21
  },
  {
@@ -1077,31 +1077,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 88510,
+    "line": 88213,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 88511,
+    "line": 88214,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 88509,
+    "line": 88212,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 88508,
+    "line": 88211,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 88510, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 88213, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 22
  },
  {
@@ -1127,31 +1127,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 15472,
+    "line": 15500,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15473,
+    "line": 15501,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15471,
+    "line": 15499,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    },
    {
-    "line": 15474,
+    "line": 15502,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 15472, T1) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 15500, T1) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 23
  },
  {
@@ -1177,31 +1177,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 88566,
+    "line": 88269,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 88626,
+    "line": 88329,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 13177,
+    "line": 13204,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.241
    },
    {
-    "line": 13176,
+    "line": 13205,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.241
    }
   ],
-  "hint": "failed: passes reach the area (line 88566, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 88269, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 24
  },
  {
@@ -1227,31 +1227,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 88566,
+    "line": 88269,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 88626,
+    "line": 88329,
     "tool": 14,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 13177,
+    "line": 13205,
     "tool": 1,
     "frame": 2,
     "gap_mm": 0.242
    },
    {
-    "line": 6564,
+    "line": 6565,
     "tool": 5,
     "frame": 1,
     "gap_mm": 0.911
    }
   ],
-  "hint": "failed: passes reach the area (line 88566, T14) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 88269, T14) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 25
  },
  {
@@ -1277,31 +1277,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 108851,
+    "line": 109094,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 108784,
+    "line": 109027,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 108697,
+    "line": 108940,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 108783,
+    "line": 109026,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 108851, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 109094, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 26
  },
  {
@@ -1327,31 +1327,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 108340,
+    "line": 108583,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 108341,
+    "line": 108584,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 108351,
+    "line": 108594,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    },
    {
-    "line": 108342,
+    "line": 108585,
     "tool": 14,
     "frame": 7,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 108340, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short; underside: finish it before the tabs, from the side (flank of a horizontal tool tangent to the face) or with a tilted setup",
+  "hint": "failed: passes reach the area (line 108583, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short; underside: finish it before the tabs, from the side (flank of a horizontal tool tangent to the face) or with a tilted setup",
   "id": 27
  },
  {
@@ -1377,31 +1377,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 80120,
+    "line": 79819,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80144,
+    "line": 79843,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80209,
+    "line": 79908,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80231,
+    "line": 79930,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 80120, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 79819, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 28
  },
  {
@@ -1427,31 +1427,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 80120,
+    "line": 79819,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80144,
+    "line": 79843,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80209,
+    "line": 79908,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80231,
+    "line": 79930,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 80120, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 79819, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 29
  },
  {
@@ -1477,31 +1477,31 @@
   ],
   "nearest_passes": [
    {
-    "line": 80120,
+    "line": 79819,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80144,
+    "line": 79843,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80209,
+    "line": 79908,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    },
    {
-    "line": 80231,
+    "line": 79930,
     "tool": 6,
     "frame": 3,
     "gap_mm": 0.0
    }
   ],
-  "hint": "failed: passes reach the area (line 80120, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "hint": "failed: passes reach the area (line 79819, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 30
  }
 ]

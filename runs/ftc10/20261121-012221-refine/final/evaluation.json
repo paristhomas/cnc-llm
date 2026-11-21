@@ -1,5 +1,5 @@
 {
- "iteration": 7,
+ "iteration": 9,
  "metrics": {
   "whole_surface_in_tol_pct": 99.866,
   "whole_surface_gouge_pct": 0.0,
@@ -20,12 +20,12 @@
   "tab_total_mm2": 22.88,
   "tab_max_width_mm": 2.6,
   "partoff_ok": true,
-  "cycle_time_min": 90.8,
+  "cycle_time_min": 116.02,
   "setups": 8,
   "distinct_orientations": 5,
   "final_connection_mm2": 22.5,
   "errors": 0,
-  "warnings": 0,
+  "warnings": 4,
   "valid": true
  },
  "integrity": {
@@ -80,13 +80,17 @@
   "generator_scan": {
    "files": [
     "gcode.py",
+    "gcode_prereview.py",
     "gen.py",
+    "gen_prereview.py",
     "geom.py",
     "mesh.py",
     "ops.py",
+    "ops_prereview.py",
     "patch3.py",
     "patch4.py",
     "patch_plan.py",
+    "patch_pr1.py",
     "plotmoves.py",
     "shadow.py",
     "stock.py",
@@ -97,8 +101,8 @@
    "forbidden_imports": [],
    "ok": true
   },
-  "repo": "/tmp/cncllm-frozen-QciUEP",
-  "frozen_checkout_commit": "3ccb1113d464c8a085eaf0e2539670e524de1db9"
+  "repo": "/tmp/cncllm-frozen-o4LE9K",
+  "frozen_checkout_commit": "3ccb111"
  },
  "crosscheck_millbill": {
   "points": 250000,

@@ -90,9 +90,9 @@ def cone_rings(c, T, cx, cy, w_top, r_top, r_min, dr, down=1):
         pr = rc - R
         P.G1(cx + max(pr, 0), cy, z, F=F / 2)
         if pr > 0.02:
-            P.helix(cx, cy, pr, z, F)
+            P.helix(cx, cy, pr, z, F * pr / (pr + R))
         rc -= dr
-    P.G1(cx, cy, P.pos[2], F=F)
+    P.G1(cx, cy, P.pos[2], F=F / 2)
     P.G0(z=w_top + 1.0)
 
 
@@ -122,11 +122,13 @@ KEEP_LOW = box(-500, -500, 500, 16.5)   # bottom-end bulk kept until the part-of
 P.c('SETUP 1: TOP (A0) - top of the part: face, body top face, axial holes')
 c = ctx('TOP', 165.0)
 P.set_frame(FR['TOP'], 165.0)
+TOOLS[1]['rpm'] = 15000   # post-review: 750 Hz tooth passing, F = 0.06 x 3 x 15000 = 2700
 tool(c, 1)
-P.c('T1 rough above the body top face, around the top ears plate')
+P.c('T1 rough above the body top face, around the top ears plate (S15000 F2700: off the stock bending mode)')
 dom = box(-25, -47, 25, 47)
 rough(c, 1, [156.5, 153.5, 150.5, 147.5, 144.5, 141.8], 0.3, 6.0, dom, top=159.5, name='TOP')
 tool(c, 5)
+TOOLS[1]['rpm'] = 18000
 P.c('T5 finish body top face Z141.5')
 area_clear(c, 5, 141.5, floor_region(c.sh, 141.5), domain=dom, name='TOP')
 tool(c, 10)
@@ -135,8 +137,10 @@ peck_drill(c, 10, -2.5, -23.5, 141.5, 119.5, peck=3.0, name='TOP')
 peck_drill(c, 10, 0.5, 25.0, 141.5, 119.5, peck=3.0, name='TOP')
 tool(c, 11)
 P.c('T11 long-neck helical finish of the 5.5 mm axial holes')
-helix_hole(c, 11, -2.5, -23.5, 0.75, 141.5, 114.0, 0.4, name='TOP')
-helix_hole(c, 11, 0.5, 25.0, 0.75, 141.5, 106.5, 0.4, name='TOP')
+helix_hole(c, 11, -2.5, -23.5, 0.75, 141.5, 119.8, 0.6, name='TOP pre-drilled part', final_circle=False)
+helix_hole(c, 11, -2.5, -23.5, 0.75, 119.8, 114.0, 0.2, name='TOP')
+helix_hole(c, 11, 0.5, 25.0, 0.75, 141.5, 119.8, 0.6, name='TOP pre-drilled part', final_circle=False)
+helix_hole(c, 11, 0.5, 25.0, 0.75, 119.8, 106.5, 0.2, name='TOP')
 P.c('T11 drill-point cones: outer ring traced by the flat end corner')
 cone_rings(c, 11, -2.5, -23.5, 114.0, 2.75, 2.0, 0.15)
 cone_rings(c, 11, 0.5, 25.0, 106.5, 2.75, 2.0, 0.15)
@@ -184,7 +188,7 @@ tool(c, 13)
 P.c('T13 small holes in the pocket floor (into the cross holes)')
 for fx in (15.5, -15.5):
     for fy in (27, 49, 71, 93):
-        helix_hole(c, 13, fx, fy, 0.25, -1.5, -5.0, 0.1, name='PX ceiling hole')
+        helix_hole(c, 13, fx, fy, 0.25, -1.5, -5.0, 0.2, name='PX ceiling hole')
 c.retract()
 
 # =====================================================================================
@@ -228,7 +232,7 @@ tool(c, 4)
 P.c('T4 2.46 mm holes in pads')
 for fx, fys in ((-30.0, (110.9, 121.9, 132.9)), (-20.0, (114.1, 125.1, 136.1))):
     for fy in fys:
-        helix_hole(c, 4, fx, fy, 0.48, 11.5, -0.5, 0.15, name='MX small hole')
+        helix_hole(c, 4, fx, fy, 0.48, 11.5, -0.5, 0.25, name='MX small hole')
         cone_rings(c, 4, fx, fy, -0.5, 1.2295, 0.75, 0.1)
 tool(c, 13)
 P.c('T13 R1 ball: base fillets where the bull nose cannot reach')
@@ -292,7 +296,7 @@ for fname, side in (('MY', -1), ('PY', 1)):
     tool(c, 12)
     P.c('T12 long-reach helical finish of the 7 mm cross holes')
     for fy in (27.0, 49.0, 71.0, 93.0):
-        helix_hole(c, 12, hx, fy, 0.5, 27.5, -0.5, 1.0, name=fname + ' hole')
+        helix_hole(c, 12, hx, fy, 0.5, 27.5, -0.5, 0.3, name=fname + ' hole')
     tool(c, 7)
     P.c('T7 edge rounds wave / side face and body top edge')
     H = hm(fname)
@@ -329,10 +333,6 @@ contour(c, 5, -7.5, domain=box(-47, 4.0, 47, 24), only=box(-38, 12, 38, 24), nam
 tool(c, 2)
 for fx in (28.5, -28.5):
     helix_hole(c, 2, fx, 9.0, 2.0, -7.5, -9.5, 0.5, name='PO2 cbore')
-tool(c, 1)
-P.c('PO-2 slab pass from -X under the part (tool centre Z-5, flank tangent to Z0)')
-for w in (12.0, 5.5, -1.0, -7.5, -(TAB_X0)):
-    slab_pass(c, w, -47.0, 47.0)
 tool(c, 7)
 H = hm('MX')
 raster(c, 7, H, box(-41, 14.5, 41, 23.0), direction='x', step=0.3, zmin=-7.0, name='PO2 bottom edge')
@@ -343,6 +343,10 @@ band = unary_union([q.exterior.buffer(1.9) for q in ol]).intersection(box(-41, -
 tool(c, 13)
 for w in (11.0, 10.2, 9.5, 8.9, 8.4, 8.0, 7.7, 7.5):
     contour(c, 13, w, domain=box(-47, 4.0, 47, 30), only=box(-38, 14.0, 38, 21.5), name='PO2 crest junction')
+tool(c, 1)
+P.c('PO-2 slab pass from -X under the part (tool centre Z-5, flank tangent to Z0)')
+for w in (12.0, 5.5, -1.0, -7.5, -(TAB_X0)):
+    slab_pass(c, w, -47.0, 47.0)
 tool(c, 14)
 paths = raster(c, 14, H, band.envelope.intersection(box(-41, -1.0, 41, 16.4)), direction='x', step=0.3, zmin=-9.3, name='PO2 outline rounds', target=band)
 c.retract()
@@ -371,7 +375,16 @@ wfin = TAB_X0 - 0.5
 xin = TAB_Y - TAB_HL - 5.0; xout = TAB_Y + TAB_HL + 5.0
 for a, b in ((-47.0, -xout), (47.0, xout)):
     slab_pass(c, wfin, a, b, Ff=0.4)
-slab_pass(c, wfin, -xin, xin, Ff=0.4, start_z=TAB_X1 + 1.0)
+P.c('PO-3 middle web segment: ramp in along Y (no plunge), then clean the ramp back at depth')
+c.link(np.array([-xin, -5.0]), 25.0, 5.0)
+P.G0(z=TAB_X1 + 1.0)
+P.G1(z=TAB_X1 + 0.3, F=feed(1) / 3)
+L_r = (TAB_X1 + 0.3 - wfin) / np.tan(np.radians(5.0))
+P.G1(x=-xin + L_r, y=-5.0, z=wfin, F=feed(1) * 0.35)
+P.G1(x=xin, y=-5.0, z=wfin, F=feed(1) * 0.4)
+P.G1(x=-xin, y=-5.0, z=wfin, F=feed(1) * 0.4)
+P.G0(z=25.0)
+c.remove_swept([np.array([[-xin, -5.0], [xin, -5.0]])], 5.0, wfin)
 P.end()
 
 open(RUN + 'work/program.nc', 'w').write(P.text())

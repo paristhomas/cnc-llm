@@ -1,6 +1,6 @@
-[sim5] 245021 moves, 8 segments; replay 14.9s, metric 75.9s; whole surface in tol 99.866% (tab witness 0.23%), errors 0
+[sim5] 262356 moves, 8 segments; replay 15.0s, metric 79.3s; whole surface in tol 99.866% (tab witness 0.23%), errors 0
 {
- "iteration": 7,
+ "iteration": 9,
  "metrics": {
   "whole_surface_in_tol_pct": 99.866,
   "whole_surface_gouge_pct": 0.0,
@@ -21,12 +21,12 @@
   "tab_total_mm2": 22.88,
   "tab_max_width_mm": 2.6,
   "partoff_ok": true,
-  "cycle_time_min": 90.8,
+  "cycle_time_min": 116.02,
   "setups": 8,
   "distinct_orientations": 5,
   "final_connection_mm2": 22.5,
   "errors": 0,
-  "warnings": 0,
+  "warnings": 4,
   "valid": true
  }
 }

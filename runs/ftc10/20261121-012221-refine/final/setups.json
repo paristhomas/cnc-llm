@@ -4,8 +4,8 @@
    "segment": 1,
    "frame": 1,
    "first_line": 12,
-   "last_line": 6966,
-   "moves": 21340,
+   "last_line": 6994,
+   "moves": 22572,
    "tools": [
     1,
     5,
@@ -34,9 +34,9 @@
   {
    "segment": 2,
    "frame": 2,
-   "first_line": 6973,
-   "last_line": 27129,
-   "moves": 40594,
+   "first_line": 7001,
+   "last_line": 27019,
+   "moves": 33400,
    "tools": [
     1,
     2,
@@ -67,9 +67,9 @@
   {
    "segment": 3,
    "frame": 3,
-   "first_line": 27136,
-   "last_line": 90744,
-   "moves": 111778,
+   "first_line": 27026,
+   "last_line": 90448,
+   "moves": 98128,
    "tools": [
     1,
     2,
@@ -103,9 +103,9 @@
   {
    "segment": 4,
    "frame": 4,
-   "first_line": 90751,
-   "last_line": 96631,
-   "moves": 20979,
+   "first_line": 90455,
+   "last_line": 96601,
+   "moves": 39445,
    "tools": [
     1,
     2,
@@ -136,9 +136,9 @@
   {
    "segment": 5,
    "frame": 5,
-   "first_line": 96638,
-   "last_line": 99970,
-   "moves": 18433,
+   "first_line": 96608,
+   "last_line": 100205,
+   "moves": 36898,
    "tools": [
     1,
     2,
@@ -168,9 +168,9 @@
   {
    "segment": 6,
    "frame": 6,
-   "first_line": 99976,
-   "last_line": 100128,
-   "moves": 5714,
+   "first_line": 100211,
+   "last_line": 100365,
+   "moves": 5716,
    "tools": [
     1,
     3
@@ -197,9 +197,9 @@
   {
    "segment": 7,
    "frame": 7,
-   "first_line": 100134,
-   "last_line": 111189,
-   "moves": 12712,
+   "first_line": 100371,
+   "last_line": 111433,
+   "moves": 12719,
    "tools": [
     1,
     2,
@@ -230,9 +230,9 @@
   {
    "segment": 8,
    "frame": 8,
-   "first_line": 111195,
-   "last_line": 124680,
-   "moves": 13471,
+   "first_line": 111439,
+   "last_line": 124932,
+   "moves": 13478,
    "tools": [
     1,
     2,
@@ -261,11 +261,11 @@
  ],
  "rigidity": {
   "stock_section_mm2": 2997.0,
-  "part_off_line": 99966,
+  "part_off_line": 100200,
   "checks": [
    {
     "after_segment": 1,
-    "line": 6966,
+    "line": 6994,
     "area_mm2": 2997.0,
     "weakest_z": -23.7,
     "fraction": 1.0,
@@ -276,7 +276,7 @@
    },
    {
     "after_segment": 2,
-    "line": 27129,
+    "line": 27019,
     "area_mm2": 2997.0,
     "weakest_z": -23.7,
     "fraction": 1.0,
@@ -287,7 +287,7 @@
    },
    {
     "after_segment": 3,
-    "line": 90744,
+    "line": 90448,
     "area_mm2": 2997.0,
     "weakest_z": -23.7,
     "fraction": 1.0,
@@ -298,7 +298,7 @@
    },
    {
     "after_segment": 4,
-    "line": 96631,
+    "line": 96601,
     "area_mm2": 2997.0,
     "weakest_z": -23.7,
     "fraction": 1.0,
@@ -309,7 +309,7 @@
    },
    {
     "after_segment": 5,
-    "line": 99970,
+    "line": 100205,
     "area_mm2": 2997.0,
     "weakest_z": -23.7,
     "fraction": 1.0,
@@ -320,7 +320,7 @@
    },
    {
     "after_segment": 6,
-    "line": 100128,
+    "line": 100365,
     "area_mm2": 2997.0,
     "weakest_z": -23.7,
     "fraction": 1.0,
@@ -331,7 +331,7 @@
    },
    {
     "after_segment": 7,
-    "line": 111189,
+    "line": 111433,
     "area_mm2": 627.75,
     "weakest_z": -7.97,
     "fraction": 0.2095,
@@ -342,7 +342,7 @@
    },
    {
     "after_segment": 8,
-    "line": 124680,
+    "line": 124932,
     "area_mm2": 22.5,
     "weakest_z": -4.03,
     "fraction": 0.0075,

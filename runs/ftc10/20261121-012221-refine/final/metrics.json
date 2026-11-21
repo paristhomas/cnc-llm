@@ -18,11 +18,11 @@
  "tab_total_mm2": 22.88,
  "tab_max_width_mm": 2.6,
  "partoff_ok": true,
- "cycle_time_min": 90.8,
+ "cycle_time_min": 116.02,
  "setups": 8,
  "distinct_orientations": 5,
  "final_connection_mm2": 22.5,
  "errors": 0,
- "warnings": 0,
+ "warnings": 4,
  "valid": true
 }

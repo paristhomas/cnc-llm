@@ -317,12 +317,13 @@ def area_clear(ctx, T, w, region, allow=0.0, domain=None, keepout=None, stepover
 
 def helix_hole(ctx, T, cx, cy, r_path, w_top, w_bot, pitch, Ffac=1.0, name='', start_above=1.0, final_circle=True):
     tool = TOOLS[T]; R = tool['D'] / 2.0
-    F = feed(T, Ffac)
+    F_edge = feed(T, Ffac)
+    F = F_edge * r_path / (r_path + R) if r_path >= 0.05 else F_edge
     p = ctx.p
     ctx.link(np.array([cx + r_path, cy]), w_top + start_above, R)
-    p.G1(cx + r_path, cy, w_top + 0.2, F=F / 2)
+    p.G1(cx + r_path, cy, w_top + 0.2, F=F_edge / 3)
     if r_path < 0.05:
-        p.G1(z=w_bot, F=F / 3)
+        p.G1(z=w_bot, F=F_edge / 3)
     else:
         z = w_top + 0.2
         while z > w_bot + 1e-6:

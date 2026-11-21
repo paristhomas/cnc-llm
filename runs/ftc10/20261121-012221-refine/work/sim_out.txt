@@ -1,4 +1,4 @@
-[sim5] 245021 moves, 8 segments; replay 14.7s, metric 76.0s; whole surface in tol 99.866% (tab witness 0.23%), errors 0
-iteration 8: score 99.866% of the whole surface in tolerance, gouge 0.00%, proud 0.13%, tab witness 0.23%, valid=True (0 errors), 8 setups, cycle 90.8 min
-feedback: runs/ftc10/20261121-012221-refine/iter_08/feedback.md
+[sim5] 262356 moves, 8 segments; replay 15.1s, metric 79.6s; whole surface in tol 99.866% (tab witness 0.23%), errors 0
+iteration 9: score 99.866% of the whole surface in tolerance, gouge 0.00%, proud 0.13%, tab witness 0.23%, valid=True (0 errors), 8 setups, cycle 116.0 min
+feedback: runs/ftc10/20261121-012221-refine/iter_09/feedback.md
 EXIT 0

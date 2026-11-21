@@ -1,3 +1,5 @@
-Iteration 8: same program as iteration 7 (byte-identical), re-simulated only to publish corrected notes.
-Correction to note 7: the inner drill-point cones are not left because no 118-degree tool exists (T10 is one); at that depth T10's 32 mm holder would hit the top ears, and the flat end mills can only trace the outer ring of each cone.
-Operator: the part hangs on two 2.6 x 4.4 mm tabs (Z-10..0) under the tips of the two bottom ear lobes at G54 Y=+-28.5. Hold the part and rock it about the line through both tabs (Y axis), pushing the top towards +X (the pocket face) to break; both tabs bend across their 2.6 mm thickness. File the two pads on the lobe tips flush.
+POST-REVIEW REVISION 1 (addresses the machinist review, docs/reviews/machinist_review_ftc10_refine.md):
+explicit G0 retract along the tool axis before every index, to a frame Z beyond the sweep radius of the whole stock (frame Z 170.6; TOP frame Z151.4 = G54 Z171.4), and to the frame safe height before every M5/T M6.
+Helical holes and cone rings: feed programmed at the tool centre so the peripheral feed at the wall equals chip load x flutes x rpm (T2 1152, T3 480 (6 mm holes), T4 187, T11 157, T12 206); T11 pitch 0.2 below the pre-drill, T12 pitch 0.3.
+T1 top roughing at S15000 F2700 (750 Hz tooth passing, off the ~900 Hz stock bending mode). Ramp into the web instead of the plunge.
+T7/T13 bottom finishing moved ahead of the -X part-off slab; only T14 (goes below Z0), the +X work, slab and web cut follow it.

@@ -51,10 +51,23 @@ class Prog:
     def zs(self):
         return getattr(self.frame, 'zshift', 0.0) if self.frame is not None else 0.0
 
+    def index_clear(self, f):
+        """Frame Z (geometric) beyond the sweep radius of the whole stock box about the frame origin, + 5 mm."""
+        import itertools, json
+        st = json.load(open('/home/paris/cnc-llm/runs/ftc10/20261121-012221-refine/brief/setup.json'))['stock']
+        O = f.O + np.array([0, 0, getattr(f, 'zshift', 0.0)])
+        r = max(np.linalg.norm(np.array(c) - O) for c in itertools.product(*zip(st['lo'], st['hi'])))
+        # TOP frame: the tool axis is +Z, the stock top is the binding limit as well
+        return r + 5.0 + getattr(f, 'zshift', 0.0)
+
     def set_frame(self, f, safe):
         if self.frame is not None and self.frame.name == f.name:
             self.safe = safe
             return
+        if self.frame is not None and self.pos is not None:
+            zc = self.index_clear(self.frame)
+            if self.pos[2] < zc - 1e-6:
+                self.G0(z=zc)
         if self.spin:
             self.L.append('M5'); self.spin = False
         if self.frame is not None and (self.frame.tilted or getattr(self.frame, 'zshift', 0.0)):
@@ -76,6 +89,8 @@ class Prog:
             if not self.spin:
                 self.L.append('S%d M3' % TOOLS[T]['rpm']); self.spin = True
             return
+        if self.pos is not None and self.frame is not None and self.pos[2] < self.safe - 1e-6:
+            self.G0(z=self.safe)
         if self.spin:
             self.L.append('M5'); self.spin = False
         self.L.append('T%d M6' % T)
@@ -153,6 +168,10 @@ class Prog:
         self.pos = q
 
     def end(self):
+        if self.pos is not None and self.frame is not None:
+            zc = self.index_clear(self.frame)
+            if self.pos[2] < zc:
+                self.G0(z=zc)
         if self.spin:
             self.L.append('M5')
         if self.frame is not None and (self.frame.tilted or getattr(self.frame, 'zshift', 0.0)):
