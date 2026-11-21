@@ -317,3 +317,9 @@ main section.sim-top { padding-top: 14px; }
 .tb-lbl { overflow-wrap: anywhere; }
 .vp-cta { white-space: nowrap; }
 @media (max-width: 560px) { .tb-score { flex: 1 1 100%; } .tb-lbl { max-width: none; } }
+/* the hero picture and score card now live inside the result row / details grid, not the old header grid */
+.x5 .result-row .hero-img, .x5 .details-grid .hero-score { grid-area: auto; }
+.result-row { grid-template-columns: minmax(0, 1fr) minmax(200px, 280px); }
+.result-row .hero-img { order: 2; align-self: start; }
+.result-row .hero-img img { max-height: 420px; }
+@media (max-width: 820px) { .result-row { grid-template-columns: minmax(0, 1fr); } .result-row .hero-img { order: 0; } }

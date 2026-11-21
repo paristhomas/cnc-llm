@@ -153,8 +153,8 @@ export class ResultView5 {
     if (this.markerLayer) this.markerLayer.style.display = m === 'dev' ? '' : 'none';
     const rl = this.bar.querySelector('.ra-legend'); if (rl) rl.hidden = m !== 'ra';
     this.bar.querySelectorAll('[data-mode]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === m)));
-    this.bar.querySelector('.ovl-label').textContent = m === 'dev' ? 'machined part overlay' : 'target part overlay';
-    this.bar.querySelector('.ovl-sw').style.background = m === 'dev' ? '#9aa3ad' : '#2f8cff';
+    this.bar.querySelector('.ovl-label').textContent = m === 'mach' ? 'target part overlay' : 'machined part overlay';
+    this.bar.querySelector('.ovl-sw').style.background = m === 'mach' ? '#2f8cff' : '#9aa3ad';
     this.bar.querySelector('.dev-legend').hidden = m !== 'dev';
     this.bar.querySelector('.mach-legend').hidden = m !== 'mach';
     this.applyOverlay();

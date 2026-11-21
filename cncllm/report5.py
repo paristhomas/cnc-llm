@@ -572,7 +572,7 @@ def _roughness_block(res_dir, out) -> str:
     img = (f'<a class="rough-img" href="img/roughness_views.png" target="_blank"><img src="img/roughness_views.png" alt="Estimated surface roughness Ra, flat views" loading="lazy"></a>'
            if (out / "img" / "roughness_views.png").exists() else "")
     return (f'<div class="rough"><h3>Surface roughness (Ra, estimated)</h3>'
-            f'<p class="small">{" · ".join(stats) if stats else "Per-area estimate from the tool paths."} '
+            f'<p class="small">{(" · ".join(stats) + ".") if stats else "Per-area estimate from the tool paths."} '
             f'Switch the 3D view above to <b>Roughness (Ra)</b> to see where.</p>'
             f'<p class="muted small">{_esc(cav)}</p>{img}'
             f'<p class="small rough-links">{" · ".join(links)}</p></div>')
