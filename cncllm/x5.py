@@ -650,11 +650,18 @@ def verify_part(run: Path, meta: dict) -> list[str]:
     must equal the part regenerated from the tracked, unmodified source STEP with the recorded fixture."""
     import tempfile
     out = []
-    src = Path(meta.get("source_step", ""))
-    try:
-        rel = src.resolve().relative_to(REPO.resolve())
-    except ValueError:
-        return [f"source STEP {src} is not inside the repository"]
+    src_in = Path(meta.get("source_step", ""))
+    # the same tracked file inside THIS checkout (the frozen commit's copy): the longest path suffix that exists here
+    rel = None
+    parts_ = src_in.parts
+    for k in range(1, len(parts_)):
+        cand = Path(*parts_[k:])
+        if (REPO / cand).is_file():
+            rel = cand
+            break
+    if rel is None:
+        return [f"source STEP {src_in} is not inside the repository"]
+    src = REPO / rel
     tracked = subprocess.run(["git", "-C", str(REPO), "ls-files", "--error-unmatch", str(rel)], capture_output=True)
     dirty = subprocess.run(["git", "-C", str(REPO), "status", "--porcelain", "--", str(rel)], capture_output=True,
                            text=True).stdout.strip()
