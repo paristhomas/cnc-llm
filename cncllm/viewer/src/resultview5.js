@@ -176,7 +176,7 @@ export class ResultView5 {
           <span><i class="sw" style="background:${DEV5.ok}"></i>in tolerance (±${t} mm)</span>
           <span><i class="sw" style="background:linear-gradient(90deg, ${DEV5.proudLo}, ${DEV5.proudHi})"></i>proud: failed, material left</span>
           <span><i class="sw" style="background:${DEV5.gouge}"></i>gouge: failed, cut too deep</span>
-          <span><i class="sw" style="background:${DEV5.witness}"></i>tab witness: where a part-off tab joins the part${this.hasCls ? (this.nWit ? '' : ' (none on this part)') : ' (not measured in this run)'}</span>
+          <span><i class="sw" style="background:${DEV5.witness}"></i>tab witness: where a part-off tab joins the part${this.hasCls ? (this.nWit ? '' : ' (none on this part)') : ' (not drawn here: this 3D data was exported before the witness was measured)'}</span>
         </div>
       </div>
       <div class="cbar mach-legend" hidden>

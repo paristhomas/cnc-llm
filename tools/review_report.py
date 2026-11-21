@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 import sys
 import time
@@ -34,7 +35,7 @@ def grep_report(root: Path) -> dict:
     for f in sorted(root.rglob("*")):
         if not f.is_file() or f.suffix.lower() not in TEXT_EXT or f.stat().st_size > 60_000_000:
             continue
-        if f.suffix == ".nc" or f.name in ("viewer5.js",):   # G-code and the minified bundle (no prose)
+        if f.suffix == ".nc":   # G-code
             continue
         try:
             text = f.read_text(errors="replace")
@@ -115,7 +116,60 @@ def shoot(el, path, pg=None):
     return path.name
 
 
-def render(p, url, outdir: Path, vp, scheme, swings, full):
+def frame_angles(R):
+    """Python twin of cncllm.sim5.frame_angles (kept here so the script runs without the package)."""
+    d = [R[0][2], R[1][2], R[2][2]]
+    A = math.degrees(math.acos(max(-1.0, min(1.0, d[2]))))
+    C = math.degrees(math.atan2(d[1], d[0])) if abs(d[2]) < 0.9999 else 0.0
+    return A, C
+
+
+def dro_angles(pg):
+    """For every setup: the A / C the page's readout shows while cutting, against frame_angles of the setup's frame."""
+    out = []
+    n = pg.evaluate("() => window.CNCViewer.sim.N")
+    for i in range(n):
+        R = pg.evaluate(f"() => window.CNCViewer.sim.segs[{i}].R")
+        pg.evaluate(f"() => {{ const v = window.CNCViewer.sim; v.setCursor(Math.min(v.segs[{i}].firstCut + 0.5, v.n)); v.uiT = 0; }}")
+        wait_rendered(pg, frames=1)
+        txt = pg.evaluate("() => ({A: document.querySelector('.dro-v[data-ax=A]').textContent, C: document.querySelector('.dro-v[data-ax=C]').textContent})")
+        A, C = frame_angles(R)
+        a, c = float(txt["A"]), float(txt["C"])
+        dc = (c - C + 180) % 360 - 180
+        out.append({"segment": i + 1, "dro_A": a, "dro_C": c, "A": round(A, 4), "C": round(C, 4),
+                    "ok": abs(a - A) <= 0.0006 and abs(dc) <= 0.0006})
+    return {"all_ok": all(x["ok"] for x in out), "setups": out}
+
+
+def playback_probe(pg, seg):
+    """Real playback through the re-orientation into setup `seg`: start 1 s (wall) before it at the default speed and
+    sample the pose every animation frame for up to 90 s."""
+    return pg.evaluate("""(seg) => new Promise((resolve) => {
+      const v = window.CNCViewer.sim, a = v.segs[seg].a, c = window.CNCViewer.data.cum;
+      v.setCursor(v.timeToCursor(Math.max(0, c[a] - v.speed * 1.0)));
+      v.playing = true; v.lastT = performance.now(); v.syncPlay();
+      const t0 = performance.now(), S = [];
+      const tick = () => {
+        const mp = v.mp;
+        S.push({t: performance.now() - t0, phase: mp ? mp.phase : null, A: mp ? mp.dispA : null, C: mp ? mp.dispC : null, cursor: v.cursor});
+        const past = v.cursor > a + 1;
+        if ((past && S.length > 3) || performance.now() - t0 > 90000) {
+          v.playing = false; v.syncPlay();
+          const sw = S.filter((x) => x.phase && x.phase !== 'cut');
+          const wall = sw.length ? sw[sw.length - 1].t - sw[0].t : 0;
+          const As = sw.map((x) => x.A), Cs = sw.map((x) => x.C);
+          resolve({ segment: seg + 1, speed: v.speed, frames: S.length, swing_frames: sw.length, swing_wall_s: wall / 1000,
+            phases: [...new Set(sw.map((x) => x.phase))], A_range: [Math.min(...As), Math.max(...As)], C_range: [Math.min(...Cs), Math.max(...Cs)],
+            passed_swing: past, ok: past && wall >= 1500 && (Math.max(...As) - Math.min(...As) > 1e-3 || Math.max(...Cs) - Math.min(...Cs) > 1e-3) });
+          return;
+        }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    })""", seg)
+
+
+def render(p, url, outdir: Path, vp, scheme, swings, full, checks=False):
     w, h = vp
     tag = f"{w}x{h}_{scheme}"
     res = {"viewport": tag, "shots": [], "console_errors": [], "console_warnings": []}
@@ -176,6 +230,10 @@ def render(p, url, outdir: Path, vp, scheme, swings, full):
         wait_rendered(pg)
         res["shots"].append(shoot(sim, outdir / f"{tag}_part_cut{k + 1}.png", pg))
     pg.evaluate("() => window.__viewer.setMode('machine')")
+    if checks:
+        res["dro_vs_frame_angles"] = dro_angles(pg)
+        if targets:
+            res["playback_swing"] = playback_probe(pg, targets[0])
     # scrubber: real mouse clicks at several fractions of the timeline track
     tl = pg.query_selector("#simcontrols .tl")
     clicks = []
@@ -223,7 +281,7 @@ def main(argv=None):
     with sync_playwright() as p:
         for i, (vp, scheme) in enumerate(renders):
             r = render(p, index.as_uri(), out, vp, scheme, a.swings if vp[0] > 800 or i == len(renders) - 1 else 1,
-                       full=(i == 0))
+                       full=(i == 0 or vp[0] < 800 and scheme == "light" or len(renders) == 2 and i == 1), checks=(i == 0))
             summary["renders"].append(r)
             print(f"{r['viewport']}: ready {r.get('time_to_ready_s')} s, first frame {r.get('time_to_first_frame_s')} s, "
                   f"{len(r['console_errors'])} console errors, scrollWidth {r.get('scrollWidth')}", flush=True)
@@ -235,6 +293,8 @@ def main(argv=None):
         "console_errors": sum(len(r["console_errors"]) for r in summary["renders"]),
         "phone_no_hscroll": all(r.get("scrollWidth", 0) <= int(r["viewport"].split("x")[0]) for r in summary["renders"]),
         "scrubber_clicks_ok": all(c["ok"] for r in summary["renders"] for c in r.get("scrubber_clicks", [])),
+        "dro_angles_match_frame_angles": all(r["dro_vs_frame_angles"]["all_ok"] for r in summary["renders"] if "dro_vs_frame_angles" in r),
+        "playback_swing_ok": all(r["playback_swing"]["ok"] for r in summary["renders"] if "playback_swing" in r),
         "forbidden_words": len(summary["grep"]["forbidden_hits"]), "model_ids": len(summary["grep"]["model_id_hits"]),
     }
     (out / "summary.json").write_text(json.dumps(summary, indent=1))

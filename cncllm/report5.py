@@ -639,7 +639,8 @@ def build(run_dir, source: str | None = None) -> Path:
         b64 = base64.b64encode((vd / "data.bin.gz").read_bytes()).decode("ascii")
         extra = {"regions": regs, "issues": [{k: v for k, v in i.items() if k != "lines"} | {"lines": i.get("lines", [])[:30]}
                                               for i in issues[:200]],
-                 "part": meta.get("part"), "tolerance": m.get("tolerance_mm", TOL_DEFAULT), "score": ws}
+                 "part": meta.get("part"), "tolerance": m.get("tolerance_mm", TOL_DEFAULT),
+                 "score": {k: ws.get(k) for k in ("whole_surface_in_tol_pct", "whole_surface_proud_pct", "whole_surface_gouge_pct")}}
         with open(out / "assets" / "data.js", "w") as fh:
             fh.write("window.CNCLLM_DATA={meta:")
             fh.write(json.dumps(vmeta | extra))
@@ -846,7 +847,9 @@ def build(run_dir, source: str | None = None) -> Path:
                       f'{m.get("cycle_time_min", 0):.0f} min); the part-off at the end leaves '
                       + (f'{len(tabs)} tab{"s" if len(tabs) != 1 else ""} ({(po or {}).get("total_mm2", 0):g} mm²)' if po is not None
                          else f'{conn[-1]["area_mm2"]:g} mm² of connection' if conn else 'the part on tabs')
-                      + ' for the operator to break off and file flush.')
+                      + (' for the operator to break off and file flush.' if not po_bad and po is not None else
+                         ', but the part-off fails its checks (see Part-off below).' if po_bad else
+                         '; tab sizes were not measured when this run was simulated.'))
         top = sorted(regs, key=lambda r: -r.get("area_mm2", 0))[:3]
         if top:
             items = []
@@ -992,7 +995,7 @@ def build(run_dir, source: str | None = None) -> Path:
 <section id="partoff">
   <div class="sec-head"><h2>Holding and part-off</h2><p class="sub">The part is machined out of a block held by its bottom in one vise. It must stay connected to the gripped
   stub by at least {100 * RIGID_MIN:.0f}% of the stock section until the <code>(PART-OFF)</code> section{f' (line <button class="gl" data-gline="{rg["part_off_line"]}">{rg["part_off_line"]}</button>)' if rg.get('part_off_line') else ''},
-  which machines the underside and leaves only small tabs that the operator breaks by hand and files flush.</p></div>
+  which must machine the underside and leave only small tabs that the operator can break by hand and file flush.</p></div>
   {_partoff_block(po, rg, m, po_img)}
   <h3 class="sub-h">Rigidity through the program</h3>
   <div class="two rig-two">

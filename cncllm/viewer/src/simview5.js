@@ -453,7 +453,10 @@ export class SimView5 {
       const pa = machineTip([D.FE[o - 3], D.FE[o - 2], D.FE[o - 1]], s0.ang.Ak, s0.ang.Ck, pv);
       const pb = machineTip([D.FS[o], D.FS[o + 1], D.FS[o + 2]], s.ang.Ak, s.ang.Ck, pv);
       const st = swingState(f / p, s0.ang, s.ang, pa, pb, this.mc.dims.zSafe);
-      return { indexing: true, phase: st.phase, A: st.A, C: st.C, tip: st.tip, dispA: st.A, dispC: wrap180(st.C), seg: si, from: this.segOf(m - 1) };
+      // C shown in (-180, 180]; at exactly a half turn use the sign the setups themselves display (no 180 / -180 flip)
+      let dc = wrap180(st.C);
+      if (Math.abs(Math.abs(dc) - 180) < 1e-9) for (const e of [s.ang, s0.ang]) if (Math.abs(Math.abs(e.C) - 180) < 1e-9) { dc = e.C; break; }
+      return { indexing: true, phase: st.phase, A: st.A, C: st.C, tip: st.tip, dispA: st.A, dispC: dc, seg: si, from: this.segOf(m - 1), tableMoves: this.swingMoves(si) };
     }
     const P = new THREE.Vector3(), Q = new THREE.Quaternion();
     this.pose(m, f, P, Q);
@@ -956,7 +959,7 @@ export class SimView5 {
       this.droEl.querySelector('.dot').style.background = td ? this.toolColor(t) : 'transparent';
       this.droEl.querySelector('.dro-tool').textContent = toolTxt;
       this.droEl.querySelector('.dro-line').textContent = `N${showLine}  ${code.trim()}`;
-      const ph = mp.indexing ? { retract: 'retract (Z up)', swing: 'table swings: A and C turn the part', approach: 're-approach' }[mp.phase] : '';
+      const ph = mp.indexing ? { retract: 'retract (Z up)', swing: mp.tableMoves ? 'table swings: A and C turn the part' : 'same table angles, new work plane', approach: 're-approach' }[mp.phase] : '';
       const pe = this.droEl.querySelector('.dro-phase');
       pe.textContent = mp.indexing ? `Re-orienting to setup ${si + 1} · ${ph}` : `Setup ${si + 1}/${this.N} · ${rapid ? 'G0 rapid' : 'F' + Math.round(D.feed[m])} · ${spin && !mp.indexing ? 'S' + Math.round(rpm) : 'spindle off'}`;
       pe.classList.toggle('on', !!mp.indexing);
