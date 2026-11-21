@@ -197,3 +197,7 @@ edge-band issue. Each fix below makes the evaluation stricter; none loosens a ru
 - sha256 `2d1c96e2c70975b1e36abb62d260dd0e68b5b9908a2d63c69095a131b6d4fc8b`, freeze commit `6423e06`. All final evaluations of the refine phase are re-run with
   `CNCLLM_EXPECTED_HARNESS=2d1c96e2c70975b1e36abb62d260dd0e68b5b9908a2d63c69095a131b6d4fc8b tools/frozen_eval.sh <run> 6423e06`. The v1 evaluations (frozen `3ccb111`) are kept in the
   git history.
+- **v2.1 (06:33 UTC).** The v2 part verification rejected every run: it compared the run's absolute source
+  path with the root of the frozen checkout. It now looks up the same tracked file inside the evaluating checkout,
+  which is the frozen commit's copy. The check is unchanged otherwise. Frozen sha256 `f99d775150b78d84ac985e5a024b05bb6414960ecf0f1eedc7f85dd7b5dce6cd`, freeze commit `29abeb2`.
+  The v2 freeze `6423e06` is superseded.
