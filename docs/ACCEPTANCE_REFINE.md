@@ -216,3 +216,4 @@ attack tests (`tests/test_review_v2_attacks.py`) were marked xfail and now pass.
 - **Other changes.**
   - `regions.json` now lists up to 100 regions; it used to stop at 30.
   - `tools/frozen_eval.sh` is executable.
+- **v3 frozen - **v3 frozen 08:24 UTC:** sha256 `63bd0ddc6479d309e2f6091ddf771cadce756f4c3af560610fb38f2ab2e619a0`, freeze commit `4557aec`. It supersedes v2.1 (`29abeb2`).
