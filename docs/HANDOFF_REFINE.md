@@ -135,3 +135,26 @@ being evaluated.
 
 ## Reviews, final round
 _Pending; filled in after the round-3 verification._
+
+## Later on 2026-11-21 (owner requests)
+- **Repository.** Now private. All history was rewritten to author `Paris Thomas <paris@crookedpath.co.uk>` and
+  force-pushed. A backup of the old history is in WSL `~/cnc-llm-before-rewrite.bundle`. Cited commit ids were
+  remapped; for example the frozen v3 commit `4557aec` is now `2a3b37d`.
+- **Report layout.** Each report now opens on the cutting simulation (Machine view), then the result view and a
+  render of the finished part. The text has moved into a Details section.
+- **Surface roughness.** `tools/roughness.py` and `cncllm/roughness.py` compute **kinematic** roughness: profiles traced
+  on the exact simulated surface, with an ISO 16610-21 Gaussian filter. It is validated against known ball-cusp
+  answers to within 4 % (`tests/test_roughness.py`).
+
+  | | FTC-10 | CTC-04 |
+  |---|---|---|
+  | Ra p90 | 2.9 µm | 0.29 µm |
+  | Ra p95 | 3.4 µm | 10.5 µm |
+  | Roughest areas | r8 cylinders cut by the 2 mm ball at 0.65 mm pitch, Ra ≈ 11.5 µm | r1 fillets formed by flat mills stepping 0.13 mm in Z, Ra ≈ 12.5 µm |
+
+  Outputs per run, in `final/`: `roughness_model.glb` (3D model coloured by Ra), `roughness_views.png`,
+  `roughness_summary.json`. The report has a "Roughness (Ra)" view. Vibration, deflection and tool wear are not
+  included, so the numbers are lower bounds.
+- **Website.** `tools/publish_site.sh` builds a static site (62 MB, both reports), pushed to the `gh-pages` branch.
+  GitHub Pages cannot serve it while the repo is private on the current plan. The FTC-10 report is published as the
+  artifact https://claude.ai/artifact/8SUv9o6UWXEH1dwkh3xe2a. The artifact cannot serve the `.glb` model or downloads.
