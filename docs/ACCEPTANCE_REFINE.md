@@ -141,3 +141,15 @@ Record each change with its date, its reason, and whether it tightens or loosens
   - FTC-08 ×0.5: **80.06 %, INVALID.** The part-off left 2,651 mm² of web.
 
   Files: `runs/<part>/<run>/rescore_refine/`.
+
+### 2026-11-21 00:58 UTC: tools adopted and harness frozen (before any LLM run of this phase)
+- **J. Tools T11–T14 adopted** (long-reach necked: 4 mm flat neck 40, 6 mm flat reach 50, 2 mm ball neck 20, 3 mm
+  ball neck 30). Real catalogue families, conservative chip loads. Evidence and reasons are in
+  `docs/FTC10_REACH_AUDIT.md`: they gain 3,258 mm² of FTC-10 surface the library missed. They were chosen from
+  FTC-10 evidence only. CTC-04 was not looked at.
+- **Fingerprint.** `cli.py` added to the hashed harness core (it holds the generator scan). This tightens the check.
+- **Frozen harness:** sha256 `0b28d03c4c1fbdc6822025f0d56a623c323fcd606c7c008b6bb2848223bc8605`, file
+  `harness_frozen.json`, freeze commit `3ccb111`.
+  - Final evaluations re-run from a clean checkout of `3ccb111` with `tools/frozen_eval.sh <run>`.
+  - The skill `skills/cnc-gcode-3plus2/SKILL.md` and the prompts `docs/LLM_AGENT_PROMPT.md` and
+    `docs/reviews/CRITICAL_REVIEWER_PROMPT.md` are frozen at the same commit.
