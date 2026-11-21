@@ -33,15 +33,15 @@
   "ok": true,
   "failures": [],
   "harness": {
-   "sha256": "f99d775150b78d84ac985e5a024b05bb6414960ecf0f1eedc7f85dd7b5dce6cd",
-   "git_head": "29abeb2",
+   "sha256": "63bd0ddc6479d309e2f6091ddf771cadce756f4c3af560610fb38f2ab2e619a0",
+   "git_head": "4557aec",
    "harness_modified": false,
    "modified_files": []
   },
   "frozen": {
-   "sha256": "f99d775150b78d84ac985e5a024b05bb6414960ecf0f1eedc7f85dd7b5dce6cd",
-   "date": "2026-11-21 06:33 UTC",
-   "parent_commit": "69dd922",
+   "sha256": "63bd0ddc6479d309e2f6091ddf771cadce756f4c3af560610fb38f2ab2e619a0",
+   "date": "2026-11-21 08:24 UTC",
+   "parent_commit": "780f8ef",
    "files": [
     "cli.py",
     "crosscheck.py",
@@ -104,8 +104,8 @@
    "forbidden_imports": [],
    "ok": true
   },
-  "repo": "/tmp/cncllm-frozen-Y7wYV4",
-  "frozen_checkout_commit": "29abeb2"
+  "repo": "/tmp/cncllm-frozen-GgvTYr",
+  "frozen_checkout_commit": "4557aec"
  },
  "crosscheck_millbill": {
   "points": 250000,

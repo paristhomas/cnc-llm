@@ -1510,5 +1510,1605 @@
   ],
   "hint": "failed: passes reach the area (line 79935, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
   "id": 30
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   -9.12,
+   -5.78,
+   117.55,
+   -9.11,
+   -5.78,
+   117.85
+  ],
+  "dev_mean": 0.101,
+  "dev_extreme": 0.102,
+  "normal": [
+   -0.27,
+   -0.96,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 79935,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 79959,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80024,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80046,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 79935, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 31
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   -9.06,
+   -5.8,
+   120.29,
+   -9.04,
+   -5.79,
+   121.32
+  ],
+  "dev_mean": 0.103,
+  "dev_extreme": 0.106,
+  "normal": [
+   -0.26,
+   -0.97,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 79935,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 79959,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80024,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80046,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 79935, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 32
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   -9.07,
+   -5.8,
+   129.17,
+   -9.05,
+   -5.79,
+   129.88
+  ],
+  "dev_mean": 0.106,
+  "dev_extreme": 0.109,
+  "normal": [
+   -0.25,
+   -0.97,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 79935,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 79959,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80024,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80046,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 79935, T6) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 33
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   -9.09,
+   -5.79,
+   137.45,
+   -9.06,
+   -5.78,
+   138.25
+  ],
+  "dev_mean": 0.105,
+  "dev_extreme": 0.106,
+  "normal": [
+   -0.26,
+   -0.96,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 79935,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 79959,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80024,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80046,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 79935, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 34
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   -9.07,
+   5.79,
+   110.17,
+   -9.05,
+   5.8,
+   111.22
+  ],
+  "dev_mean": 0.106,
+  "dev_extreme": 0.109,
+  "normal": [
+   -0.26,
+   0.97,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 77542,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77518,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77453,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77407,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 77542, T6) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 35
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   8.39,
+   -25.28,
+   157.12,
+   8.42,
+   -24.63,
+   157.4
+  ],
+  "dev_mean": 0.116,
+  "dev_extreme": 0.116,
+  "normal": [
+   -0.1,
+   0.39,
+   0.92
+  ],
+  "faces": [
+   "face 64 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 90325,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90324,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90323,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90382,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 90325, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 36
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   8.43,
+   -6.01,
+   149.0,
+   8.49,
+   -5.89,
+   149.0
+  ],
+  "dev_mean": 0.117,
+  "dev_extreme": 0.117,
+  "normal": [
+   -0.04,
+   -0.0,
+   1.0
+  ],
+  "faces": [
+   "face 71 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 15594,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15593,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15595,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15592,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 15594, T1) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 37
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   8.37,
+   -2.54,
+   9.0,
+   8.43,
+   -2.51,
+   9.01
+  ],
+  "dev_mean": 0.147,
+  "dev_extreme": 0.154,
+  "normal": [
+   -0.1,
+   -0.0,
+   -1.0
+  ],
+  "faces": [
+   "face 34 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 110583,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110524,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 121366,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 0.077
+   },
+   {
+    "line": 118737,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 3.085
+   }
+  ],
+  "hint": "failed: passes reach the area (line 110583, T14) but leave +0.15 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 38
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   8.35,
+   5.72,
+   9.0,
+   8.4,
+   6.26,
+   9.01
+  ],
+  "dev_mean": 0.144,
+  "dev_extreme": 0.157,
+  "normal": [
+   -0.11,
+   0.0,
+   -0.99
+  ],
+  "faces": [
+   "face 34 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 110583,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110524,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 121366,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 0.078
+   },
+   {
+    "line": 118737,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 3.083
+   }
+  ],
+  "hint": "failed: passes reach the area (line 110583, T14) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 39
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   8.33,
+   15.65,
+   9.0,
+   8.43,
+   16.32,
+   9.01
+  ],
+  "dev_mean": 0.136,
+  "dev_extreme": 0.154,
+  "normal": [
+   -0.11,
+   -0.0,
+   -0.99
+  ],
+  "faces": [
+   "face 34 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 110583,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110524,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 121366,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 0.077
+   },
+   {
+    "line": 121365,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 0.107
+   }
+  ],
+  "hint": "failed: passes reach the area (line 110583, T14) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 40
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   8.44,
+   23.68,
+   156.6,
+   8.45,
+   24.44,
+   157.03
+  ],
+  "dev_mean": 0.157,
+  "dev_extreme": 0.171,
+  "normal": [
+   -0.06,
+   -0.49,
+   0.87
+  ],
+  "faces": [
+   "face 66 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 90089,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90088,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90157,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90158,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 90089, T14) but leave +0.16 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 41
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   8.26,
+   25.71,
+   157.55,
+   8.38,
+   27.15,
+   157.87
+  ],
+  "dev_mean": 0.125,
+  "dev_extreme": 0.132,
+  "normal": [
+   -0.17,
+   -0.23,
+   0.96
+  ],
+  "faces": [
+   "face 66 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 90398,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90397,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90309,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90396,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 90398, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 42
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.39,
+  "bbox": [
+   8.45,
+   30.73,
+   157.28,
+   8.47,
+   32.03,
+   157.72
+  ],
+  "dev_mean": 0.142,
+  "dev_extreme": 0.169,
+  "normal": [
+   -0.05,
+   0.33,
+   0.94
+  ],
+  "faces": [
+   "face 66 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 15767,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15766,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15765,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15768,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 15767, T1) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 43
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   -9.08,
+   -5.79,
+   110.13,
+   -9.08,
+   -5.79,
+   110.13
+  ],
+  "dev_mean": 0.11,
+  "dev_extreme": 0.11,
+  "normal": [
+   -0.26,
+   -0.97,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 79935,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 79959,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80024,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80046,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 79935, T6) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 44
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   -9.11,
+   -5.78,
+   115.61,
+   -9.11,
+   -5.78,
+   115.61
+  ],
+  "dev_mean": 0.102,
+  "dev_extreme": 0.102,
+  "normal": [
+   -0.27,
+   -0.96,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 79935,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 79959,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80024,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80046,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 79935, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 45
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   -9.07,
+   -5.79,
+   134.25,
+   -9.07,
+   -5.79,
+   134.25
+  ],
+  "dev_mean": 0.107,
+  "dev_extreme": 0.107,
+  "normal": [
+   -0.25,
+   -0.97,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 79935,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 79959,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80024,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80046,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 79935, T6) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 46
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   -9.09,
+   5.78,
+   129.26,
+   -9.09,
+   5.78,
+   129.26
+  ],
+  "dev_mean": 0.106,
+  "dev_extreme": 0.106,
+  "normal": [
+   -0.27,
+   0.96,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 77542,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77518,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77453,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77407,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 77542, T6) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 47
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   -9.1,
+   5.78,
+   134.29,
+   -9.1,
+   5.78,
+   134.29
+  ],
+  "dev_mean": 0.104,
+  "dev_extreme": 0.104,
+  "normal": [
+   -0.28,
+   0.96,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 77542,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77518,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77453,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77407,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 77542, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 48
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   -9.05,
+   5.8,
+   138.52,
+   -9.05,
+   5.8,
+   138.52
+  ],
+  "dev_mean": 0.103,
+  "dev_extreme": 0.103,
+  "normal": [
+   -0.25,
+   0.97,
+   -0.0
+  ],
+  "faces": [
+   "face 94 (cylinder r6)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 77542,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77518,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 77453,
+    "tool": 6,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 80125,
+    "tool": 7,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 77542, T6) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 49
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   1.16,
+   30.13,
+   132.88,
+   1.16,
+   30.13,
+   132.88
+  ],
+  "dev_mean": 0.103,
+  "dev_extreme": 0.103,
+  "normal": [
+   -0.86,
+   -0.51,
+   0.05
+  ],
+  "faces": [
+   "face 188 (cone)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 71835,
+    "tool": 13,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 6910,
+    "tool": 11,
+    "frame": 1,
+    "gap_mm": 2.395
+   },
+   {
+    "line": 6864,
+    "tool": 11,
+    "frame": 1,
+    "gap_mm": 2.395
+   },
+   {
+    "line": 6865,
+    "tool": 11,
+    "frame": 1,
+    "gap_mm": 2.395
+   }
+  ],
+  "hint": "failed: passes reach the area (line 71835, T13) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 50
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   7.16,
+   37.4,
+   16.93,
+   7.16,
+   37.4,
+   16.93
+  ],
+  "dev_mean": 0.105,
+  "dev_extreme": 0.105,
+  "normal": [
+   -0.18,
+   0.91,
+   -0.38
+  ],
+  "faces": [
+   "face 38 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 96737,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 96736,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 96740,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 96741,
+    "tool": 1,
+    "frame": 5,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 96737, T1) but leave +0.10 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 51
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.39,
+   -36.4,
+   153.3,
+   8.39,
+   -36.4,
+   153.3
+  ],
+  "dev_mean": 0.139,
+  "dev_extreme": 0.139,
+  "normal": [
+   -0.11,
+   -0.87,
+   0.49
+  ],
+  "faces": [
+   "face 64 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 89130,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 89266,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 89122,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 88994,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 89130, T14) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 52
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.4,
+   -33.21,
+   1.34,
+   8.4,
+   -33.21,
+   1.34
+  ],
+  "dev_mean": 0.132,
+  "dev_extreme": 0.132,
+  "normal": [
+   -0.11,
+   -0.53,
+   -0.84
+  ],
+  "faces": [
+   "face 36 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 108789,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 108939,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 108788,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 108940,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 108789, T14) but leave +0.13 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 53
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.36,
+   -26.71,
+   157.81,
+   8.36,
+   -26.71,
+   157.81
+  ],
+  "dev_mean": 0.135,
+  "dev_extreme": 0.135,
+  "normal": [
+   -0.14,
+   0.21,
+   0.97
+  ],
+  "faces": [
+   "face 64 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 90464,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90463,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90465,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 90462,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 90464, T14) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 54
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.3,
+   -20.18,
+   5.61,
+   8.3,
+   -20.18,
+   5.61
+  ],
+  "dev_mean": 0.116,
+  "dev_extreme": 0.116,
+  "normal": [
+   -0.19,
+   0.91,
+   -0.37
+  ],
+  "faces": [
+   "face 36 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 110085,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110011,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 109953,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110084,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 110085, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 55
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.35,
+   -20.06,
+   152.1,
+   8.35,
+   -20.06,
+   152.1
+  ],
+  "dev_mean": 0.109,
+  "dev_extreme": 0.109,
+  "normal": [
+   -0.14,
+   0.93,
+   0.35
+  ],
+  "faces": [
+   "face 64 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 88887,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 88961,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 88829,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 88755,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 88887, T14) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 56
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.34,
+   -10.74,
+   9.01,
+   8.34,
+   -10.74,
+   9.01
+  ],
+  "dev_mean": 0.123,
+  "dev_extreme": 0.123,
+  "normal": [
+   -0.16,
+   0.0,
+   -0.99
+  ],
+  "faces": [
+   "face 34 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 110583,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110524,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 121366,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 0.104
+   },
+   {
+    "line": 118737,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 3.116
+   }
+  ],
+  "hint": "failed: passes reach the area (line 110583, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 57
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.47,
+   -10.22,
+   149.0,
+   8.47,
+   -10.22,
+   149.0
+  ],
+  "dev_mean": 0.14,
+  "dev_extreme": 0.14,
+  "normal": [
+   -0.04,
+   -0.0,
+   1.0
+  ],
+  "faces": [
+   "face 71 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 15585,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15584,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15586,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15583,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 15585, T1) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 58
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.34,
+   -8.99,
+   9.01,
+   8.34,
+   -8.99,
+   9.01
+  ],
+  "dev_mean": 0.124,
+  "dev_extreme": 0.124,
+  "normal": [
+   -0.16,
+   0.0,
+   -0.99
+  ],
+  "faces": [
+   "face 34 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 110583,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110524,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 121366,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 0.103
+   },
+   {
+    "line": 118637,
+    "tool": 2,
+    "frame": 8,
+    "gap_mm": 3.114
+   }
+  ],
+  "hint": "failed: passes reach the area (line 110583, T14) but leave +0.12 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 59
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.47,
+   5.0,
+   149.0,
+   8.47,
+   5.0,
+   149.0
+  ],
+  "dev_mean": 0.14,
+  "dev_extreme": 0.14,
+  "normal": [
+   -0.04,
+   -0.0,
+   1.0
+  ],
+  "faces": [
+   "face 71 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 15616,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15615,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15617,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 15614,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 15616, T1) but leave +0.14 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 60
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.41,
+   8.29,
+   149.0,
+   8.41,
+   8.29,
+   149.0
+  ],
+  "dev_mean": 0.107,
+  "dev_extreme": 0.107,
+  "normal": [
+   -0.09,
+   0.0,
+   1.0
+  ],
+  "faces": [
+   "face 71 (cylinder r1)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 88385,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 88445,
+    "tool": 14,
+    "frame": 3,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 13254,
+    "tool": 1,
+    "frame": 2,
+    "gap_mm": 0.253
+   },
+   {
+    "line": 6565,
+    "tool": 5,
+    "frame": 1,
+    "gap_mm": 0.907
+   }
+  ],
+  "hint": "failed: passes reach the area (line 88385, T14) but leave +0.11 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 61
+ },
+ {
+  "type": "proud",
+  "area_mm2": 0.19,
+  "bbox": [
+   8.46,
+   36.97,
+   5.96,
+   8.46,
+   36.97,
+   5.96
+  ],
+  "dev_mean": 0.151,
+  "dev_extreme": 0.151,
+  "normal": [
+   -0.04,
+   0.94,
+   -0.33
+  ],
+  "faces": [
+   "face 40 (torus)"
+  ],
+  "nearest_passes": [
+   {
+    "line": 110173,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110052,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110045,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   },
+   {
+    "line": 110174,
+    "tool": 14,
+    "frame": 7,
+    "gap_mm": 0.0
+   }
+  ],
+  "hint": "failed: passes reach the area (line 110173, T14) but leave +0.15 mm on average: stepover / scallop, the tool radius, or a stop short",
+  "id": 62
  }
 ]

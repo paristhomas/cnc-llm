@@ -1,1 +1,8 @@
-[]
+[
+ {
+  "severity": "error",
+  "kind": "part-off",
+  "line": 132977,
+  "msg": "part-off: tabs total 31.2 mm2 at Z-0.2 between the weakest plane and the part (max 30 mm2 at every height up to 0.2 mm below the part)"
+ }
+]
