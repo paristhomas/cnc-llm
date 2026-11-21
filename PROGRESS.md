@@ -92,3 +92,44 @@ Autonomous overnight run. Newest entries at the bottom.
 - 22:45 FTC-10 run 2 (showcase): VALID, 96.285 % of the reachable surface, 7 setups, part-off 2×6.5 mm² tabs,
   MillBill 100 %. Machinist review: RUN WITH MINOR EDITS. 3+2 report review: all criteria pass (5 defects fixed).
   Showcase artifact published. docs/HANDOFF_3PLUS2.md written. CTC-04 validation not run (usage).
+
+## Refine phase (branch `claude/3plus2-refine`; brief `docs/BRIEF_REFINE_3PLUS2.md`)
+Times are UTC. Pushing is blocked on this machine: a local hook refuses pushes to public repositories without the
+owner's OK. Everything is committed locally in the WSL clone `~/cnc-llm` and mirrored to the Windows clone.
+
+- 2026-11-20 23:30 Set-up.
+  - cadquery's OCP DLL is blocked on Windows by Smart App Control, so all work runs in WSL Ubuntu (Python 3.12 venv).
+  - All 51 existing tests pass.
+  - Playwright/Chromium with SwiftShader WebGL is installed for screenshot reviews.
+- 23:50 Fixed before any number: `docs/ACCEPTANCE_REFINE.md` (whole-surface score, tab witness, part-off, trust,
+  Machine view, results) and `docs/reviews/CRITICAL_REVIEW_CHECKLIST.md` (including the page and results quality
+  rubric).
+- 00:10 Viewer and report agent started in its own worktree (`refine-viewer`): Machine view, honest wording, review
+  script.
+- 00:20 Evaluator implemented (R1/R2):
+  - whole-surface score;
+  - tab sections and widths;
+  - tab witness (proud regions touching stub-connected tab tops);
+  - part-off validity;
+  - integrity failures that invalidate;
+  - a stronger generator scan;
+  - region hints instead of "unreachable";
+  - z-buffered six-view, part-off and isometric images.
+
+  Attack tests a–f pass (`tests/test_refine_eval.py`): big tabs, skipped underside, wall skin in the edge band,
+  skipped face, gouge at a tab, and integrity.
+- 00:25 Honest re-scores, no new G-code:
+  - FTC-10 run 2: **79.50 %, INVALID**. The underside was left about 0.3 mm proud and touches the tabs (witness
+    17.7 %); the bores and Ø5.5 holes were unfinished.
+  - FTC-08: **80.06 %, INVALID**, with a 2,651 mm² web.
+- 00:30–00:55 Reach audit over 12 orientations (`docs/FTC10_REACH_AUDIT.md`).
+  - The previous `+Z` orientation is capped near 97 %: the bottom counterbores open into the stub.
+  - Standing FTC-10 on its −X end, with four catalogue long-reach necked tools (T11–T14), the search reaches
+    99.59 % of the surface.
+  - Simulator support for necked tools: shank stage, flag 32.
+  - The vise check now uses exact discs plus a 1 mm clearance, replacing the old capsule model that over-reached
+    16 mm below holder faces.
+  - 65 tests pass.
+- 00:58 Harness frozen: sha `0b28d03c…`, commit `3ccb111`. Skill rewritten; reviewer and agent prompts committed.
+- 01:00 LLM runs launched with the frozen skill: FTC-10 showcase (native) and CTC-04 ×0.2 held-out (not looked at by
+  the developer).
