@@ -1,0 +1,2 @@
+Iteration 7: iteration 6 is valid at 99.87 %; what is left is mostly the inner drill-point cones (no 118-degree tool fits there) and a few mm2 of edge rounds.
+This iteration only trims cycle time where the scallop stays far below the tolerance: wave raster stepover 0.6 -> 0.75 mm (6 mm ball on R8/R12.5), edge-round rasters 0.25-0.3 -> 0.3-0.35 mm, bottom raster band shortened where the wave raster already finished.

@@ -1,0 +1,16 @@
+{
+ "part": "ftc10",
+ "part_dir": "/home/paris/cnc-llm/runs/ftc10/20261121-012221-refine/part",
+ "source_step": "/home/paris/cnc-llm/parts/incoming/nist/nist_ftc_10_asme1_rb.stp",
+ "part_sha256": "28ab89473d74d8055c2de48af42c4cfe167907d65ad65cc2c00f099d92b4a48a",
+ "created": "20261121-012221",
+ "label": "refine",
+ "model": "LLM agent (Claude Code subagent)",
+ "mode": "3+2",
+ "harness": {
+  "sha256": "0b28d03c4c1fbdc6822025f0d56a623c323fcd606c7c008b6bb2848223bc8605",
+  "git_head": "c289328",
+  "harness_modified": false,
+  "modified_files": []
+ }
+}

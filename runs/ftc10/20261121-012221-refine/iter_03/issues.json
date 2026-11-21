@@ -1,0 +1,30 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 5,
+  "line": 71234,
+  "lines": [
+   71234,
+   71235,
+   71494,
+   71495,
+   71498
+  ],
+  "volume_mm3": 2.95,
+  "msg": "material contact above the flute length (shank rubbing / tool too short); first at line 71234 (frame 3, T13, move ends at G54 (-7.50, 6.95, 101.94)), removed column up to 3.52 mm (material left by earlier setups counts too)"
+ },
+ {
+  "severity": "warning",
+  "kind": "cutting",
+  "msg": "deep plunge (> 0.5 D) at > 50% of the recommended feed for T14; ramp or helix instead",
+  "count": 4,
+  "line": 89986,
+  "lines": [
+   89986,
+   122418,
+   122451,
+   122516
+  ]
+ }
+]

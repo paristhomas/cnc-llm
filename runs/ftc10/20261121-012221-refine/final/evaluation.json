@@ -1,0 +1,112 @@
+{
+ "iteration": 7,
+ "metrics": {
+  "whole_surface_in_tol_pct": 99.866,
+  "whole_surface_gouge_pct": 0.0,
+  "whole_surface_proud_pct": 0.134,
+  "tab_witness_pct": 0.229,
+  "tab_witness_mm2": 111.1,
+  "edge_band_excluded_pct": 0.853,
+  "max_gouge_mm": 0.0539,
+  "max_proud_mm": 1.2539,
+  "proud_area_mm2": 64.29,
+  "gouge_area_mm2": 0.0,
+  "hint_no_tool_found_pct": 0.027,
+  "surface_area_mm2": 48530.6,
+  "scored_area_mm2": 48005.4,
+  "probes": 249871,
+  "tolerance_mm": 0.1,
+  "tabs": 2,
+  "tab_total_mm2": 22.88,
+  "tab_max_width_mm": 2.6,
+  "partoff_ok": true,
+  "cycle_time_min": 90.8,
+  "setups": 8,
+  "distinct_orientations": 5,
+  "final_connection_mm2": 22.5,
+  "errors": 0,
+  "warnings": 0,
+  "valid": true
+ },
+ "integrity": {
+  "ok": true,
+  "failures": [],
+  "harness": {
+   "sha256": "0b28d03c4c1fbdc6822025f0d56a623c323fcd606c7c008b6bb2848223bc8605",
+   "git_head": "3ccb111",
+   "harness_modified": false,
+   "modified_files": []
+  },
+  "frozen": {
+   "sha256": "0b28d03c4c1fbdc6822025f0d56a623c323fcd606c7c008b6bb2848223bc8605",
+   "date": "2026-11-21 00:56 UTC",
+   "parent_commit": "15c7f68",
+   "files": [
+    "cli.py",
+    "crosscheck.py",
+    "crosscheck5.py",
+    "feedback.py",
+    "gcode.py",
+    "kernel.py",
+    "kernel5.py",
+    "part.py",
+    "part5.py",
+    "sim.py",
+    "sim5.py",
+    "tools.py",
+    "x5.py"
+   ],
+   "tools": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ],
+   "note": "Frozen harness for the refine-phase LLM runs (docs/ACCEPTANCE_REFINE.md I1). The trusted evaluation is INVALID if the core-file hash differs. Changing this file needs a dated entry in the acceptance addendum."
+  },
+  "part_sha256_now": "28ab89473d74d8055c2de48af42c4cfe167907d65ad65cc2c00f099d92b4a48a",
+  "part_unchanged": true,
+  "harness_unchanged_since_run_start": true,
+  "generator_scan": {
+   "files": [
+    "gcode.py",
+    "gen.py",
+    "geom.py",
+    "mesh.py",
+    "ops.py",
+    "patch3.py",
+    "patch4.py",
+    "patch_plan.py",
+    "plotmoves.py",
+    "shadow.py",
+    "stock.py",
+    "t_sec.py",
+    "t_zb.py",
+    "viewhm.py"
+   ],
+   "forbidden_imports": [],
+   "ok": true
+  },
+  "repo": "/tmp/cncllm-frozen-QciUEP",
+  "frozen_checkout_commit": "3ccb1113d464c8a085eaf0e2539670e524de1db9"
+ },
+ "crosscheck_millbill": {
+  "points": 250000,
+  "disagree": 0,
+  "disagree_beyond_2um": 0,
+  "agreement_pct": 100.0,
+  "frames": 8,
+  "note": "moves from our G68.2 parser; material classification by MillBill's kernel",
+  "examples": []
+ }
+}

@@ -1,0 +1,3 @@
+Iteration 8: same program as iteration 7 (byte-identical), re-simulated only to publish corrected notes.
+Correction to note 7: the inner drill-point cones are not left because no 118-degree tool exists (T10 is one); at that depth T10's 32 mm holder would hit the top ears, and the flat end mills can only trace the outer ring of each cone.
+Operator: the part hangs on two 2.6 x 4.4 mm tabs (Z-10..0) under the tips of the two bottom ear lobes at G54 Y=+-28.5. Hold the part and rock it about the line through both tabs (Y axis), pushing the top towards +X (the pocket face) to break; both tabs bend across their 2.6 mm thickness. File the two pads on the lobe tips flush.

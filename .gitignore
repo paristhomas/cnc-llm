@@ -4,3 +4,7 @@ __pycache__/
 *.egg-info/
 runs/**/iter_*/height*.npz
 .venv/
+runs/**/work/cache/
+runs/**/work/*.pkl
+runs/**/work/*.npy
+runs/**/work/*_fine.stl
