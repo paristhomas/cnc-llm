@@ -1,0 +1,257 @@
+{
+ "1440_light": {
+  "ready_s": 6.71,
+  "first_frame_s": 7.71,
+  "mode": "machine",
+  "scrollWidth": 1440,
+  "machineCheck": {
+   "maxSpindleDirErr": 3.714928364870652e-11,
+   "maxToolAxisInPartErr": 6.643127292577466e-11,
+   "maxTipErrMm": 6.355287432313019e-14,
+   "maxAngleErrDeg": 0,
+   "maxAngleVsSetupsJsonDeg": 0.0006999802009204359,
+   "samples": 481,
+   "swingSamples": 25,
+   "setups": [
+    {
+     "segment": 1,
+     "A": 90,
+     "C": -180,
+     "A_expected": 90,
+     "C_expected": -180,
+     "A_sim": 90,
+     "C_sim": -180,
+     "A_table": 90,
+     "C_table": -180,
+     "maxTipErrMm": 4.263256414560601e-14
+    },
+    {
+     "segment": 2,
+     "A": 90,
+     "C": 158.00069998020092,
+     "A_expected": 90,
+     "C_expected": 158.00069998020092,
+     "A_sim": 90,
+     "C_sim": 158,
+     "A_table": 90,
+     "C_table": -201.99930001979908,
+     "maxTipErrMm": 6.07087979554246e-14
+    },
+    {
+     "segment": 3,
+     "A": 90,
+     "C": -0.0,
+     "A_expected": 90,
+     "C_expected": -0.0,
+     "A_sim": 90,
+     "C_sim": -0.0,
+     "A_table": 90,
+     "C_table": -360,
+     "maxTipErrMm": 6.355287432313019e-14
+    },
+    {
+     "segment": 4,
+     "A": 90,
+     "C": -180,
+     "A_expected": 90,
+     "C_expected": -180,
+     "A_sim": 90,
+     "C_sim": -180,
+     "A_table": 90,
+     "C_table": -180,
+     "maxTipErrMm": 4.263256414560601e-14
+    },
+    {
+     "segment": 5,
+     "A": 90,
+     "C": -180,
+     "A_expected": 90,
+     "C_expected": -180,
+     "A_sim": 90,
+     "C_sim": -180,
+     "A_table": 90,
+     "C_table": -180,
+     "maxTipErrMm": 2.864289338439558e-14
+    },
+    {
+     "segment": 6,
+     "A": 90,
+     "C": -0.0,
+     "A_expected": 90,
+     "C_expected": -0.0,
+     "A_sim": 90,
+     "C_sim": -0.0,
+     "A_table": 90,
+     "C_table": -0.0,
+     "maxTipErrMm": 3.8958546965271006e-14
+    }
+   ],
+   "pass": true,
+   "method": "three.js matrixWorld of the rendered tool and part group; reference tip = Part view pose() in G54",
+   "ms": 64
+  },
+  "swing_segs": [
+   1,
+   2,
+   3,
+   5
+  ],
+  "indep": {
+   "dir": 3.7149283648706516e-11,
+   "n": 240,
+   "swingN": 95,
+   "setups": [
+    {
+     "seg": 1,
+     "partUpLocal": [
+      -1,
+      -0.0,
+      0
+     ],
+     "tool_axis": [
+      -1,
+      -0.0,
+      0
+     ],
+     "err": 3.1401849173675503e-16,
+     "dispA": 90,
+     "dispC": -180,
+     "simA": 90,
+     "simC": -180,
+     "droA": "   90.000",
+     "droC": " -180.000"
+    },
+    {
+     "seg": 2,
+     "partUpLocal": [
+      -0.927188431,
+      0.374595266,
+      0
+     ],
+     "tool_axis": [
+      -0.9272,
+      0.3746,
+      0
+     ],
+     "err": 1.2500045606353064e-05,
+     "dispA": 90,
+     "dispC": 158.00069998020092,
+     "simA": 90,
+     "simC": 158,
+     "droA": "   90.000",
+     "droC": " -180.000"
+    },
+    {
+     "seg": 3,
+     "partUpLocal": [
+      1,
+      0,
+      0
+     ],
+     "tool_axis": [
+      1,
+      -0.0,
+      0
+     ],
+     "err": 3.14018491736755e-16,
+     "dispA": 90,
+     "dispC": -0.0,
+     "simA": 90,
+     "simC": -0.0,
+     "droA": "   90.000",
+     "droC": " -180.000"
+    },
+    {
+     "seg": 4,
+     "partUpLocal": [
+      -1,
+      -0.0,
+      0
+     ],
+     "tool_axis": [
+      -1,
+      -0.0,
+      0
+     ],
+     "err": 3.1401849173675503e-16,
+     "dispA": 90,
+     "dispC": -180,
+     "simA": 90,
+     "simC": -180,
+     "droA": "   90.000",
+     "droC": " -180.000"
+    },
+    {
+     "seg": 5,
+     "partUpLocal": [
+      -1,
+      -0.0,
+      0
+     ],
+     "tool_axis": [
+      -1,
+      -0.0,
+      0
+     ],
+     "err": 3.1401849173675503e-16,
+     "dispA": 90,
+     "dispC": -180,
+     "simA": 90,
+     "simC": -180,
+     "droA": "   90.000",
+     "droC": " -180.000"
+    },
+    {
+     "seg": 6,
+     "partUpLocal": [
+      1,
+      0,
+      0
+     ],
+     "tool_axis": [
+      1,
+      -0.0,
+      0
+     ],
+     "err": 3.1401849173675503e-16,
+     "dispA": 90,
+     "dispC": -0.0,
+     "simA": 90,
+     "simC": -0.0,
+     "droA": "   90.000",
+     "droC": " -180.000"
+    }
+   ]
+  },
+  "gcode_links": [
+   "#gcode",
+   "iter/06/program.txt",
+   "iter/06/program.nc",
+   "iter/06/feedback.txt",
+   "iter/05/program.txt",
+   "iter/05/program.nc"
+  ],
+  "console": []
+ },
+ "390_dark": {
+  "ready_s": 1.73,
+  "first_frame_s": 3.42,
+  "mode": "machine",
+  "scrollWidth": 390,
+  "console": []
+ },
+ "1440_dark": {
+  "ready_s": 1.67,
+  "first_frame_s": 4.69,
+  "mode": "machine",
+  "scrollWidth": 1440,
+  "console": []
+ },
+ "390_light": {
+  "ready_s": 2.41,
+  "first_frame_s": 6.36,
+  "mode": "machine",
+  "scrollWidth": 390,
+  "console": []
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "extra": {
+  "ready_s": 6.55,
+  "first_frame_s": 7.54,
+  "dro0": "X\n  -39.557\nY\n  -81.640\nZ\n    7.500\nA\n   90.000\nC\n -180.000\nT5 \u00b7 8 mm bull-nose endmill r1\nN56473 G1 X39.5569 Y143.3902\nSetup 3/8 \u00b7 F3600 \u00b7 S24000",
+  "dro1": "X\n   25.654\nY\n  -38.721\nZ\n   11.500\nA\n   90.000\nC\n -180.000\nT13 \u00b7 2 mm ball long-neck endmill, neck 20 mm\nN70547 G1 X-25.6541\nSetup 3/8 \u00b7 F288 \u00b7 S24000",
+  "dro2": "X\n   20.838\nY\n  -40.190\nZ\n    7.500\nA\n   90.000\nC\n -180.000\nT13 \u00b7 2 mm ball long-neck endmill, neck 20 mm\nN70761 G1 X-20.7399\nSetup 3/8 \u00b7 F288 \u00b7 S24000",
+  "console": []
+ }
+}

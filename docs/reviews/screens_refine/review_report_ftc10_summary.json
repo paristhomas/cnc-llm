@@ -1,0 +1,1583 @@
+{
+ "index": "/home/paris/cnc-llm/runs/ftc10/20261121-012221-refine/report/index.html",
+ "renders": [
+  {
+   "viewport": "1440x900_light",
+   "shots": [
+    "1440x900_light_header.png",
+    "1440x900_light_machine_swing1_before.png",
+    "1440x900_light_machine_swing1_mid.png",
+    "1440x900_light_machine_swing1_after.png",
+    "1440x900_light_machine_cut1.png",
+    "1440x900_light_machine_swing2_before.png",
+    "1440x900_light_machine_swing2_mid.png",
+    "1440x900_light_machine_swing2_after.png",
+    "1440x900_light_machine_cut2.png",
+    "1440x900_light_machine_swing3_before.png",
+    "1440x900_light_machine_swing3_mid.png",
+    "1440x900_light_machine_swing3_after.png",
+    "1440x900_light_machine_cut3.png",
+    "1440x900_light_part_cut1.png",
+    "1440x900_light_part_cut2.png",
+    "1440x900_light_part_cut3.png",
+    "1440x900_light_result.png",
+    "1440x900_light_partoff.png",
+    "1440x900_light_full.png"
+   ],
+   "console_errors": [],
+   "console_warnings": [],
+   "time_to_ready_s": 3.86,
+   "viewer_error": null,
+   "time_to_first_frame_s": 4.65,
+   "replay_precompute_s": 10.28,
+   "machine_check": {
+    "maxSpindleDirErr": 1.5700924586837752e-16,
+    "maxToolAxisInPartErr": 3.510833468576701e-16,
+    "maxTipErrMm": 4.9227844771419234e-14,
+    "maxAngleErrDeg": 0,
+    "maxAngleVsSetupsJsonDeg": 0,
+    "samples": 641,
+    "swingSamples": 35,
+    "setups": [
+     {
+      "segment": 1,
+      "A": 0,
+      "C": 0,
+      "A_expected": 0,
+      "C_expected": 0,
+      "A_sim": 0,
+      "C_sim": 0,
+      "A_table": 0,
+      "C_table": 0,
+      "maxTipErrMm": 1.0048591735576161e-14
+     },
+     {
+      "segment": 2,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": 0,
+      "maxTipErrMm": 3.8958546965271006e-14
+     },
+     {
+      "segment": 3,
+      "A": 90,
+      "C": -180,
+      "A_expected": 90,
+      "C_expected": -180,
+      "A_sim": 90,
+      "C_sim": -180,
+      "A_table": 90,
+      "C_table": -180,
+      "maxTipErrMm": 4.081757258616412e-14
+     },
+     {
+      "segment": 4,
+      "A": 90,
+      "C": -90,
+      "A_expected": 90,
+      "C_expected": -90,
+      "A_sim": 90,
+      "C_sim": -90,
+      "A_table": 90,
+      "C_table": -90,
+      "maxTipErrMm": 4.0194366942304644e-14
+     },
+     {
+      "segment": 5,
+      "A": 90,
+      "C": 90,
+      "A_expected": 90,
+      "C_expected": 90,
+      "A_sim": 90,
+      "C_sim": 90,
+      "A_table": 90,
+      "C_table": 90,
+      "maxTipErrMm": 4.0194366942304644e-14
+     },
+     {
+      "segment": 6,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": 0,
+      "maxTipErrMm": 4.9227844771419234e-14
+     },
+     {
+      "segment": 7,
+      "A": 90,
+      "C": -180,
+      "A_expected": 90,
+      "C_expected": -180,
+      "A_sim": 90,
+      "C_sim": -180,
+      "A_table": 90,
+      "C_table": -180,
+      "maxTipErrMm": 4.081757258616412e-14
+     },
+     {
+      "segment": 8,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": -0.0,
+      "maxTipErrMm": 4.7265781317840344e-14
+     }
+    ],
+    "pass": true,
+    "method": "three.js matrixWorld of the rendered tool and part group; reference tip = Part view pose() in G54",
+    "ms": 49
+   },
+   "default_mode": "machine",
+   "scrollWidth": 1440,
+   "too_wide": [],
+   "swings": [
+    {
+     "segment": 3,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 55972,
+       "caught": true,
+       "u": 0.20765296504144776,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         15.500000000000009,
+         -31.249999949999978,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 55972.479576677084,
+       "caught": true,
+       "u": 0.20807981750065246,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         15.500000000000009,
+         -31.249999949999978,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 55972.95915335417,
+       "caught": true,
+       "u": 0.2085066699598572,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         2.7554552980815446e-14,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 114850,
+       "caught": true,
+       "u": 0.35241759539844986,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         29.568899154663086,
+         -59.93892664677733,
+         8.218115806579588
+        ]
+       }
+      }
+     }
+    },
+    {
+     "segment": 5,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 193545,
+       "caught": true,
+       "u": 0.7324852010490345,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         -8.999999999999982,
+         -83.24999994999997,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 193545.49106365442,
+       "caught": true,
+       "u": 0.7329120535151751,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": 0,
+        "tip": [
+         -8.999999999999982,
+         -83.24999994999997,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 193545.98212730885,
+       "caught": true,
+       "u": 0.7333389059813157,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": 90,
+        "tip": [
+         0,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 215684,
+       "caught": true,
+       "u": 0.7725872303890359,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": 90,
+        "tip": [
+         -7.533161640167236,
+         -8.751098582812487,
+         20.8718318939209
+        ]
+       }
+      }
+     }
+    },
+    {
+     "segment": 8,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 248878,
+       "caught": true,
+       "u": 0.9706963624058597,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         38.577701568603544,
+         45.64999966853029,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 248878.48495846987,
+       "caught": true,
+       "u": 0.971203066743707,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         38.577701568603544,
+         45.64999966853029,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 248878.96991693974,
+       "caught": true,
+       "u": 0.9717097710815547,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         9.184850993605149e-15,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 256965,
+       "caught": true,
+       "u": 0.985526033143375,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         -33.850399017333984,
+         64.43390016787416,
+         12.121999740600584
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "dro_vs_frame_angles": {
+    "all_ok": true,
+    "setups": [
+     {
+      "segment": 1,
+      "dro_A": 0.0,
+      "dro_C": 0.0,
+      "A": 0.0,
+      "C": 0.0,
+      "ok": true
+     },
+     {
+      "segment": 2,
+      "dro_A": 90.0,
+      "dro_C": 0.0,
+      "A": 90.0,
+      "C": -0.0,
+      "ok": true
+     },
+     {
+      "segment": 3,
+      "dro_A": 90.0,
+      "dro_C": -180.0,
+      "A": 90.0,
+      "C": -180.0,
+      "ok": true
+     },
+     {
+      "segment": 4,
+      "dro_A": 90.0,
+      "dro_C": -90.0,
+      "A": 90.0,
+      "C": -90.0,
+      "ok": true
+     },
+     {
+      "segment": 5,
+      "dro_A": 90.0,
+      "dro_C": 90.0,
+      "A": 90.0,
+      "C": 90.0,
+      "ok": true
+     },
+     {
+      "segment": 6,
+      "dro_A": 90.0,
+      "dro_C": 0.0,
+      "A": 90.0,
+      "C": -0.0,
+      "ok": true
+     },
+     {
+      "segment": 7,
+      "dro_A": 90.0,
+      "dro_C": -180.0,
+      "A": 90.0,
+      "C": -180.0,
+      "ok": true
+     },
+     {
+      "segment": 8,
+      "dro_A": 90.0,
+      "dro_C": 0.0,
+      "A": 90.0,
+      "C": -0.0,
+      "ok": true
+     }
+    ]
+   },
+   "playback_swing": {
+    "segment": 3,
+    "speed": 256,
+    "frames": 17,
+    "swing_frames": 10,
+    "swing_wall_s": 20.52629999999702,
+    "phases": [
+     "retract",
+     "swing",
+     "approach"
+    ],
+    "A_range": [
+     90,
+     90
+    ],
+    "C_range": [
+     -180,
+     0
+    ],
+    "passed_swing": true,
+    "ok": true
+   },
+   "scrubber_clicks": [
+    {
+     "clicked": 0.1,
+     "cursor_u": 0.1,
+     "ok": true
+    },
+    {
+     "clicked": 0.37,
+     "cursor_u": 0.37,
+     "ok": true
+    },
+    {
+     "clicked": 0.62,
+     "cursor_u": 0.62,
+     "ok": true
+    },
+    {
+     "clicked": 0.9,
+     "cursor_u": 0.9,
+     "ok": true
+    }
+   ]
+  },
+  {
+   "viewport": "1440x900_dark",
+   "shots": [
+    "1440x900_dark_header.png",
+    "1440x900_dark_machine_swing1_before.png",
+    "1440x900_dark_machine_swing1_mid.png",
+    "1440x900_dark_machine_swing1_after.png",
+    "1440x900_dark_machine_cut1.png",
+    "1440x900_dark_machine_swing2_before.png",
+    "1440x900_dark_machine_swing2_mid.png",
+    "1440x900_dark_machine_swing2_after.png",
+    "1440x900_dark_machine_cut2.png",
+    "1440x900_dark_machine_swing3_before.png",
+    "1440x900_dark_machine_swing3_mid.png",
+    "1440x900_dark_machine_swing3_after.png",
+    "1440x900_dark_machine_cut3.png",
+    "1440x900_dark_part_cut1.png",
+    "1440x900_dark_part_cut2.png",
+    "1440x900_dark_part_cut3.png",
+    "1440x900_dark_result.png",
+    "1440x900_dark_partoff.png"
+   ],
+   "console_errors": [],
+   "console_warnings": [],
+   "time_to_ready_s": 1.74,
+   "viewer_error": null,
+   "time_to_first_frame_s": 4.24,
+   "replay_precompute_s": 9.66,
+   "machine_check": {
+    "maxSpindleDirErr": 1.5700924586837752e-16,
+    "maxToolAxisInPartErr": 3.510833468576701e-16,
+    "maxTipErrMm": 4.9227844771419234e-14,
+    "maxAngleErrDeg": 0,
+    "maxAngleVsSetupsJsonDeg": 0,
+    "samples": 641,
+    "swingSamples": 35,
+    "setups": [
+     {
+      "segment": 1,
+      "A": 0,
+      "C": 0,
+      "A_expected": 0,
+      "C_expected": 0,
+      "A_sim": 0,
+      "C_sim": 0,
+      "A_table": 0,
+      "C_table": 0,
+      "maxTipErrMm": 1.0048591735576161e-14
+     },
+     {
+      "segment": 2,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": 0,
+      "maxTipErrMm": 3.8958546965271006e-14
+     },
+     {
+      "segment": 3,
+      "A": 90,
+      "C": -180,
+      "A_expected": 90,
+      "C_expected": -180,
+      "A_sim": 90,
+      "C_sim": -180,
+      "A_table": 90,
+      "C_table": -180,
+      "maxTipErrMm": 4.081757258616412e-14
+     },
+     {
+      "segment": 4,
+      "A": 90,
+      "C": -90,
+      "A_expected": 90,
+      "C_expected": -90,
+      "A_sim": 90,
+      "C_sim": -90,
+      "A_table": 90,
+      "C_table": -90,
+      "maxTipErrMm": 4.0194366942304644e-14
+     },
+     {
+      "segment": 5,
+      "A": 90,
+      "C": 90,
+      "A_expected": 90,
+      "C_expected": 90,
+      "A_sim": 90,
+      "C_sim": 90,
+      "A_table": 90,
+      "C_table": 90,
+      "maxTipErrMm": 4.0194366942304644e-14
+     },
+     {
+      "segment": 6,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": 0,
+      "maxTipErrMm": 4.9227844771419234e-14
+     },
+     {
+      "segment": 7,
+      "A": 90,
+      "C": -180,
+      "A_expected": 90,
+      "C_expected": -180,
+      "A_sim": 90,
+      "C_sim": -180,
+      "A_table": 90,
+      "C_table": -180,
+      "maxTipErrMm": 4.081757258616412e-14
+     },
+     {
+      "segment": 8,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": -0.0,
+      "maxTipErrMm": 4.7265781317840344e-14
+     }
+    ],
+    "pass": true,
+    "method": "three.js matrixWorld of the rendered tool and part group; reference tip = Part view pose() in G54",
+    "ms": 49
+   },
+   "default_mode": "machine",
+   "scrollWidth": 1440,
+   "too_wide": [],
+   "swings": [
+    {
+     "segment": 3,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 55972,
+       "caught": true,
+       "u": 0.20765296504144776,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         15.500000000000009,
+         -31.249999949999978,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 55972.479576677084,
+       "caught": true,
+       "u": 0.20807981750065246,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         15.500000000000009,
+         -31.249999949999978,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 55972.95915335417,
+       "caught": true,
+       "u": 0.2085066699598572,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         2.7554552980815446e-14,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 114850,
+       "caught": true,
+       "u": 0.35241759539844986,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         29.568899154663086,
+         -59.93892664677733,
+         8.218115806579588
+        ]
+       }
+      }
+     }
+    },
+    {
+     "segment": 5,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 193545,
+       "caught": true,
+       "u": 0.7324852010490345,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         -8.999999999999982,
+         -83.24999994999997,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 193545.49106365442,
+       "caught": true,
+       "u": 0.7329120535151751,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": 0,
+        "tip": [
+         -8.999999999999982,
+         -83.24999994999997,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 193545.98212730885,
+       "caught": true,
+       "u": 0.7333389059813157,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": 90,
+        "tip": [
+         0,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 215684,
+       "caught": true,
+       "u": 0.7725872303890359,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": 90,
+        "tip": [
+         -7.533161640167236,
+         -8.751098582812487,
+         20.8718318939209
+        ]
+       }
+      }
+     }
+    },
+    {
+     "segment": 8,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 248878,
+       "caught": true,
+       "u": 0.9706963624058597,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         38.577701568603544,
+         45.64999966853029,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 248878.48495846987,
+       "caught": true,
+       "u": 0.971203066743707,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         38.577701568603544,
+         45.64999966853029,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 248878.96991693974,
+       "caught": true,
+       "u": 0.9717097710815547,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         9.184850993605149e-15,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 256965,
+       "caught": true,
+       "u": 0.985526033143375,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         -33.850399017333984,
+         64.43390016787416,
+         12.121999740600584
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "scrubber_clicks": [
+    {
+     "clicked": 0.1,
+     "cursor_u": 0.1,
+     "ok": true
+    },
+    {
+     "clicked": 0.37,
+     "cursor_u": 0.37,
+     "ok": true
+    },
+    {
+     "clicked": 0.62,
+     "cursor_u": 0.62,
+     "ok": true
+    },
+    {
+     "clicked": 0.9,
+     "cursor_u": 0.9,
+     "ok": true
+    }
+   ]
+  },
+  {
+   "viewport": "390x844_light",
+   "shots": [
+    "390x844_light_header.png",
+    "390x844_light_machine_swing1_before.png",
+    "390x844_light_machine_swing1_mid.png",
+    "390x844_light_machine_swing1_after.png",
+    "390x844_light_machine_cut1.png",
+    "390x844_light_part_cut1.png",
+    "390x844_light_result.png",
+    "390x844_light_partoff.png",
+    "390x844_light_full.png"
+   ],
+   "console_errors": [],
+   "console_warnings": [],
+   "time_to_ready_s": 2.98,
+   "viewer_error": null,
+   "time_to_first_frame_s": 3.43,
+   "replay_precompute_s": 8.41,
+   "machine_check": {
+    "maxSpindleDirErr": 1.5700924586837752e-16,
+    "maxToolAxisInPartErr": 3.510833468576701e-16,
+    "maxTipErrMm": 4.9227844771419234e-14,
+    "maxAngleErrDeg": 0,
+    "maxAngleVsSetupsJsonDeg": 0,
+    "samples": 641,
+    "swingSamples": 35,
+    "setups": [
+     {
+      "segment": 1,
+      "A": 0,
+      "C": 0,
+      "A_expected": 0,
+      "C_expected": 0,
+      "A_sim": 0,
+      "C_sim": 0,
+      "A_table": 0,
+      "C_table": 0,
+      "maxTipErrMm": 1.0048591735576161e-14
+     },
+     {
+      "segment": 2,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": 0,
+      "maxTipErrMm": 3.8958546965271006e-14
+     },
+     {
+      "segment": 3,
+      "A": 90,
+      "C": -180,
+      "A_expected": 90,
+      "C_expected": -180,
+      "A_sim": 90,
+      "C_sim": -180,
+      "A_table": 90,
+      "C_table": -180,
+      "maxTipErrMm": 4.081757258616412e-14
+     },
+     {
+      "segment": 4,
+      "A": 90,
+      "C": -90,
+      "A_expected": 90,
+      "C_expected": -90,
+      "A_sim": 90,
+      "C_sim": -90,
+      "A_table": 90,
+      "C_table": -90,
+      "maxTipErrMm": 4.0194366942304644e-14
+     },
+     {
+      "segment": 5,
+      "A": 90,
+      "C": 90,
+      "A_expected": 90,
+      "C_expected": 90,
+      "A_sim": 90,
+      "C_sim": 90,
+      "A_table": 90,
+      "C_table": 90,
+      "maxTipErrMm": 4.0194366942304644e-14
+     },
+     {
+      "segment": 6,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": 0,
+      "maxTipErrMm": 4.9227844771419234e-14
+     },
+     {
+      "segment": 7,
+      "A": 90,
+      "C": -180,
+      "A_expected": 90,
+      "C_expected": -180,
+      "A_sim": 90,
+      "C_sim": -180,
+      "A_table": 90,
+      "C_table": -180,
+      "maxTipErrMm": 4.081757258616412e-14
+     },
+     {
+      "segment": 8,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": -0.0,
+      "maxTipErrMm": 4.7265781317840344e-14
+     }
+    ],
+    "pass": true,
+    "method": "three.js matrixWorld of the rendered tool and part group; reference tip = Part view pose() in G54",
+    "ms": 74
+   },
+   "default_mode": "machine",
+   "scrollWidth": 390,
+   "too_wide": [],
+   "swings": [
+    {
+     "segment": 3,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 55972,
+       "caught": true,
+       "u": 0.20765296504144776,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         15.500000000000009,
+         -31.249999949999978,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 55972.479576677084,
+       "caught": true,
+       "u": 0.20807981750065246,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         15.500000000000009,
+         -31.249999949999978,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 55972.95915335417,
+       "caught": true,
+       "u": 0.2085066699598572,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         2.7554552980815446e-14,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 114850,
+       "caught": true,
+       "u": 0.35241759539844986,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         29.568899154663086,
+         -59.93892664677733,
+         8.218115806579588
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "scrubber_clicks": [
+    {
+     "clicked": 0.1,
+     "cursor_u": 0.1,
+     "ok": true
+    },
+    {
+     "clicked": 0.37,
+     "cursor_u": 0.37,
+     "ok": true
+    },
+    {
+     "clicked": 0.62,
+     "cursor_u": 0.62,
+     "ok": true
+    },
+    {
+     "clicked": 0.9,
+     "cursor_u": 0.9,
+     "ok": true
+    }
+   ]
+  },
+  {
+   "viewport": "390x844_dark",
+   "shots": [
+    "390x844_dark_header.png",
+    "390x844_dark_machine_swing1_before.png",
+    "390x844_dark_machine_swing1_mid.png",
+    "390x844_dark_machine_swing1_after.png",
+    "390x844_dark_machine_cut1.png",
+    "390x844_dark_machine_swing2_before.png",
+    "390x844_dark_machine_swing2_mid.png",
+    "390x844_dark_machine_swing2_after.png",
+    "390x844_dark_machine_cut2.png",
+    "390x844_dark_machine_swing3_before.png",
+    "390x844_dark_machine_swing3_mid.png",
+    "390x844_dark_machine_swing3_after.png",
+    "390x844_dark_machine_cut3.png",
+    "390x844_dark_part_cut1.png",
+    "390x844_dark_part_cut2.png",
+    "390x844_dark_part_cut3.png",
+    "390x844_dark_result.png",
+    "390x844_dark_partoff.png"
+   ],
+   "console_errors": [],
+   "console_warnings": [],
+   "time_to_ready_s": 1.87,
+   "viewer_error": null,
+   "time_to_first_frame_s": 3.18,
+   "replay_precompute_s": 9.49,
+   "machine_check": {
+    "maxSpindleDirErr": 1.5700924586837752e-16,
+    "maxToolAxisInPartErr": 3.510833468576701e-16,
+    "maxTipErrMm": 4.9227844771419234e-14,
+    "maxAngleErrDeg": 0,
+    "maxAngleVsSetupsJsonDeg": 0,
+    "samples": 641,
+    "swingSamples": 35,
+    "setups": [
+     {
+      "segment": 1,
+      "A": 0,
+      "C": 0,
+      "A_expected": 0,
+      "C_expected": 0,
+      "A_sim": 0,
+      "C_sim": 0,
+      "A_table": 0,
+      "C_table": 0,
+      "maxTipErrMm": 1.0048591735576161e-14
+     },
+     {
+      "segment": 2,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": 0,
+      "maxTipErrMm": 3.8958546965271006e-14
+     },
+     {
+      "segment": 3,
+      "A": 90,
+      "C": -180,
+      "A_expected": 90,
+      "C_expected": -180,
+      "A_sim": 90,
+      "C_sim": -180,
+      "A_table": 90,
+      "C_table": -180,
+      "maxTipErrMm": 4.081757258616412e-14
+     },
+     {
+      "segment": 4,
+      "A": 90,
+      "C": -90,
+      "A_expected": 90,
+      "C_expected": -90,
+      "A_sim": 90,
+      "C_sim": -90,
+      "A_table": 90,
+      "C_table": -90,
+      "maxTipErrMm": 4.0194366942304644e-14
+     },
+     {
+      "segment": 5,
+      "A": 90,
+      "C": 90,
+      "A_expected": 90,
+      "C_expected": 90,
+      "A_sim": 90,
+      "C_sim": 90,
+      "A_table": 90,
+      "C_table": 90,
+      "maxTipErrMm": 4.0194366942304644e-14
+     },
+     {
+      "segment": 6,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": 0,
+      "maxTipErrMm": 4.9227844771419234e-14
+     },
+     {
+      "segment": 7,
+      "A": 90,
+      "C": -180,
+      "A_expected": 90,
+      "C_expected": -180,
+      "A_sim": 90,
+      "C_sim": -180,
+      "A_table": 90,
+      "C_table": -180,
+      "maxTipErrMm": 4.081757258616412e-14
+     },
+     {
+      "segment": 8,
+      "A": 90,
+      "C": -0.0,
+      "A_expected": 90,
+      "C_expected": -0.0,
+      "A_sim": 90,
+      "C_sim": -0.0,
+      "A_table": 90,
+      "C_table": -0.0,
+      "maxTipErrMm": 4.7265781317840344e-14
+     }
+    ],
+    "pass": true,
+    "method": "three.js matrixWorld of the rendered tool and part group; reference tip = Part view pose() in G54",
+    "ms": 79
+   },
+   "default_mode": "machine",
+   "scrollWidth": 390,
+   "too_wide": [],
+   "swings": [
+    {
+     "segment": 3,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 55972,
+       "caught": true,
+       "u": 0.20765296504144776,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         15.500000000000009,
+         -31.249999949999978,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 55972.479576677084,
+       "caught": true,
+       "u": 0.20807981750065246,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         15.500000000000009,
+         -31.249999949999978,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 55972.95915335417,
+       "caught": true,
+       "u": 0.2085066699598572,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         2.7554552980815446e-14,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 114850,
+       "caught": true,
+       "u": 0.35241759539844986,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         29.568899154663086,
+         -59.93892664677733,
+         8.218115806579588
+        ]
+       }
+      }
+     }
+    },
+    {
+     "segment": 5,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 193545,
+       "caught": true,
+       "u": 0.7324852010490345,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         -8.999999999999982,
+         -83.24999994999997,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 193545.49106365442,
+       "caught": true,
+       "u": 0.7329120535151751,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": 0,
+        "tip": [
+         -8.999999999999982,
+         -83.24999994999997,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 193545.98212730885,
+       "caught": true,
+       "u": 0.7333389059813157,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": 90,
+        "tip": [
+         0,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 215684,
+       "caught": true,
+       "u": 0.7725872303890359,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": 90,
+        "tip": [
+         -7.533161640167236,
+         -8.751098582812487,
+         20.8718318939209
+        ]
+       }
+      }
+     }
+    },
+    {
+     "segment": 8,
+     "states": {
+      "before": {
+       "mode": "machine",
+       "cursor": 248878,
+       "caught": true,
+       "u": 0.9706963624058597,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -180,
+        "tip": [
+         38.577701568603544,
+         45.64999966853029,
+         150
+        ]
+       }
+      },
+      "mid": {
+       "mode": "machine",
+       "cursor": 248878.48495846987,
+       "caught": true,
+       "u": 0.971203066743707,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "swing",
+        "A": 90,
+        "C": -90,
+        "tip": [
+         38.577701568603544,
+         45.64999966853029,
+         174.2955194403628
+        ]
+       }
+      },
+      "after": {
+       "mode": "machine",
+       "cursor": 248878.96991693974,
+       "caught": true,
+       "u": 0.9717097710815547,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         9.184850993605149e-15,
+         61.75000005000002,
+         150
+        ]
+       }
+      },
+      "cut": {
+       "mode": "machine",
+       "cursor": 256965,
+       "caught": true,
+       "u": 0.985526033143375,
+       "segments": 8,
+       "playing": false,
+       "pose": {
+        "phase": "cut",
+        "A": 90,
+        "C": -0.0,
+        "tip": [
+         -33.850399017333984,
+         64.43390016787416,
+         12.121999740600584
+        ]
+       }
+      }
+     }
+    }
+   ],
+   "scrubber_clicks": [
+    {
+     "clicked": 0.1,
+     "cursor_u": 0.1,
+     "ok": true
+    },
+    {
+     "clicked": 0.37,
+     "cursor_u": 0.37,
+     "ok": true
+    },
+    {
+     "clicked": 0.62,
+     "cursor_u": 0.62,
+     "ok": true
+    },
+    {
+     "clicked": 0.9,
+     "cursor_u": 0.9,
+     "ok": true
+    }
+   ]
+  }
+ ],
+ "grep": {
+  "forbidden_hits": [],
+  "allowed_hits": [
+   {
+    "file": "index.html",
+    "line": 38,
+    "match": "excluded",
+    "allowed": true,
+    "context": "<b>0.00%</b></span></div><div class=\"score-3\">Not scored: tab witness excluded 0.23% \u00b7 edge band (metrology) excluded 0.85%</div> <div class=\""
+   },
+   {
+    "file": "index.html",
+    "line": 38,
+    "match": "excluded",
+    "allowed": true,
+    "context": "ore-3\">Not scored: tab witness excluded 0.23% \u00b7 edge band (metrology) excluded 0.85%</div> <div class=\"chips\"><span class=\"chip good\" title=\"t"
+   },
+   {
+    "file": "index.html",
+    "line": 43,
+    "match": "excluded",
+    "allowed": true,
+    "context": "ss (0.23%) and a 0.03 mm band along face edges (edge band (metrology) excluded 0.85%). Held in one vise by 12 mm of extra stock below a 24 mm stub g"
+   },
+   {
+    "file": "index.html",
+    "line": 93,
+    "match": "excluded",
+    "allowed": true,
+    "context": "ly this area and the edge band are left out of the score (tab witness excluded 0.23%).</p><p class=\"muted small\">Limits: total 2\u201330 mm\u00b2 and at most "
+   },
+   {
+    "file": "index.html",
+    "line": 299,
+    "match": "excluded",
+    "allowed": true,
+    "context": "gouge depth</th><td class=\"num\">0.054 mm</td></tr><tr><th>Tab witness excluded (part-off tab joints)</th><td class=\"num\">0.23 %</td></tr><tr><th>Tab"
+   },
+   {
+    "file": "index.html",
+    "line": 299,
+    "match": "excluded",
+    "allowed": true,
+    "context": "/th><td class=\"num\">111.10 mm\u00b2</td></tr><tr><th>Edge band (metrology) excluded</th><td class=\"num\">0.85 %</td></tr><tr><th>Part-off tabs</th><td cla"
+   }
+  ],
+  "model_id_hits": []
+ },
+ "verdict": {
+  "machine_check_pass": true,
+  "max_spindle_dir_err": 1.5700924586837752e-16,
+  "max_tip_err_mm": 4.9227844771419234e-14,
+  "default_mode_machine": true,
+  "console_errors": 0,
+  "phone_no_hscroll": true,
+  "scrubber_clicks_ok": true,
+  "dro_angles_match_frame_angles": true,
+  "playback_swing_ok": true,
+  "forbidden_words": 0,
+  "model_ids": 0
+ }
+}
