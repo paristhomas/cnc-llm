@@ -1,8 +1,9 @@
 {
- "sha256": "2cd650702824b77451be6ed2b5bb3c8072d514de470514c7edf17377c3fd354a",
+ "sha256": "0b28d03c4c1fbdc6822025f0d56a623c323fcd606c7c008b6bb2848223bc8605",
  "date": "2026-11-21 00:56 UTC",
- "parent_commit": "2e7e6ea",
+ "parent_commit": "15c7f68",
  "files": [
+  "cli.py",
   "crosscheck.py",
   "crosscheck5.py",
   "feedback.py",
