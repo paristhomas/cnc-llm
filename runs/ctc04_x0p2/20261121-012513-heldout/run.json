@@ -1,0 +1,16 @@
+{
+ "part": "ctc04_x0p2",
+ "part_dir": "/home/paris/cnc-llm/runs/ctc04_x0p2/20261121-012513-heldout/part",
+ "source_step": "/home/paris/cnc-llm/parts/incoming/nist/nist_ctc_04_asme1_rd.stp",
+ "part_sha256": "9685b614636827f52f1b5001d99d85476f06eed430eb54053fea1a1c3596b0d3",
+ "created": "20261121-012513",
+ "label": "heldout",
+ "model": "LLM agent (Claude Code subagent)",
+ "mode": "3+2",
+ "harness": {
+  "sha256": "0b28d03c4c1fbdc6822025f0d56a623c323fcd606c7c008b6bb2848223bc8605",
+  "git_head": "c289328",
+  "harness_modified": false,
+  "modified_files": []
+ }
+}

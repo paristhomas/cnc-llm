@@ -1,0 +1,4 @@
+[sim5] 330418 moves, 6 segments; replay 13.3s, metric 89.2s; whole surface in tol 99.180% (tab witness 0.15%), errors 0
+iteration 6: score 99.180% of the whole surface in tolerance, gouge 0.00%, proud 0.82%, tab witness 0.15%, valid=True (0 errors), 6 setups, cycle 114.3 min
+feedback: /home/paris/cnc-llm/runs/ctc04_x0p2/20261121-012513-heldout/iter_06/feedback.md
+SIMEXIT 0

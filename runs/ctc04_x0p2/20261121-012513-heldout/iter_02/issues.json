@@ -1,0 +1,77 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 4,
+  "line": 26428,
+  "lines": [
+   26428,
+   26434,
+   47461,
+   47659
+  ],
+  "volume_mm3": 504.12,
+  "msg": "material contact above the flute length (shank rubbing / tool too short); first at line 26428 (frame 1, T2, move ends at G54 (4.94, -83.41, 3.25)), removed column up to 21.12 mm (material left by earlier setups counts too)"
+ },
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 11744,
+  "line": 108329,
+  "lines": [
+   108329,
+   108330,
+   108331,
+   108332,
+   108333,
+   108334,
+   108335,
+   108336,
+   108337,
+   108338,
+   108339,
+   108340,
+   108341,
+   108342,
+   108343,
+   108344,
+   108345,
+   108346,
+   108347,
+   108348,
+   108349,
+   108350,
+   108351,
+   108352,
+   108353,
+   108354,
+   108355,
+   108356,
+   108357,
+   108358
+  ],
+  "volume_mm3": 117.29,
+  "msg": "tool holder collides with material (stick-out too short for this depth); first at line 108329 (frame 1, T4, move ends at G54 (6.06, 8.35, 8.60)), removed column up to 0.00 mm (material left by earlier setups counts too)"
+ },
+ {
+  "severity": "error",
+  "kind": "cutting",
+  "msg": "cut cross-section > 0.75 D^2 for T3 (overloaded: too deep and too wide); worst 10.07 mm2 > limit 6.75 mm2 at line 135540 (move to 9.31, 2.46, -9.50, removed column up to 3.34 mm deep)",
+  "count": 12,
+  "line": 135533,
+  "lines": [
+   135533,
+   135534,
+   135535,
+   135536,
+   135537,
+   135538,
+   135539,
+   135540,
+   135541,
+   135542,
+   135543,
+   135544
+  ]
+ }
+]

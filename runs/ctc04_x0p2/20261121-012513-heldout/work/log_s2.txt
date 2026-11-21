@@ -1,0 +1,4 @@
+[   0.6s] ear frame I=-111.9993 axis [-0.9272  0.3746  0.    ]
+[   5.8s] ear face frame z 0.020074121250474763
+[   7.1s] setup 2 lines 100511
+[   7.1s] saved s2

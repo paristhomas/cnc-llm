@@ -1,0 +1,27 @@
+[   0.7s] grid -X
+[  26.2s] floors -X (frame z): [-5.121, -15.121, -20.146, -20.371, -23.121]
+[  26.4s] T1 levels [-4.821, np.float64(-6.0), np.float64(-12.0), -14.821, np.float64(-18.0), -19.846, -20.071, -22.821, -23.56]
+[  92.9s] T1 done lines 24726
+[ 116.6s] T2 rest done lines 32756
+[ 185.7s] T3 rest done lines 61156
+[ 185.7s] finish levels -X 100
+[ 411.6s] T2 finish done lines 80860
+[ 618.7s] T3 finish done lines 93831
+[ 618.7s] T7 arch done
+[ 618.7s] r0.665 holes 12
+[ 618.7s] r1.4 holes 30
+[ 618.8s] r1.21 holes 2 [(np.float64(72.42), np.float64(79.72), np.float64(7.06), np.float64(10.06)), (np.float64(-73.0), np.float64(5.28), np.float64(7.06), np.float64(10.06))]
+[ 618.8s] setup 1 lines 95577
+[ 618.8s] ear frame I=-111.9993 axis [-0.9272  0.3746  0.    ]
+[ 626.2s] setup 2 lines 96304
+[ 640.0s] floors +X (frame z): [-3.0, -6.162]
+Traceback (most recent call last):
+  File "/home/paris/cnc-llm/runs/ctc04_x0p2/20261121-012513-heldout/work/gen.py", line 288, in <module>
+    fine3 = fine_levels([(gz(10.9), gz(9.9))], 0.07)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paris/cnc-llm/runs/ctc04_x0p2/20261121-012513-heldout/work/gen.py", line 103, in fine_levels
+    out += list(np.linspace(b, a, n + 1))
+                ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/paris/cnc-llm/.venv/lib/python3.12/site-packages/numpy/_core/function_base.py", line 125, in linspace
+    raise ValueError(
+ValueError: Number of samples, -13, must be non-negative.

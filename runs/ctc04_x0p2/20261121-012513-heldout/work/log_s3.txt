@@ -1,0 +1,6 @@
+[  15.9s] floors +X (frame z): [-3.0, -6.162]
+[  44.4s] finish levels +X [-2.9995, np.float64(-5.1604), np.float64(-5.2271), np.float64(-5.2937)] 18
+[  44.4s] full3 [-9.5004, np.float64(-5.1604)]
+[ 177.7s] countersinks 30 [np.float64(2.005)]
+[ 177.7s] setup 3 lines 132183
+[ 177.8s] stage1 saved

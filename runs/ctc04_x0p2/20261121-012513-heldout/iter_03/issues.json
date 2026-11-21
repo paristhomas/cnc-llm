@@ -1,0 +1,35 @@
+[
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 1,
+  "line": 119512,
+  "lines": [
+   119512
+  ],
+  "volume_mm3": 4.59,
+  "msg": "rapid (G0) move removes material - crash; first at line 119512 (frame 1, T4, move ends at G54 (6.56, -74.65, 13.00)), removed column up to 2.55 mm (material left by earlier setups counts too)"
+ },
+ {
+  "severity": "error",
+  "kind": "collision",
+  "count": 2,
+  "line": 47425,
+  "lines": [
+   47425,
+   47521
+  ],
+  "volume_mm3": 0.72,
+  "msg": "material contact above the flute length (shank rubbing / tool too short); first at line 47425 (frame 1, T3, move ends at G54 (-2.56, -63.56, 26.96)), removed column up to 10.50 mm (material left by earlier setups counts too)"
+ },
+ {
+  "severity": "error",
+  "kind": "cutting",
+  "msg": "cut cross-section > 0.75 D^2 for T4 (overloaded: too deep and too wide); worst 4.52 mm2 > limit 1.69 mm2 at line 119514 (move to 73.39, 13.22, -23.09, removed column up to 3.02 mm deep)",
+  "count": 64,
+  "line": 119514,
+  "lines": [
+   119514
+  ]
+ }
+]

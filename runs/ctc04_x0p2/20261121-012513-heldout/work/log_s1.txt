@@ -1,0 +1,16 @@
+[   0.7s] grid -X
+[  23.7s] floors -X (frame z): [-5.121, -15.121, -20.146, -20.371, -23.121]
+[  24.1s] T1 levels [-4.821, np.float64(-6.0), np.float64(-12.0), -14.821, np.float64(-18.0), -19.846, -20.071, -22.821, -23.56]
+[  77.8s] T1 done lines 19801
+[  93.2s] T2 rest done lines 27253
+[ 114.2s] T3 rest done lines 36142
+[ 114.2s] finish levels -X 100
+[ 114.2s] full levels [-23.1203, np.float64(-14.1204), -15.1203, np.float64(-19.3704), np.float64(-22.1204)]
+[ 452.1s] T2 finish done lines 84746
+[ 622.7s] T3 finish done lines 97752
+[ 622.7s] T7 arch done
+[ 622.7s] r0.665 holes 12
+[ 622.7s] r1.4 holes 30
+[ 622.7s] r1.21 holes 2 [(np.float64(72.42), np.float64(79.72), np.float64(7.06), np.float64(10.06)), (np.float64(-73.0), np.float64(5.28), np.float64(7.06), np.float64(10.06))]
+[ 622.7s] setup 1 lines 99860
+[ 622.7s] saved s1
