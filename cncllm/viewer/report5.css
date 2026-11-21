@@ -266,3 +266,4 @@ td.lines .where-w { font-size: 13px; color: var(--ink); font-weight: 600; margin
 .hero-render img { max-height: 360px; width: auto; max-width: 100%; margin: 0 auto; }
 .hero-render { text-align: center; }
 @media (max-width: 820px) { .hero-render img { max-height: 300px; } }
+.x5 .hero-render img { background: transparent; border: 0; border-radius: 0; }
