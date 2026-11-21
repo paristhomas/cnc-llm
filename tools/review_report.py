@@ -203,7 +203,7 @@ def render(p, url, outdir: Path, vp, scheme, swings, full, checks=False):
         const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > {w} + 1 || r.left < -1) && getComputedStyle(e).position !== 'fixed'
           && !e.closest('.tablewrap, .gc-scroll, .toc .wrap, .cmaps, pre, .markers, .gallery'); }})
         .slice(0, 15).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ').join('.') : '') + ' ' + Math.round(e.getBoundingClientRect().right))""")
-    hero = pg.query_selector("header.hero")
+    hero = pg.query_selector("header.topbar, header.hero")
     if hero:
         res["shots"].append(shoot(hero, outdir / f"{tag}_header.png", pg))
     sim = pg.query_selector("#simview")
