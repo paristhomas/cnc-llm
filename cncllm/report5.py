@@ -563,7 +563,10 @@ def _roughness_block(res_dir, out) -> str:
     stats = []
     ra = sm.get("Ra_um") if isinstance(sm.get("Ra_um"), dict) else {}
     if ra.get("median") is not None:
-        stats.append(f"median Ra <b>{ra['median']:.2f} µm</b>")
+        if ra["median"] < 0.05:
+            stats.append("over half the surface is <b>flat-milled and ideal (Ra ≈ 0)</b> in this model")
+        else:
+            stats.append(f"median Ra <b>{ra['median']:.2f} µm</b>")
     if ra.get("p90") is not None:
         stats.append(f"90 % of the evaluated surface at or below <b>{ra['p90']:.2f} µm</b>")
     sh = sm.get("share_le") or {}
