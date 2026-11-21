@@ -1,0 +1,578 @@
+{
+ "caveat": "KINEMATIC (GEOMETRIC) ROUGHNESS ONLY: what an ideal machine with ideal, rigid, sharp tools leaves (scallops between passes, step marks, flat-end witness marks, chord facets). NOT included: vibration/chatter, tool or part deflection, tool wear, runout, built-up edge, tooth-pass (feed-per-tooth) marks, material tearing. A real part will measure rougher; read these numbers as a lower bound.",
+ "run": "runs/ftc10/20261121-012221-refine",
+ "program": "final/program.nc",
+ "surface_area_mm2": 48530.6,
+ "evaluated_area_mm2": 48061.7,
+ "evaluated_pct": 99.03,
+ "area_by_status_mm2": {
+  "ok": 48061.72,
+  "face too small for a profile": 71.47,
+  "tab witness": 115.95,
+  "out of tolerance (unfinished / gouge)": 89.15,
+  "no machined surface found along the profile": 192.28
+ },
+ "patches": 16221,
+ "valid_patches": 13012,
+ "Ra_um": {
+  "p10": 0.0,
+  "p25": 0.0,
+  "median": 0.004,
+  "p75": 0.154,
+  "p90": 2.904,
+  "p95": 3.438,
+  "p99": 6.235
+ },
+ "Ra_mean_um": 0.516,
+ "Rz_um_median": 0.015,
+ "Rz_um_p90": 12.621,
+ "share_le": {
+  "Ra0.4": 0.8338,
+  "Ra0.8": 0.8607,
+  "Ra1.6": 0.8824,
+  "Ra3.2": 0.9335,
+  "Ra6.3": 0.99,
+  "Ra12.5": 0.9999
+ },
+ "grade_area_share": {
+  "N1": 0.5495,
+  "N2": 0.0119,
+  "N3": 0.0671,
+  "N4": 0.1916,
+  "N5": 0.0138,
+  "N6": 0.0268,
+  "N7": 0.0217,
+  "N8": 0.0511,
+  "N9": 0.0565,
+  "N10": 0.0098,
+  "N11": 0.0001,
+  "N12": 0.0,
+  ">N12": 0.0
+ },
+ "coarse_marks_pct_of_evaluated": 10.87,
+ "lc_share_of_evaluated": {
+  "0.8": 0.6818,
+  "0.25": 0.3182
+ },
+ "by_face_type": {
+  "bspline": {
+   "area_mm2": 21.9,
+   "evaluated_pct": 0.0,
+   "patches": 16
+  },
+  "cone": {
+   "area_mm2": 83.7,
+   "evaluated_pct": 75.4,
+   "patches": 50,
+   "Ra_median_um": 1.816,
+   "Ra_p90_um": 11.163,
+   "Ra_max_um": 15.256
+  },
+  "cylinder": {
+   "area_mm2": 21171.6,
+   "evaluated_pct": 98.4,
+   "patches": 7710,
+   "Ra_median_um": 0.163,
+   "Ra_p90_um": 3.477,
+   "Ra_max_um": 11.547
+  },
+  "plane": {
+   "area_mm2": 26628.1,
+   "evaluated_pct": 99.8,
+   "patches": 7982,
+   "Ra_median_um": 0.0,
+   "Ra_p90_um": 0.004,
+   "Ra_max_um": 0.308
+  },
+  "sphere": {
+   "area_mm2": 33.0,
+   "evaluated_pct": 84.1,
+   "patches": 37,
+   "Ra_median_um": 0.205,
+   "Ra_p90_um": 0.462,
+   "Ra_max_um": 1.187
+  },
+  "torus": {
+   "area_mm2": 592.2,
+   "evaluated_pct": 94.2,
+   "patches": 426,
+   "Ra_median_um": 0.914,
+   "Ra_p90_um": 1.282,
+   "Ra_max_um": 5.518
+  }
+ },
+ "roughest_areas": [
+  {
+   "rank": 1,
+   "centre": [
+    -1.13,
+    23.34,
+    106.25
+   ],
+   "normal": [
+    0.324,
+    0.387,
+    0.863
+   ],
+   "face": 174,
+   "face_type": "cone",
+   "Ra_um": 15.256,
+   "Rz_um": 64.757,
+   "Rt_um": 64.982,
+   "Pa_um": 20.257,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.168,
+   "across_lay_dir": [
+    0.601,
+    0.62,
+    -0.503
+   ],
+   "area_mm2_nearby_same_face": 9.5,
+   "tool": 11,
+   "tool_name": "T11 4 mm 2-flute long-neck flat endmill, neck 40 mm",
+   "line": 6983,
+   "frame": 0,
+   "tools_on_profile": [
+    11
+   ],
+   "passes_crossed": 5,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 2,
+   "centre": [
+    -11.51,
+    -21.05,
+    99.93
+   ],
+   "normal": [
+    -0.5,
+    -0.0,
+    0.866
+   ],
+   "face": 105,
+   "face_type": "cylinder r8",
+   "Ra_um": 11.547,
+   "Rz_um": 56.418,
+   "Rt_um": 110.584,
+   "Pa_um": 19.119,
+   "grade": "N10",
+   "lc_mm": 0.800000011920929,
+   "mark_pitch_mm": 0.649,
+   "across_lay_dir": [
+    0.866,
+    -0.0,
+    0.5
+   ],
+   "area_mm2_nearby_same_face": 93.2,
+   "tool": 13,
+   "tool_name": "T13 2 mm ball long-neck endmill, neck 20 mm",
+   "line": 84414,
+   "frame": 2,
+   "tools_on_profile": [
+    13
+   ],
+   "passes_crossed": 10,
+   "ideal_cusp_um_for_pitch": 54.11,
+   "coarse_marks": false
+  },
+  {
+   "rank": 3,
+   "centre": [
+    -11.48,
+    29.15,
+    99.94
+   ],
+   "normal": [
+    -0.498,
+    0.0,
+    0.867
+   ],
+   "face": 105,
+   "face_type": "cylinder r8",
+   "Ra_um": 11.541,
+   "Rz_um": 56.57,
+   "Rt_um": 110.811,
+   "Pa_um": 19.072,
+   "grade": "N10",
+   "lc_mm": 0.800000011920929,
+   "mark_pitch_mm": 0.649,
+   "across_lay_dir": [
+    0.867,
+    0.0,
+    0.498
+   ],
+   "area_mm2_nearby_same_face": 78.5,
+   "tool": 13,
+   "tool_name": "T13 2 mm ball long-neck endmill, neck 20 mm",
+   "line": 84345,
+   "frame": 2,
+   "tools_on_profile": [
+    13
+   ],
+   "passes_crossed": 10,
+   "ideal_cusp_um_for_pitch": 54.11,
+   "coarse_marks": false
+  },
+  {
+   "rank": 4,
+   "centre": [
+    -11.55,
+    -32.93,
+    99.9
+   ],
+   "normal": [
+    -0.506,
+    0.0,
+    0.863
+   ],
+   "face": 105,
+   "face_type": "cylinder r8",
+   "Ra_um": 11.506,
+   "Rz_um": 56.92,
+   "Rt_um": 112.023,
+   "Pa_um": 19.168,
+   "grade": "N10",
+   "lc_mm": 0.800000011920929,
+   "mark_pitch_mm": 0.649,
+   "across_lay_dir": [
+    0.863,
+    0.0,
+    0.506
+   ],
+   "area_mm2_nearby_same_face": 80.2,
+   "tool": 13,
+   "tool_name": "T13 2 mm ball long-neck endmill, neck 20 mm",
+   "line": 84438,
+   "frame": 2,
+   "tools_on_profile": [
+    13
+   ],
+   "passes_crossed": 10,
+   "ideal_cusp_um_for_pitch": 54.11,
+   "coarse_marks": false
+  },
+  {
+   "rank": 5,
+   "centre": [
+    -11.59,
+    20.67,
+    99.87
+   ],
+   "normal": [
+    -0.511,
+    0.0,
+    0.859
+   ],
+   "face": 105,
+   "face_type": "cylinder r8",
+   "Ra_um": 11.413,
+   "Rz_um": 56.597,
+   "Rt_um": 111.04,
+   "Pa_um": 18.969,
+   "grade": "N10",
+   "lc_mm": 0.800000011920929,
+   "mark_pitch_mm": 0.649,
+   "across_lay_dir": [
+    -0.859,
+    0.0,
+    -0.511
+   ],
+   "area_mm2_nearby_same_face": 89.9,
+   "tool": 13,
+   "tool_name": "T13 2 mm ball long-neck endmill, neck 20 mm",
+   "line": 84363,
+   "frame": 2,
+   "tools_on_profile": [
+    13
+   ],
+   "passes_crossed": 10,
+   "ideal_cusp_um_for_pitch": 54.11,
+   "coarse_marks": false
+  },
+  {
+   "rank": 6,
+   "centre": [
+    -11.61,
+    -15.01,
+    99.86
+   ],
+   "normal": [
+    -0.513,
+    -0.0,
+    0.858
+   ],
+   "face": 105,
+   "face_type": "cylinder r8",
+   "Ra_um": 11.347,
+   "Rz_um": 56.801,
+   "Rt_um": 111.73,
+   "Pa_um": 18.79,
+   "grade": "N10",
+   "lc_mm": 0.800000011920929,
+   "mark_pitch_mm": 0.649,
+   "across_lay_dir": [
+    0.858,
+    0.0,
+    0.513
+   ],
+   "area_mm2_nearby_same_face": 98.9,
+   "tool": 13,
+   "tool_name": "T13 2 mm ball long-neck endmill, neck 20 mm",
+   "line": 84402,
+   "frame": 2,
+   "tools_on_profile": [
+    13
+   ],
+   "passes_crossed": 10,
+   "ideal_cusp_um_for_pitch": 54.11,
+   "coarse_marks": false
+  },
+  {
+   "rank": 7,
+   "centre": [
+    -11.77,
+    10.54,
+    99.76
+   ],
+   "normal": [
+    -0.534,
+    0.0,
+    0.845
+   ],
+   "face": 105,
+   "face_type": "cylinder r8",
+   "Ra_um": 11.113,
+   "Rz_um": 55.184,
+   "Rt_um": 110.804,
+   "Pa_um": 18.512,
+   "grade": "N10",
+   "lc_mm": 0.800000011920929,
+   "mark_pitch_mm": 0.649,
+   "across_lay_dir": [
+    -0.845,
+    0.0,
+    -0.534
+   ],
+   "area_mm2_nearby_same_face": 97.5,
+   "tool": 5,
+   "tool_name": "T5 8 mm bull-nose endmill r1",
+   "line": 59280,
+   "frame": 2,
+   "tools_on_profile": [
+    13
+   ],
+   "passes_crossed": 9,
+   "ideal_cusp_um_for_pitch": 54.11,
+   "coarse_marks": false
+  },
+  {
+   "rank": 8,
+   "centre": [
+    -10.51,
+    -34.94,
+    19.59
+   ],
+   "normal": [
+    -0.376,
+    -0.0,
+    -0.927
+   ],
+   "face": 99,
+   "face_type": "cylinder r8",
+   "Ra_um": 10.716,
+   "Rz_um": 38.921,
+   "Rt_um": 39.673,
+   "Pa_um": 17.614,
+   "grade": "N10",
+   "lc_mm": 0.800000011920929,
+   "mark_pitch_mm": 0.54,
+   "across_lay_dir": [
+    -0.927,
+    -0.0,
+    0.376
+   ],
+   "area_mm2_nearby_same_face": 53.0,
+   "tool": 13,
+   "tool_name": "T13 2 mm ball long-neck endmill, neck 20 mm",
+   "line": 107089,
+   "frame": 6,
+   "tools_on_profile": [
+    13
+   ],
+   "passes_crossed": 7,
+   "ideal_cusp_um_for_pitch": 37.14,
+   "coarse_marks": false
+  },
+  {
+   "rank": 9,
+   "centre": [
+    -4.72,
+    -22.99,
+    113.71
+   ],
+   "normal": [
+    0.495,
+    -0.147,
+    0.857
+   ],
+   "face": 176,
+   "face_type": "cone",
+   "Ra_um": 9.916,
+   "Rz_um": 44.739,
+   "Rt_um": 63.366,
+   "Pa_um": 12.914,
+   "grade": "N10",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.168,
+   "across_lay_dir": [
+    -0.847,
+    0.14,
+    0.513
+   ],
+   "area_mm2_nearby_same_face": 25.1,
+   "tool": 11,
+   "tool_name": "T11 4 mm 2-flute long-neck flat endmill, neck 40 mm",
+   "line": 6971,
+   "frame": 0,
+   "tools_on_profile": [
+    11
+   ],
+   "passes_crossed": 6,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 10,
+   "centre": [
+    -11.47,
+    4.5,
+    104.93
+   ],
+   "normal": [
+    -0.661,
+    0.751,
+    -0.0
+   ],
+   "face": 94,
+   "face_type": "cylinder r6",
+   "Ra_um": 9.874,
+   "Rz_um": 32.859,
+   "Rt_um": 39.0,
+   "Pa_um": 16.748,
+   "grade": "N10",
+   "lc_mm": 0.800000011920929,
+   "mark_pitch_mm": 0.655,
+   "across_lay_dir": [
+    0.751,
+    0.661,
+    -0.002
+   ],
+   "area_mm2_nearby_same_face": 85.7,
+   "tool": 13,
+   "tool_name": "T13 2 mm ball long-neck endmill, neck 20 mm",
+   "line": 85798,
+   "frame": 2,
+   "tools_on_profile": [
+    13
+   ],
+   "passes_crossed": 21,
+   "ideal_cusp_um_for_pitch": 55.15,
+   "coarse_marks": false
+  }
+ ],
+ "colour_scale": {
+  "kind": "log-continuous, one hue",
+  "stops_um_hex": [
+   [
+    0.2,
+    "#cde2fb"
+   ],
+   [
+    0.4,
+    "#9ec5f4"
+   ],
+   [
+    0.8,
+    "#6da7ec"
+   ],
+   [
+    1.6,
+    "#3987e5"
+   ],
+   [
+    3.2,
+    "#256abf"
+   ],
+   [
+    6.3,
+    "#184f95"
+   ],
+   [
+    12.5,
+    "#0d366b"
+   ]
+  ],
+  "status_colours": {
+   "face too small for a profile": "#b4b1a8",
+   "tab witness": "#8e5bb5",
+   "out of tolerance (unfinished / gouge)": "#e8822a",
+   "no machined surface found along the profile": "#7d7a72",
+   "no patch on this face": "#b4b1a8"
+  },
+  "n_grade_breaks_um": [
+   0.4,
+   0.8,
+   1.6,
+   3.2,
+   6.3,
+   12.5
+  ]
+ },
+ "timing_s": {
+  "fit_s": 16.9,
+  "star_s": 289.9,
+  "profiles_s": 1311.1,
+  "total_s": 1617.8,
+  "ray_points": 19934016,
+  "sim_s": 129.1,
+  "outputs_s": 14.5,
+  "total_s_all": 1761.4
+ },
+ "meta": {
+  "method": "profile method, ISO 4287 parameters, ISO 16610-21 Gaussian filter (truncated at +-lc/2, evaluation = traced length - lc); form = 4th-order LSQ polynomial in the profile plane, residual normal to the form, resampled uniformly in arc length; heights by bisection on the exact simulated workpiece along rays parallel to the patch normal (~0.015 um resolution); lay found from 4 short star profiles; patch value = max over across/along-lay profiles",
+  "tiers": [
+   {
+    "lc_mm": 0.8,
+    "traced_min_mm": 2.4,
+    "traced_max_mm": 4.0,
+    "dx_mm": 0.005
+   },
+   {
+    "lc_mm": 0.25,
+    "traced_min_mm": 0.75,
+    "traced_max_mm": 1.5,
+    "dx_mm": 0.0025
+   }
+  ],
+  "spacing_mm": 2.0,
+  "edge_margin_mm": 0.05,
+  "slope_limit": 0.6,
+  "reasons": {
+   "0": "ok",
+   "1": "face too small for a profile",
+   "2": "tab witness",
+   "3": "out of tolerance (unfinished / gouge)",
+   "4": "no machined surface found along the profile"
+  },
+  "caveat": "KINEMATIC (GEOMETRIC) ROUGHNESS ONLY: what an ideal machine with ideal, rigid, sharp tools leaves (scallops between passes, step marks, flat-end witness marks, chord facets). NOT included: vibration/chatter, tool or part deflection, tool wear, runout, built-up edge, tooth-pass (feed-per-tooth) marks, material tearing. A real part will measure rougher; read these numbers as a lower bound.",
+  "units": "um (Ra/Rz/...), mm (positions, lengths)",
+  "frame": "fixture / G54 coordinates, Z up (same as part/ and probes.npz)"
+ },
+ "Ra_median_um": 0.004,
+ "Ra_p90_um": 2.904,
+ "Ra_p95_um": 3.438,
+ "Ra_max_um": 15.256
+}

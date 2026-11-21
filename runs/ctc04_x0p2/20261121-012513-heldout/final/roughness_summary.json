@@ -1,0 +1,570 @@
+{
+ "caveat": "KINEMATIC (GEOMETRIC) ROUGHNESS ONLY: what an ideal machine with ideal, rigid, sharp tools leaves (scallops between passes, step marks, flat-end witness marks, chord facets). NOT included: vibration/chatter, tool or part deflection, tool wear, runout, built-up edge, tooth-pass (feed-per-tooth) marks, material tearing. A real part will measure rougher; read these numbers as a lower bound.",
+ "run": "runs/ctc04_x0p2/20261121-012513-heldout",
+ "program": "final/program.nc",
+ "surface_area_mm2": 40960.3,
+ "evaluated_area_mm2": 39766.4,
+ "evaluated_pct": 97.09,
+ "area_by_status_mm2": {
+  "ok": 39766.39,
+  "face too small for a profile": 641.2,
+  "tab witness": 0.0,
+  "out of tolerance (unfinished / gouge)": 357.95,
+  "no machined surface found along the profile": 194.78
+ },
+ "patches": 15255,
+ "valid_patches": 10953,
+ "Ra_um": {
+  "p10": 0.0,
+  "p25": 0.0,
+  "median": 0.0,
+  "p75": 0.004,
+  "p90": 0.291,
+  "p95": 10.535,
+  "p99": 11.838
+ },
+ "Ra_mean_um": 0.811,
+ "Rz_um_median": 0.0,
+ "Rz_um_p90": 2.137,
+ "share_le": {
+  "Ra0.4": 0.9045,
+  "Ra0.8": 0.9192,
+  "Ra1.6": 0.9292,
+  "Ra3.2": 0.9293,
+  "Ra6.3": 0.9295,
+  "Ra12.5": 0.9987
+ },
+ "grade_area_share": {
+  "N1": 0.8039,
+  "N2": 0.0069,
+  "N3": 0.0138,
+  "N4": 0.0642,
+  "N5": 0.0157,
+  "N6": 0.0147,
+  "N7": 0.01,
+  "N8": 0.0001,
+  "N9": 0.0001,
+  "N10": 0.0692,
+  "N11": 0.0013,
+  "N12": 0.0,
+  ">N12": 0.0
+ },
+ "coarse_marks_pct_of_evaluated": 3.07,
+ "lc_share_of_evaluated": {
+  "0.8": 0.5442,
+  "0.25": 0.4558
+ },
+ "by_face_type": {
+  "cone": {
+   "area_mm2": 355.8,
+   "evaluated_pct": 2.9,
+   "patches": 329,
+   "Ra_median_um": 12.524,
+   "Ra_p90_um": 12.746,
+   "Ra_max_um": 12.819
+  },
+  "cylinder": {
+   "area_mm2": 6483.7,
+   "evaluated_pct": 90.4,
+   "patches": 3517,
+   "Ra_median_um": 0.61,
+   "Ra_p90_um": 11.522,
+   "Ra_max_um": 12.9
+  },
+  "plane": {
+   "area_mm2": 33934.4,
+   "evaluated_pct": 99.5,
+   "patches": 11249,
+   "Ra_median_um": 0.0,
+   "Ra_p90_um": 0.004,
+   "Ra_max_um": 12.261
+  },
+  "sphere": {
+   "area_mm2": 25.4,
+   "evaluated_pct": 0.0,
+   "patches": 47
+  },
+  "torus": {
+   "area_mm2": 161.0,
+   "evaluated_pct": 76.4,
+   "patches": 113,
+   "Ra_median_um": 10.664,
+   "Ra_p90_um": 11.758,
+   "Ra_max_um": 12.976
+  }
+ },
+ "roughest_areas": [
+  {
+   "rank": 1,
+   "centre": [
+    -1.09,
+    -62.45,
+    34.51
+   ],
+   "normal": [
+    -0.677,
+    -0.371,
+    0.636
+   ],
+   "face": 397,
+   "face_type": "torus",
+   "Ra_um": 12.976,
+   "Rz_um": 55.94,
+   "Rt_um": 56.259,
+   "Pa_um": 16.294,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.131,
+   "across_lay_dir": [
+    -0.654,
+    0.7,
+    -0.287
+   ],
+   "area_mm2_nearby_same_face": 19.3,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 63946,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 17,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 2,
+   "centre": [
+    6.9,
+    -43.11,
+    89.46
+   ],
+   "normal": [
+    -0.953,
+    -0.001,
+    0.304
+   ],
+   "face": 257,
+   "face_type": "cylinder r1",
+   "Ra_um": 12.9,
+   "Rz_um": 54.173,
+   "Rt_um": 55.943,
+   "Pa_um": 14.807,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.113,
+   "across_lay_dir": [
+    -0.304,
+    -0.0,
+    -0.953
+   ],
+   "area_mm2_nearby_same_face": 17.4,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 83107,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 7,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 3,
+   "centre": [
+    -0.79,
+    66.52,
+    62.9
+   ],
+   "normal": [
+    -0.86,
+    0.501,
+    0.099
+   ],
+   "face": 289,
+   "face_type": "cylinder r1",
+   "Ra_um": 12.856,
+   "Rz_um": 53.88,
+   "Rt_um": 54.101,
+   "Pa_um": 14.743,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.132,
+   "across_lay_dir": [
+    0.509,
+    0.855,
+    0.101
+   ],
+   "area_mm2_nearby_same_face": 19.8,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 68792,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 9,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 4,
+   "centre": [
+    -0.79,
+    -22.5,
+    88.53
+   ],
+   "normal": [
+    -0.946,
+    -0.002,
+    0.325
+   ],
+   "face": 283,
+   "face_type": "cylinder r1",
+   "Ra_um": 12.844,
+   "Rz_um": 54.976,
+   "Rt_um": 56.109,
+   "Pa_um": 14.695,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.136,
+   "across_lay_dir": [
+    -0.325,
+    -0.0,
+    -0.946
+   ],
+   "area_mm2_nearby_same_face": 17.4,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 68865,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 10,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 5,
+   "centre": [
+    -0.45,
+    2.66,
+    23.24
+   ],
+   "normal": [
+    -0.699,
+    -0.445,
+    0.56
+   ],
+   "face": 475,
+   "face_type": "cone",
+   "Ra_um": 12.819,
+   "Rz_um": 51.534,
+   "Rt_um": 54.399,
+   "Pa_um": 13.233,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.108,
+   "across_lay_dir": [
+    0.715,
+    -0.42,
+    0.558
+   ],
+   "area_mm2_nearby_same_face": 2.8,
+   "tool": 3,
+   "tool_name": "T3 3 mm 2-flute flat endmill",
+   "line": 95054,
+   "frame": 0,
+   "tools_on_profile": [
+    3
+   ],
+   "passes_crossed": 13,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 6,
+   "centre": [
+    -0.79,
+    -34.84,
+    11.48
+   ],
+   "normal": [
+    -0.815,
+    -0.013,
+    -0.579
+   ],
+   "face": 295,
+   "face_type": "cylinder r1",
+   "Ra_um": 12.818,
+   "Rz_um": 54.282,
+   "Rt_um": 55.036,
+   "Pa_um": 14.712,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.134,
+   "across_lay_dir": [
+    -0.579,
+    0.006,
+    0.815
+   ],
+   "area_mm2_nearby_same_face": 21.1,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 68713,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 7,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 7,
+   "centre": [
+    -0.79,
+    -61.02,
+    11.48
+   ],
+   "normal": [
+    -0.833,
+    -0.117,
+    -0.541
+   ],
+   "face": 295,
+   "face_type": "cylinder r1",
+   "Ra_um": 12.81,
+   "Rz_um": 54.544,
+   "Rt_um": 55.129,
+   "Pa_um": 14.863,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.133,
+   "across_lay_dir": [
+    -0.551,
+    0.08,
+    0.831
+   ],
+   "area_mm2_nearby_same_face": 16.4,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 68713,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 7,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 8,
+   "centre": [
+    -0.78,
+    -52.72,
+    11.45
+   ],
+   "normal": [
+    -0.795,
+    -0.041,
+    -0.605
+   ],
+   "face": 295,
+   "face_type": "cylinder r1",
+   "Ra_um": 12.746,
+   "Rz_um": 53.664,
+   "Rt_um": 54.322,
+   "Pa_um": 14.415,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.132,
+   "across_lay_dir": [
+    -0.606,
+    0.03,
+    0.795
+   ],
+   "area_mm2_nearby_same_face": 18.3,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 68713,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 7,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 9,
+   "centre": [
+    -0.78,
+    30.98,
+    73.55
+   ],
+   "normal": [
+    -0.837,
+    -0.0,
+    0.547
+   ],
+   "face": 287,
+   "face_type": "cylinder r1",
+   "Ra_um": 12.735,
+   "Rz_um": 53.698,
+   "Rt_um": 54.231,
+   "Pa_um": 14.331,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.131,
+   "across_lay_dir": [
+    0.547,
+    -0.0,
+    0.837
+   ],
+   "area_mm2_nearby_same_face": 21.0,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 68815,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 7,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  },
+  {
+   "rank": 10,
+   "centre": [
+    -0.79,
+    -66.53,
+    74.89
+   ],
+   "normal": [
+    -0.819,
+    -0.572,
+    -0.044
+   ],
+   "face": 281,
+   "face_type": "cylinder r1",
+   "Ra_um": 12.703,
+   "Rz_um": 53.284,
+   "Rt_um": 53.876,
+   "Pa_um": 14.696,
+   "grade": "N11",
+   "lc_mm": 0.25,
+   "mark_pitch_mm": 0.132,
+   "across_lay_dir": [
+    0.573,
+    -0.82,
+    -0.01
+   ],
+   "area_mm2_nearby_same_face": 18.7,
+   "tool": 2,
+   "tool_name": "T2 6 mm 3-flute flat endmill",
+   "line": 68890,
+   "frame": 0,
+   "tools_on_profile": [
+    2
+   ],
+   "passes_crossed": 7,
+   "ideal_cusp_um_for_pitch": null,
+   "coarse_marks": false
+  }
+ ],
+ "colour_scale": {
+  "kind": "log-continuous, one hue",
+  "stops_um_hex": [
+   [
+    0.2,
+    "#cde2fb"
+   ],
+   [
+    0.4,
+    "#9ec5f4"
+   ],
+   [
+    0.8,
+    "#6da7ec"
+   ],
+   [
+    1.6,
+    "#3987e5"
+   ],
+   [
+    3.2,
+    "#256abf"
+   ],
+   [
+    6.3,
+    "#184f95"
+   ],
+   [
+    12.5,
+    "#0d366b"
+   ]
+  ],
+  "status_colours": {
+   "face too small for a profile": "#b4b1a8",
+   "tab witness": "#8e5bb5",
+   "out of tolerance (unfinished / gouge)": "#e8822a",
+   "no machined surface found along the profile": "#7d7a72",
+   "no patch on this face": "#b4b1a8"
+  },
+  "n_grade_breaks_um": [
+   0.4,
+   0.8,
+   1.6,
+   3.2,
+   6.3,
+   12.5
+  ]
+ },
+ "timing_s": {
+  "fit_s": 17.8,
+  "star_s": 92.2,
+  "profiles_s": 250.6,
+  "total_s": 360.6,
+  "ray_points": 16067904,
+  "sim_s": 151.7,
+  "outputs_s": 13.9,
+  "total_s_all": 526.2
+ },
+ "meta": {
+  "method": "profile method, ISO 4287 parameters, ISO 16610-21 Gaussian filter (truncated at +-lc/2, evaluation = traced length - lc); form = 4th-order LSQ polynomial in the profile plane, residual normal to the form, resampled uniformly in arc length; heights by bisection on the exact simulated workpiece along rays parallel to the patch normal (~0.015 um resolution); lay found from 4 short star profiles; patch value = max over across/along-lay profiles",
+  "tiers": [
+   {
+    "lc_mm": 0.8,
+    "traced_min_mm": 2.4,
+    "traced_max_mm": 4.0,
+    "dx_mm": 0.005
+   },
+   {
+    "lc_mm": 0.25,
+    "traced_min_mm": 0.75,
+    "traced_max_mm": 1.5,
+    "dx_mm": 0.0025
+   }
+  ],
+  "spacing_mm": 2.0,
+  "edge_margin_mm": 0.05,
+  "slope_limit": 0.6,
+  "reasons": {
+   "0": "ok",
+   "1": "face too small for a profile",
+   "2": "tab witness",
+   "3": "out of tolerance (unfinished / gouge)",
+   "4": "no machined surface found along the profile"
+  },
+  "caveat": "KINEMATIC (GEOMETRIC) ROUGHNESS ONLY: what an ideal machine with ideal, rigid, sharp tools leaves (scallops between passes, step marks, flat-end witness marks, chord facets). NOT included: vibration/chatter, tool or part deflection, tool wear, runout, built-up edge, tooth-pass (feed-per-tooth) marks, material tearing. A real part will measure rougher; read these numbers as a lower bound.",
+  "units": "um (Ra/Rz/...), mm (positions, lengths)",
+  "frame": "fixture / G54 coordinates, Z up (same as part/ and probes.npz)"
+ },
+ "Ra_median_um": 0.0,
+ "Ra_p90_um": 0.291,
+ "Ra_p95_um": 10.535,
+ "Ra_max_um": 12.976
+}
