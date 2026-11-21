@@ -661,7 +661,15 @@ def build(run_dir, source: str | None = None) -> Path:
             gallery.append(("img/" + f, t))
     po_img = None
     if res_dir and (res_dir / "partoff_closeup.png").exists():
-        shutil.copy(res_dir / "partoff_closeup.png", out / "img" / "partoff_closeup.png")
+        drawn = False
+        try:   # redraw from the evaluation's own data with per-tab zooms (report-side figure)
+            from . import figs
+            gap = json.loads((run / "part" / "setup.json").read_text())["fixture"]["gap"]
+            drawn = figs.partoff_closeup(res_dir, gap, out / "img" / "partoff_closeup.png")
+        except Exception as e:
+            print(f"WARNING: part-off close-up not redrawn ({e!r})")
+        if not drawn:
+            shutil.copy(res_dir / "partoff_closeup.png", out / "img" / "partoff_closeup.png")
         po_img = "img/partoff_closeup.png"
     final_nc = None
     if res_dir and (res_dir / "program.nc").exists():
