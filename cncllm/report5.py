@@ -561,10 +561,20 @@ def _roughness_block(res_dir, out) -> str:
                     return float(v)
         return None
     stats = []
-    for lbl, keys in (("median Ra", ("Ra_median_um", "ra_median_um", "median_Ra_um", "Ra_median")),
+    ra = sm.get("Ra_um") if isinstance(sm.get("Ra_um"), dict) else {}
+    if ra.get("median") is not None:
+        stats.append(f"median Ra <b>{ra['median']:.2f} µm</b>")
+    if ra.get("p90") is not None:
+        stats.append(f"90 % of the evaluated surface at or below <b>{ra['p90']:.2f} µm</b>")
+    sh = sm.get("share_le") or {}
+    if sh.get("Ra1.6") is not None:
+        stats.append(f"<b>{100 * sh['Ra1.6']:.0f} %</b> at or below Ra 1.6 µm")
+    if sm.get("evaluated_pct") is not None:
+        stats.append(f"{sm['evaluated_pct']:.0f} % of the surface evaluated")
+    for lbl, keys in ([] if stats else (("median Ra", ("Ra_median_um", "ra_median_um", "median_Ra_um", "Ra_median")),
                       ("area-weighted mean Ra", ("Ra_mean_um", "ra_mean_um", "mean_Ra_um", "Ra_mean")),
                       ("95 % of the surface below", ("Ra_p95_um", "ra_p95_um", "p95_Ra_um", "Ra_p95")),
-                      ("max Ra", ("Ra_max_um", "ra_max_um", "max_Ra_um", "Ra_max"))):
+                      ("max Ra", ("Ra_max_um", "ra_max_um", "max_Ra_um", "Ra_max")))):
         v = num(*keys)
         if v is not None:
             stats.append(f"{lbl} <b>{v:.2f} µm</b>")

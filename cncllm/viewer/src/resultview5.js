@@ -12,11 +12,12 @@ import { SETUP_PALETTE, armZoom, buildVise, setupLabel } from './simview5.js';
 
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-// Ra grades (ISO 1302 N5..N10) and a sequential colour per bin (smooth = light, rough = dark)
-const RA_BINS = [{ hi: 0.4, c: '#e9f5ec' }, { hi: 0.8, c: '#b9e0c3' }, { hi: 1.6, c: '#7fc597' }, { hi: 3.2, c: '#f2c14e' },
-  { hi: 6.3, c: '#e8833a' }, { hi: 12.5, c: '#c2412f' }, { hi: Infinity, c: '#7a1f1f' }];
+// Ra grades (ISO 1302 N5..N10) and a sequential colour per bin (smooth = light blue, rough = dark blue, as the roughness plots)
+const RA_BINS = [{ hi: 0.4, c: '#d6e6fb' }, { hi: 0.8, c: '#b3cff3' }, { hi: 1.6, c: '#86b1e8' }, { hi: 3.2, c: '#5a8fd9' },
+  { hi: 6.3, c: '#3367c0' }, { hi: 12.5, c: '#1d4691' }, { hi: Infinity, c: '#0f2557' }];
 const RA_RGB = RA_BINS.map((b) => hexRgb(b.c));
-function raColor(v) { for (let i = 0; i < RA_BINS.length; i++) if (v <= RA_BINS[i].hi) return RA_RGB[i]; return RA_RGB[RA_RGB.length - 1]; }
+const RA_NONE = hexRgb('#9aa0a8');
+function raColor(v) { if (!Number.isFinite(v)) return RA_NONE; for (let i = 0; i < RA_BINS.length; i++) if (v <= RA_BINS[i].hi) return RA_RGB[i]; return RA_RGB[RA_RGB.length - 1]; }
 
 export class ResultView5 {
   constructor(D, els) {
@@ -204,7 +205,7 @@ export class ResultView5 {
         </div>
       </div>
       ${D.meshRa ? `<div class="cbar ra-legend" hidden><div class="cb-title">Estimated surface roughness Ra (µm), kinematic: tool shape, stepover and feed marks only</div>
-        <div class="cls-legend">${RA_BINS.map((b, i) => `<span><i class="sw" style="background:${b.c}"></i>${i === 0 ? '≤ ' + b.hi : i === RA_BINS.length - 1 ? '> ' + RA_BINS[i - 1].hi : RA_BINS[i - 1].hi + '–' + b.hi} µm</span>`).join('')}</div></div>` : ''}
+        <div class="cls-legend">${RA_BINS.map((b, i) => `<span><i class="sw" style="background:${b.c}"></i>${i === 0 ? '≤ ' + b.hi : i === RA_BINS.length - 1 ? '> ' + RA_BINS[i - 1].hi : RA_BINS[i - 1].hi + '–' + b.hi} µm</span>`).join('')}<span><i class="sw" style="background:#9aa0a8"></i>not evaluated (small faces, out of tolerance, tab witness)</span></div></div>` : ''}
       <div class="cbar mach-legend" hidden>
         <div class="cb-title">Machined part = stock ∩ every setup's cut, coloured by the setup that cut each surface last</div>
         <div class="cls-legend setup-legend">${D.segs.map((s, i) => `<span><i class="sw" style="background:${SETUP_PALETTE[i % SETUP_PALETTE.length]}"></i>${i + 1} · ${setupLabel(s)}</span>`).join('')}<span><i class="sw" style="background:#8c9097"></i>uncut stock face</span></div>
