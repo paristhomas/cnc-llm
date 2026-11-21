@@ -133,3 +133,22 @@ owner's OK. Everything is committed locally in the WSL clone `~/cnc-llm` and mir
 - 00:58 Harness frozen: sha `0b28d03c…`, commit `3ccb111`. Skill rewritten; reviewer and agent prompts committed.
 - 01:00 LLM runs launched with the frozen skill: FTC-10 showcase (native) and CTC-04 ×0.2 held-out (not looked at by
   the developer).
+- 03:20 FTC-10 showcase, LLM run with the frozen skill (it chose to stand the part on its −X end, grip 12):
+  - **VALID, 99.866 %** whole surface; 2 tabs of 11.4 mm²; witness 0.23 %; 90.8 min; MillBill 100 %.
+  - The trusted evaluation from a clean checkout of `3ccb111` reproduces it.
+  - Usage: about 0.49M tokens.
+- 03:40 Machinist review of FTC-10: RUN WITH MINOR EDITS.
+  - Post-review iteration 9 applies all five edits: retracts, arc-compensated hole feeds, T1 off the 900 Hz mode,
+    ramped web entry, finishing before the part-off slab.
+  - Still 99.866 %; cycle 116 min.
+- 04:00 CTC-04 ×0.2 held-out run: **VALID, 99.18 %**; 2 tabs of 12 mm²; witness 0.15 %; MillBill 100 %. Usage about
+  0.45M tokens.
+- 04:10–05:30 Critical review, round 1, by fresh agents.
+  - Page: C4, C5, C7, C8 and W13 fail on presentation. The page was reworked by the viewer agent.
+  - Evaluator: loopholes M1–M4 (tab pads, witness growth, scan bypass, trust of in-tree files), FTC-10 silent miss M5,
+    a wrong CTC-04 "unreachable" claim M6, missing handoff M7, and the edge band over its limit at ×0.2.
+- 05:30–06:30 **Harness v2/v2.1.** All loopholes closed (tightening only); the edge band is now scored by its
+  neighbours. The reviewer's xfail attacks pass, and 80 tests pass. Frozen at `29abeb2`. Both runs re-evaluated from
+  a clean checkout: FTC-10 99.847 %, CTC-04 99.132 %, both VALID.
+- 06:40 FTC-10 post-review iteration 10 (M5: ball passes in drill-point cones): **99.890 %, VALID** (trusted v2.1).
+- 06:50 Reports rebuilt. Re-reviews by fresh agents started. `docs/HANDOFF_REFINE.md` written.
