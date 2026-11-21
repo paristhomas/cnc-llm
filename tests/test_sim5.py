@@ -115,8 +115,11 @@ def test_rigidity_and_partoff(part):
     # rigidity: cutting most of the stub before the marker -> error
     r = run(part, slot(-1, w / 2 - 1) + slot(1, w / 2 - 1) + "(PART-OFF)\n")
     assert any(e["kind"] == "rigidity" for e in r["issues"]), r["issues"]
-    # proper: marker first, leave ~2 mm web -> no rigidity / part-off errors
+    # marker first, leave a ~2 mm web across the whole stub -> no rigidity error, but (refine phase, ACCEPTANCE_REFINE
+    # H4) a full-length web is not hand-removable tabs: the part-off check must reject it
     r = run(part, "(PART-OFF)\n" + slot(-1, w / 2 - 1) + slot(1, w / 2 - 1))
     kinds = {e["kind"] for e in r["issues"] if e["severity"] == "error"}
-    assert "rigidity" not in kinds and "part-off" not in kinds, r["issues"]
+    assert "rigidity" not in kinds, r["issues"]
     assert 2.0 <= r["rigidity"]["checks"][-1]["area_mm2"] <= 0.15 * r["rigidity"]["stock_section_mm2"]
+    msgs = " ".join(e["msg"] for e in r["issues"] if e["kind"] == "part-off")
+    assert "mm2" in msgs and not r["partoff"]["ok"], msgs

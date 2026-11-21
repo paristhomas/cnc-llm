@@ -47,20 +47,26 @@ RULES5 = """\
   In tilted setups the material state is tracked on a 0.25 mm voxel grid, so keep rapids >= 0.5 mm clear.
 - **Rigidity:** until the `(PART-OFF)` section the weakest material cross-section between the gripped stub and the
   part (minimum over planes spanning the stub gap) must stay >= 30 % of the stock cross-section.
-- **Part-off:** the program must end with a part-off section that cuts the stub gap down to <= 15 % of the section
-  but leaves >= 2 mm2 (tabs or a thin web) so the part does not come loose in the machine; the operator breaks /
-  saws it off and hand-finishes the bottom (parting) face, which is therefore not scored.
+- **Part-off (machine does the parting; the operator only snaps small tabs):** the program ends with a `(PART-OFF)`
+  section that machines the underside (the face towards the stub) to size like any other face and cuts the stub gap
+  down to small tabs. Validity rules, checked on the final material:
+  - tabs total between 2 and 30 mm2 at the weakest plane of the stub gap (and <= 15 % of the stub section);
+  - at most 4 tabs, each <= 3.0 mm across in its smallest direction (snap / cut by hand, no saw);
+  - tab witness <= 1.5 % of the surface (target 0.5 %): the part surface within 1.0 mm of where proud material
+    connected to the tabs touches the part. An unfinished underside connected to the tabs counts as tab joint, so it
+    blows this limit.
+  Review target (not a validity rule): 2-4 tabs, 20-30 mm2 in total.
 - Cutting data checks as in 3-axis (chip load, cut cross-section, plunges).
-- Score: share of the **3+2-reachable** surface within +-0.1 mm (reachable = the smallest library flat or ball tool can
-  reach it from some allowed tool direction - with its holder and stick-out - without gouging the part or entering
-  the vise). Surface no tool
-  direction reaches is reported separately as "needs simultaneous 5-axis / a smaller tool".
+- **Score: share of the WHOLE part surface within +-0.1 mm**, two-sided (proud and gouge both fail). The only areas
+  not scored are the 0.03 mm face-edge band (metrology artefact, < 1 %) and the tab witness (only when the part-off
+  is valid). The underside, undercuts and areas no tool reaches easily are all scored: surface the program did not
+  finish is failed surface. The harness's reach search is a hint only (see `reach_hint.png`).
 """
 
 
 def harness_fp():
     from . import cli
-    cli.CORE[:] = sorted(set(cli.CORE + ["part5.py", "sim5.py", "kernel5.py", "x5.py"]))
+    cli.CORE[:] = sorted(set(cli.CORE + ["part5.py", "sim5.py", "kernel5.py", "x5.py", "crosscheck5.py"]))
     return cli.harness_fingerprint()
 
 
@@ -78,23 +84,30 @@ def suggest(step: Path, scale=1.0, res=0.2, nprobe=25000):
                 V, F, TF, faces, _ = _mesh_from_step(Path(td) / "part.step", deflection=0.02)
             P, N, PF, PA = _sample(V, F, TF, nprobe, np.random.default_rng(1))
             part_face = (P[:, 2] < 1e-3) & (N[:, 2] < -0.99)
+            under = (N[:, 2] < -0.3) & ~part_face          # downward-facing surface above Z0 (overhangs, underside features)
+            low_under = under & (P[:, 2] < 25.0)
             dirs = part5.candidate_dirs(faces, np.eye(3))
-            k = np.where(~part_face)[0]
-            pd = part5.reachability(V, F, s["vise"], np.array(s["stock"]["lo"]), np.array(s["stock"]["hi"]), P[k],
-                                    N[k], dirs, res=res)
+            pd = part5.reachability(V, F, s["vise"], np.array(s["stock"]["lo"]), np.array(s["stock"]["hi"]), P, N,
+                                    dirs, res=res)
             bb = s["part_bbox"]
-            reach = float(PA[k][pd >= 0].sum() / PA[k].sum() * 100)
-            out.append({"up": up, "rot_z_deg": rz, "reachable_pct": round(reach, 2),
-                        "parting_face_pct": round(float(PA[part_face].sum() / PA.sum() * 100), 2),
+            reach = float(PA[pd >= 0].sum() / PA.sum() * 100)
+            out.append({"up": up, "rot_z_deg": rz, "tool_found_pct": round(reach, 2),
+                        "no_tool_found_mm2": round(float(PA[pd < 0].sum()), 1),
+                        "bottom_face_pct": round(float(PA[part_face].sum() / PA.sum() * 100), 2),
+                        "bottom_width_mm": None,
+                        "downward_faces_low_mm2": round(float(PA[low_under].sum()), 1),
                         "height_mm": round(bb[5] - bb[2], 1), "footprint_mm": [round(bb[3] - bb[0], 1), round(bb[4] - bb[1], 1)],
                         "directions_used": int(len(set(pd[pd >= 0].tolist())))})
             fp = out[-1]["footprint_mm"]
+            out[-1]["bottom_width_mm"] = round(min(fp), 1)
             slender = out[-1]["height_mm"] / max(min(fp), 1e-6)
             out[-1]["slenderness"] = round(slender, 2)
-            # practical ranking: reachability, minus a penalty for tall slender stick-out (vibration, tool reach)
-            out[-1]["suggest_score"] = round(reach - 5.0 * max(0.0, slender - 1.0), 2)
+            # practical ranking (a hint): whole-surface tool coverage, minus tall slender stick-out, minus a bottom
+            # footprint too wide for side tools to finish the underside and part off (T1 reaches ~35 mm from each side)
+            wide = max(0.0, min(fp) - 70.0)
+            out[-1]["suggest_score"] = round(reach - 5.0 * max(0.0, slender - 3.0) - 0.2 * wide, 2)
             print(json.dumps(out[-1]), flush=True)
-    out.sort(key=lambda r: (-r["suggest_score"], r["height_mm"]))
+    out.sort(key=lambda r: (-r["suggest_score"], r["no_tool_found_mm2"], r["height_mm"]))
     return out
 
 
@@ -107,9 +120,10 @@ def write_brief(part, run: Path):
     import trimesh
     trimesh.Trimesh(part.V, part.F, process=True).export(b / "part.stl")   # welded (watertight)
     (b / "faces.json").write_text(json.dumps(part.faces, indent=1))
-    render.iso_png(part.V, part.F, b / "target_iso.png", f"{part.name}: in the fixture frame (Z0 = parting plane)")
-    _views_png(part.P, None, part.pclass, b / "reachability.png", "Grey = not reachable in 3+2 (excluded); "
-               "red = parting face (hand-finished); blue = scored", mode="class")
+    iso_png(part.P, part.N, b / "target_iso.png", f"{part.name} in the fixture frame (G54): Z0 = bottom of the part "
+            "(the face towards the vise stub), part centred in X and Y")
+    _views_png(part.P, None, part.pclass, b / "reach_hint.png", "Reach hint (diagnostic only, every area is scored): "
+               "blue = quick search found a tool + direction; orange = it found none (plan it yourself)", mode="class")
     s = part.meta
     lo, hi = s["stock"]["lo"], s["stock"]["hi"]
     bb = s["part_bbox"]
@@ -121,7 +135,7 @@ def write_brief(part, run: Path):
         if counts[i] == 0:
             continue
         A = math.degrees(math.acos(max(-1, min(1, d[2]))))
-        rows.append(f"| ({d[0]:+.3f}, {d[1]:+.3f}, {d[2]:+.3f}) | {A:.1f} | {100 * part.parea[part.pdir == i].sum() / part.parea[part.pclass != 1].sum():.1f}% |")
+        rows.append(f"| ({d[0]:+.3f}, {d[1]:+.3f}, {d[2]:+.3f}) | {A:.1f} | {100 * part.parea[part.pdir == i].sum() / part.parea.sum():.1f}% |")
     cls_area = lambda c: 100 * part.parea[part.pclass == c].sum() / part.parea.sum()
     from .brief import DIALECT, faces_digest
     md = f"""# Job brief (3+2 indexed 5-axis): {part.name}
@@ -139,13 +153,16 @@ def write_brief(part, run: Path):
   stock in X); vise body below; table below that. Boxes are in `setup.json` ("vise"). Tool and holder must never
   touch them, in any orientation.
 - **Machine:** trunnion 5-axis (A tilt <= 110 deg, C unlimited), 3+2 only (no simultaneous 5-axis).
-- Surface classes: scored {cls_area(0):.1f}%, parting face (hand-finished) {cls_area(1):.1f}%, **not reachable in 3+2 with
-  the library {cls_area(2):.1f}%** (excluded; see `reachability.png`).
+- **Every face is scored, including the underside (the face towards the stub).** Only the 0.03 mm face-edge band and
+  the tab witness are not scored. Reach hint: the harness's quick search (smallest tools, 26 cube directions + feature
+  axes, holder-aware) found a tool and direction for {cls_area(0):.1f}% of the surface; for {cls_area(2):.1f}% it found
+  none (`reach_hint.png`). That is a hint, not an excuse: those areas count, so plan them.
 
 ## Files
-`part.step`, `part.stl` (fixture frame, mm), `faces.json`, `setup.json` (stock, vise boxes, fixture), images.
+`part.step`, `part.stl` (fixture frame, mm), `faces.json`, `setup.json` (stock, vise boxes, fixture), images
+(`target_iso.png`, `reach_hint.png`).
 
-## Tool directions that reach the surface (greedy cover found by the harness - a hint, not a plan)
+## Tool directions that reach the surface (greedy cover found by the harness's quick search - a hint, not a plan)
 | tool axis (G54) | tilt A deg | share of surface first reached |
 |---|---|---|
 {chr(10).join(rows)}
@@ -158,8 +175,11 @@ def write_brief(part, run: Path):
 ## Tool library
 {library_table()}
 
-Tool body: cutting profile up to the flute length, shank (same diameter) up to the stick-out, holder cylinder of the
-holder diameter from the stick-out upwards (checked for 50 mm). All endmills are centre-cutting; T9 is not.
+Tool body: cutting profile up to the flute length, then the shank (same diameter) up to the stick-out, then the holder
+cylinder of the holder diameter from the stick-out upwards (checked for 50 mm). Necked long-reach tools: a neck no
+wider than the cutter up to the neck length (the reach), then a wider shank up to the stick-out; material contact
+above the neck length is a crash. Against the vise and table the body is checked exactly (discs along the tool axis)
+with a 1.0 mm safety clearance. All endmills are centre-cutting; T9 is not.
 
 ## Geometry digest (fixture frame)
 {faces_digest(part)}
@@ -167,32 +187,166 @@ holder diameter from the stick-out upwards (checked for 50 mm). All endmills are
     (b / "brief.md").write_text(md)
 
 
-def _views_png(P, dev, cls, path, title, mode="dev"):
-    import matplotlib.pyplot as plt
-    from matplotlib.colors import TwoSlopeNorm
+DEV_COLORS = {"in_tol": "#3f9b5a", "witness": "#8e5bd0", "gouge": "#2160c4"}
 
-    fig, axs = plt.subplots(2, 2, figsize=(12, 9), dpi=100)
-    views = [("top (looking -Z)", 0, 1, 2, 1), ("front (looking +Y)", 0, 2, 1, -1), ("side (looking -X)", 1, 2, 0, 1),
-             ("bottom (looking +Z)", 0, 1, 2, -1)]
-    for ax, (name, a, b, c, sgn) in zip(axs.ravel(), views):
-        order = np.argsort(sgn * P[:, c])
-        Q = P[order]
-        if mode == "class":
-            col = np.where(cls[order] == 2, "#9a9ea6", np.where(cls[order] == 1, "#d0452f", "#2a78d6"))
-            ax.scatter(Q[:, a], Q[:, b], c=col, s=0.6, lw=0)
-        else:
-            d = dev[order]
-            ok = cls[order] != 2
-            ax.scatter(Q[~ok, a], Q[~ok, b], c="#b8bcc4", s=0.5, lw=0)
-            sc = ax.scatter(Q[ok, a], Q[ok, b], c=np.clip(d[ok], -1, 1), cmap="coolwarm",
-                            norm=TwoSlopeNorm(vmin=-1, vcenter=0, vmax=1), s=0.6, lw=0)
+
+def dev_colors(dev, score_cls=None):
+    """Per-probe RGB: green within +-TOL; proud = orange -> dark red with magnitude (0.1 .. 1 mm); gouge = blue;
+    tab witness = purple; the edge band takes the colour of its deviation like any probe."""
+    from matplotlib.colors import to_rgb
+    n = len(dev)
+    rgb = np.tile(np.array(to_rgb(DEV_COLORS["in_tol"])), (n, 1))
+    pr = dev > TOL
+    t = np.clip((dev[pr] - TOL) / 0.9, 0, 1)[:, None]
+    rgb[pr] = (1 - t) * np.array(to_rgb("#f39c34")) + t * np.array(to_rgb("#8f1414"))
+    rgb[dev < -TOL] = to_rgb(DEV_COLORS["gouge"])
+    if score_cls is not None:
+        rgb[score_cls == 1] = to_rgb(DEV_COLORS["witness"])
+    return rgb
+
+
+def _zbuffer(u, v, depth, rgb, px):
+    """Nearest-probe-per-pixel render of a probe cloud (orthographic): returns an RGBA image (origin lower) and its
+    extent. Pixels whose front probe lies clearly behind the local front (a gap in the outer surface showing an inner
+    one) are filled from the front neighbours, so inner surfaces do not bleed through."""
+    from scipy import ndimage
+    u0, v0 = u.min() - px, v.min() - px
+    nu = int((u.max() - u0) / px) + 2
+    nv = int((v.max() - v0) / px) + 2
+    iu = ((u - u0) / px).astype(int)
+    iv = ((v - v0) / px).astype(int)
+    pid = iv * nu + iu
+    order = np.lexsort((depth, pid))                  # by pixel, then depth ascending: last per pixel = nearest
+    last = np.r_[pid[order][1:] != pid[order][:-1], True]
+    sel = order[last]
+    D = np.full(nv * nu, -np.inf)
+    C = np.zeros((nv * nu, 3))
+    D[pid[sel]] = depth[sel]
+    C[pid[sel]] = rgb[sel]
+    D = D.reshape(nv, nu)
+    C = C.reshape(nv, nu, 3)
+    filled = np.isfinite(D)
+    front = ndimage.maximum_filter(np.where(filled, D, -1e9), size=5)
+    good = filled & (D >= front - 1.0)               # front-most surface pixels
+    sil = ndimage.binary_closing(filled, structure=np.ones((3, 3)), iterations=2) | filled
+    lab, nlab = ndimage.label(~sil)                  # small enclosed gaps are sampling holes, not real holes
+    if nlab:
+        sizes = np.bincount(lab.ravel())
+        border = np.unique(np.r_[lab[0], lab[-1], lab[:, 0], lab[:, -1]])
+        small = sizes < max(40, int(4.0 / (px * px)))
+        small[border] = False
+        small[0] = False
+        sil |= small[lab]
+    hole = sil & ~good
+    _, (ii, jj) = ndimage.distance_transform_edt(~good, return_indices=True)
+    C[hole] = C[ii[hole], jj[hole]]
+    img = np.dstack([C, sil.astype(float)])
+    return img, (u0, u0 + nu * px, v0, v0 + nv * px)
+
+
+def iso_png(P, N, path, title, rgb=None):
+    """Shaded isometric renders of the part from its probe cloud (z-buffered, Lambert + ambient light), from two
+    opposite corners so every side face is seen once. Axes arrows show the fixture frame."""
+    import matplotlib.pyplot as plt
+    from scipy.spatial import cKDTree
+    base = np.array([0.62, 0.66, 0.72]) if rgb is None else rgb
+    ext = P.max(0) - P.min(0)
+    sub = P[np.random.default_rng(0).choice(len(P), size=min(len(P), 20000), replace=False)]
+    px = max(ext.max() / 1100.0, 1.05 * float(np.median(cKDTree(P).query(sub, k=2)[0][:, 1])))
+    fig, axs = plt.subplots(1, 2, figsize=(15, 7), dpi=110)
+    for ax, (az, name) in zip(axs, ((-45.0, "from +X -Y (front right), above"), (135.0, "from -X +Y (back left), above"))):
+        a = np.radians(az)
+        el = np.radians(30.0)
+        view = np.array([np.cos(el) * np.cos(a), np.cos(el) * np.sin(a), np.sin(el)])   # towards the viewer
+        right = np.array([-np.sin(a), np.cos(a), 0.0])
+        up = np.cross(view, right)
+        light = view * 0.6 + up * 0.6 + right * 0.3
+        light /= np.linalg.norm(light)
+        lam = np.clip(N @ light, 0, 1)
+        facing = (N @ view) > -0.05
+        shade = 0.35 + 0.65 * lam
+        col = (base if base.ndim == 1 else base) * shade[:, None] if base.ndim == 1 else base * shade[:, None]
+        col = np.clip(col, 0, 1)
+        Q = P[facing]
+        img, extent = _zbuffer(Q @ right, Q @ up, Q @ view, col[facing], px)
+        ax.imshow(img, origin="lower", extent=extent, interpolation="nearest")
+        o = np.array([extent[0] + 0.06 * (extent[1] - extent[0]), extent[2] + 0.08 * (extent[3] - extent[2])])
+        L = 0.08 * max(extent[1] - extent[0], extent[3] - extent[2])
+        for vec, lab, c in ((np.eye(3)[0], "X", "#c0392b"), (np.eye(3)[1], "Y", "#27ae60"), (np.eye(3)[2], "Z", "#2c6fbb")):
+            d = np.array([vec @ right, vec @ up]) * L
+            ax.annotate("", xy=o + d, xytext=o, arrowprops=dict(arrowstyle="->", color=c, lw=2))
+            ax.text(*(o + d * 1.25), lab, color=c, fontsize=10, ha="center", va="center", weight="bold")
         ax.set_title(name, fontsize=10)
         ax.set_aspect("equal")
-        ax.set_xlabel("XYZ"[a])
-        ax.set_ylabel("XYZ"[b])
-    if mode != "class":
-        fig.colorbar(sc, ax=axs, fraction=0.025, label="deviation mm (blue gouge, red proud); grey = not reachable")
-    fig.suptitle(title)
+        ax.axis("off")
+    fig.suptitle(title, fontsize=12)
+    fig.tight_layout()
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def _views_png(P, dev, cls, path, title, mode="dev", score_cls=None):
+    """Six orthographic z-buffered views. Row 1: front, back, left, right (Z up); row 2: top and the underside.
+    mode 'dev': green = in tolerance, orange/red = proud, blue = gouge, purple = tab witness.
+    mode 'class': reach hint (blue = the quick search found a tool, orange = it found none)."""
+    import matplotlib.pyplot as plt
+    from matplotlib.colors import to_rgb
+    from matplotlib.lines import Line2D
+
+    if mode == "class":
+        rgb = np.where((cls == 2)[:, None], np.array(to_rgb("#e8822a")), np.array(to_rgb("#2a78d6")))
+    else:
+        rgb = dev_colors(dev, score_cls)
+    from scipy.spatial import cKDTree
+    ext = P.max(0) - P.min(0)
+    sub = P[np.random.default_rng(0).choice(len(P), size=min(len(P), 20000), replace=False)]
+    nn = cKDTree(P).query(sub, k=2)[0][:, 1]
+    px = max(ext.max() / 1400.0, 1.05 * float(np.median(nn)))     # about one probe per pixel
+    # (title, horizontal axis, vertical axis, depth axis, depth sign (+ = larger coordinate is nearer), mirror u)
+    row1 = [("front (looking +Y)", 0, 2, 1, -1, False), ("back (looking -Y)", 0, 2, 1, 1, True),
+            ("left side (looking +X)", 1, 2, 0, -1, True), ("right side (looking -X)", 1, 2, 0, 1, False)]
+    if ext[1] > ext[0]:   # long in Y: lay the plan views along Y so they sit under the side views
+        row2 = [("top (looking down; X up the page)", 1, 0, 2, 1, True),
+                ("underside (looking up; X up the page)", 1, 0, 2, -1, False)]
+        pw = ext[1]
+        ph = ext[0]
+    else:
+        row2 = [("top (looking down)", 0, 1, 2, 1, False), ("underside (looking up)", 0, 1, 2, -1, True)]
+        pw = ext[0]
+        ph = ext[1]
+    w1 = [ext[0], ext[0], ext[1], ext[1]]
+    fig_w = 17.0
+    h1 = fig_w * 0.92 * ext[2] / sum(w1)
+    h2 = min(fig_w * 0.92 * ph / (2 * pw + max(ext[0], ext[1]) * 0.6), 7.5)
+    fig = plt.figure(figsize=(fig_w, h1 + h2 + 1.9), dpi=110)
+    top_frac = (h1 + 0.6) / (h1 + h2 + 1.9)
+    gs1 = fig.add_gridspec(1, 4, width_ratios=w1, left=0.04, right=0.99, top=1 - 0.7 / (h1 + h2 + 1.9),
+                           bottom=1 - top_frac - 0.02, wspace=0.12)
+    gs2 = fig.add_gridspec(1, 3, width_ratios=[pw, pw, 0.6 * max(ext[0], ext[1])], left=0.04, right=0.99,
+                           top=1 - top_frac - 0.07, bottom=0.09, wspace=0.12)
+    axes = [fig.add_subplot(gs1[0, i]) for i in range(4)] + [fig.add_subplot(gs2[0, i]) for i in range(2)]
+    for ax, (name, a_, b_, c_, sgn, mirror) in zip(axes, row1 + row2):
+        u = -P[:, a_] if mirror else P[:, a_]
+        img, extent = _zbuffer(u, P[:, b_], sgn * P[:, c_], rgb, px)
+        ax.imshow(img, origin="lower", extent=extent, interpolation="nearest")
+        ax.set_title(name, fontsize=10)
+        ax.set_aspect("equal")
+        ax.set_xlabel(("-" if mirror else "") + "XYZ"[a_] + " (mm)", fontsize=8)
+        ax.set_ylabel("XYZ"[b_] + " (mm)", fontsize=8)
+        ax.tick_params(labelsize=7)
+    if mode == "class":
+        handles = [Line2D([], [], marker="s", ls="", ms=9, color="#2a78d6", label="quick search found a tool + direction"),
+                   Line2D([], [], marker="s", ls="", ms=9, color="#e8822a", label="no tool found by the quick search (still scored)")]
+    else:
+        handles = [Line2D([], [], marker="s", ls="", ms=9, color=DEV_COLORS["in_tol"], label=f"within ±{TOL:g} mm"),
+                   Line2D([], [], marker="s", ls="", ms=9, color="#f39c34", label="proud 0.1–0.5 mm (material left)"),
+                   Line2D([], [], marker="s", ls="", ms=9, color="#8f1414", label="proud ≥ 1 mm"),
+                   Line2D([], [], marker="s", ls="", ms=9, color=DEV_COLORS["gouge"], label="gouge (too deep)"),
+                   Line2D([], [], marker="s", ls="", ms=9, color=DEV_COLORS["witness"], label="tab witness (not scored)")]
+    legend_ax = fig.add_subplot(gs2[0, 2])
+    legend_ax.axis("off")
+    legend_ax.legend(handles=handles, loc="center left", fontsize=10, frameon=False)
+    fig.suptitle(title, fontsize=13, y=1 - 0.25 / (h1 + h2 + 1.9))
     fig.savefig(path)
     plt.close(fig)
 
@@ -203,10 +357,10 @@ def regions5(part, res, voxel=1.0, max_regions=30):
     from .feedback import _normal_class
 
     dev, cls, P, N = res["dev"], part.pclass, part.P, part.N
-    edge = part.pedge
+    scored = res["score_cls"] == 0
     M, frames = res["moves"], res["frames"]
     out = []
-    for kind, mask in (("gouge", (cls != 1) & ~edge & (dev < -TOL)), ("proud", (cls == 0) & ~edge & (dev > TOL))):
+    for kind, mask in (("gouge", scored & (dev < -TOL)), ("proud", scored & (dev > TOL))):
         idx = np.where(mask)[0]
         if not len(idx):
             continue
@@ -235,11 +389,56 @@ def regions5(part, res, voxel=1.0, max_regions=30):
                  "dev_extreme": round(float(dev[k].min() if kind == "gouge" else dev[k].max()), 3),
                  "normal": [round(float(v), 2) for v in nm / max(np.linalg.norm(nm), 1e-9)], "faces": fd}
             r["nearest_passes"] = nearest5(M, frames, P[k], N[k], dev[k])
+            r["hint"] = _region_hint(r, P[k], N[k], cls[k], part.parea[k])
             out.append(r)
     out.sort(key=lambda r: -r["area_mm2"])
     for i, r in enumerate(out[:max_regions]):
         r["id"] = i + 1
     return out[:max_regions]
+
+
+def _region_hint(r, P, N, cls, area):
+    """A diagnostic sentence for a failed region. It explains, it never excuses: the region counts as failed."""
+    nm = np.asarray(r["normal"])
+    under = nm[2] < -0.6 and P[:, 2].min() < 1.0
+    no_tool = float(area[cls == 2].sum() / max(area.sum(), 1e-9))
+    near = r.get("nearest_passes") or []
+    bits = []
+    if r["type"] == "gouge":
+        if near:
+            bits.append(f"failed (gouge): line {near[0]['line']} (T{near[0]['tool']}, frame {near[0]['frame']}) cut "
+                        f"into the part here")
+        else:
+            bits.append("failed (gouge)")
+    else:
+        if not near:
+            bits.append("failed: no cutting pass came near this area")
+        elif near[0]["gap_mm"] > 0.05:
+            bits.append(f"failed: no pass reached this; nearest pass line {near[0]['line']} (T{near[0]['tool']}, "
+                        f"frame {near[0]['frame']}) missed by {near[0]['gap_mm']:g} mm")
+        else:
+            bits.append(f"failed: passes reach the area (line {near[0]['line']}, T{near[0]['tool']}) but leave "
+                        f"{r['dev_mean']:+.2f} mm on average: stepover / scallop, the tool radius, or a stop short")
+    if under:
+        bits.append("underside: finish it before the tabs, from the side (flank of a horizontal tool tangent to the "
+                    "face) or with a tilted setup")
+    if no_tool > 0.5:
+        bits.append(f"the harness's quick reach search found no tool for {100 * no_tool:.0f}% of it (smallest tools, "
+                    "26 cube directions + feature axes): consider another direction, a longer / smaller library tool, "
+                    "or a different fixture orientation. It still counts")
+    return "; ".join(bits)
+
+
+def pick_iteration5(hist: list) -> int:
+    """Best valid iteration by whole-surface score (gouges weigh 5x); ties within 0.01 pts go to the shorter cycle."""
+    valid = [h for h in hist if h["metrics"].get("valid")]
+    pool = valid or hist
+
+    def key(h):
+        m = h["metrics"]
+        return (round(m.get("whole_surface_in_tol_pct", 0) - 5 * m.get("whole_surface_gouge_pct", 0), 2),
+                -m.get("cycle_time_min", 0))
+    return max(pool, key=key)["iter"]
 
 
 def nearest5(M, frames, P, N, dev, nsamp=30, top=4):
@@ -279,17 +478,24 @@ def write_feedback(part, res, out: Path, iteration=None):
     (out / "metrics.json").write_text(json.dumps(m, indent=1))
     (out / "regions.json").write_text(json.dumps(regs, indent=1))
     (out / "issues.json").write_text(json.dumps(res["issues"], indent=1, default=str))
-    (out / "setups.json").write_text(json.dumps({"segments": res["segments"], "rigidity": res["rigidity"]}, indent=1,
-                                                default=float))
+    po = res.get("partoff") or {}
+    (out / "setups.json").write_text(json.dumps({"segments": res["segments"], "rigidity": res["rigidity"],
+                                                 "partoff": po}, indent=1, default=float))
     _views_png(part.P, res["dev"], part.pclass, out / "deviation_views.png",
-               f"Surface deviation - {m['machinable_in_tol_pct']:.3f}% of the reachable surface in tolerance")
+               f"{part.name}: {m['whole_surface_in_tol_pct']:.2f}% of the whole surface within ±{TOL:g} mm "
+               f"({'VALID' if m['valid'] else 'INVALID'})", score_cls=res["score_cls"])
+    try:
+        partoff_png(part, res, out / "partoff_closeup.png")
+    except Exception as e:   # the feedback still works without the picture
+        print(f"WARNING: part-off close-up not drawn ({e!r})")
     L = [f"# Simulation feedback{f' - iteration {iteration}' if iteration else ''}: {part.name} (3+2)\n",
-         f"**Score: {m['machinable_in_tol_pct']:.3f}% of the 3+2-reachable surface within +-{TOL} mm** (whole non-parting "
-         f"surface {m['all_in_tol_pct']:.3f}%). Program valid: **{'YES' if m['valid'] else 'NO'}** ({m['errors']} errors, "
-         f"{m['warnings']} warnings).\n", "| metric | value |\n|---|---|"]
-    for k in ["machinable_in_tol_pct", "machinable_gouge_pct", "machinable_proud_pct", "max_gouge_mm",
-              "unreachable_area_pct", "parting_face_pct", "setups", "distinct_orientations", "final_connection_mm2",
-              "cycle_time_min"]:
+         f"**Score: {m['whole_surface_in_tol_pct']:.3f}% of the whole part surface within +-{TOL} mm.** Program valid: "
+         f"**{'YES' if m['valid'] else 'NO'}** ({m['errors']} errors, {m['warnings']} warnings). Not scored: tab witness "
+         f"{m['tab_witness_pct']:.2f}% and the 0.03 mm face-edge band {m['edge_band_excluded_pct']:.2f}% (metrology). "
+         "Everything else counts, including the underside.\n", "| metric | value |\n|---|---|"]
+    for k in ["whole_surface_in_tol_pct", "whole_surface_gouge_pct", "whole_surface_proud_pct", "proud_area_mm2",
+              "gouge_area_mm2", "max_gouge_mm", "max_proud_mm", "tab_witness_pct", "tabs", "tab_total_mm2",
+              "tab_max_width_mm", "partoff_ok", "setups", "distinct_orientations", "cycle_time_min"]:
         L.append(f"| {k} | {m.get(k)} |")
     errs = [i for i in res["issues"] if i["severity"] == "error"]
     if errs:
@@ -312,17 +518,28 @@ def write_feedback(part, res, out: Path, iteration=None):
     L.append("| after setup | line | area mm2 | fraction | islands | part-off |\n|---|---|---|---|---|---|")
     for c in rg["checks"]:
         L.append(f"| {c['after_segment']} | {c['line']} | {c['area_mm2']} | {c['fraction']:.3f} | {c['islands'][:4]} | {c['part_off']} |")
-    L.append("\n## Out-of-tolerance regions (largest first; scored surface only)\n")
+    if po:
+        L.append(f"\n## Part-off: tabs and witness ({'OK' if po.get('ok') else 'FAILED'})\n")
+        L.append(f"Weakest plane Z{po.get('weakest_z')}: {len(po.get('tabs', []))} tab(s), total {po.get('total_mm2')} mm2 "
+                 f"(limits: 2-30 mm2, <= 4 tabs, each <= 3.0 mm wide; review target 2-4 tabs, 20-30 mm2). Tab witness "
+                 f"{po.get('witness_mm2')} mm2 = {po.get('witness_pct')}% of the surface (limit 1.5 %, target 0.5 %); "
+                 f"tab joint (proud material connected to the tabs) {po.get('joint_mm2')} mm2. Image: `partoff_closeup.png`.\n")
+        if po.get("tabs"):
+            L.append("| tab | area mm2 | width mm (smallest direction) | centre X Y Z |\n|---|---|---|---|")
+            for i, t in enumerate(po["tabs"][:12], 1):
+                L.append(f"| {i} | {t['area_mm2']} | {t['width_mm']} | {' '.join(f'{v:g}' for v in t['centroid'])} |")
+        for r_ in po.get("reasons", []):
+            L.append(f"- FAILED: {r_}")
+    L.append("\n## Failed regions: out of tolerance (largest first; every face counts)\n")
     if not regs:
         L.append("None.")
     else:
-        L.append("| id | type | area mm2 | bbox | normal | mean / extreme | faces | nearest passes |\n|---|---|---|---|---|---|---|---|")
+        L.append("| id | type | area mm2 | bbox | normal | mean / extreme | faces | why (diagnostic) |\n|---|---|---|---|---|---|---|---|")
         for r in regs:
-            np_ = "; ".join(f"line {p['line']} T{p['tool']} frame {p['frame']} missed {p['gap_mm']:g}" for p in r["nearest_passes"][:3])
             L.append(f"| R{r['id']} | {r['type']} | {r['area_mm2']} | {' '.join(f'{v:g}' for v in r['bbox'])} | {tuple(r['normal'])} | "
-                     f"{r['dev_mean']:+.3f} / {r['dev_extreme']:+.3f} | {'; '.join(r['faces'])} | {np_} |")
+                     f"{r['dev_mean']:+.3f} / {r['dev_extreme']:+.3f} | {'; '.join(r['faces'])} | {r.get('hint', '')} |")
     L.append(f"\nCycle time {m['cycle_time_min']:.1f} min (incl. {6:g} s per re-orientation). Images: `deviation_views.png` "
-             "(4 views; grey = not reachable).")
+             "(6 views: green = in tolerance, orange/red = proud, blue = gouge, purple = tab witness), `partoff_closeup.png`.")
     (out / "feedback.md").write_text("\n".join(L) + "\n")
     return {"metrics": m, "regions": regs}
 
@@ -373,17 +590,55 @@ def cmd_sim(a):
     hist.append({"iter": n, "time": dt.datetime.now().isoformat(timespec="seconds"), "metrics": m,
                  "lines": res["program"].n_lines, "moves": int(len(res["moves"]))})
     (run / "history.json").write_text(json.dumps(hist, indent=1))
-    print(f"iteration {n}: score {m['machinable_in_tol_pct']:.3f}% of reachable surface in tolerance, gouge "
-          f"{m['machinable_gouge_pct']:.2f}%, proud {m['machinable_proud_pct']:.2f}%, valid={m['valid']} "
-          f"({m['errors']} errors), {m['setups']} setups, cycle {m['cycle_time_min']:.1f} min")
+    print(f"iteration {n}: score {m['whole_surface_in_tol_pct']:.3f}% of the whole surface in tolerance, gouge "
+          f"{m['whole_surface_gouge_pct']:.2f}%, proud {m['whole_surface_proud_pct']:.2f}%, tab witness "
+          f"{m['tab_witness_pct']:.2f}%, valid={m['valid']} ({m['errors']} errors), {m['setups']} setups, "
+          f"cycle {m['cycle_time_min']:.1f} min")
     print(f"feedback: {it / 'feedback.md'}")
 
 
+FROZEN = REPO / "harness_frozen.json"
+_SCAN_PAT = None
+
+
+def scan_generator5(work: Path) -> dict:
+    """Flag simulator / CAM-library use in the LLM's own generator code: import statements (as the 3-axis scan) plus
+    dynamic imports and any mention of the harness package in code (comments are ignored)."""
+    import re
+    from .cli import scan_generator
+    base = scan_generator(work)
+    hits = list(base["forbidden_imports"])
+    pat = re.compile(r"\bcncllm\b|__import__|\bimportlib\b|millbill|cam_agent")
+    for f in sorted(work.rglob("*.py")) if work.exists() else []:
+        for ln, line in enumerate(f.read_text(errors="replace").splitlines(), 1):
+            code = line.split("#", 1)[0]
+            if pat.search(code):
+                hits.append(f"{f.name}:{ln}: {code.strip()[:100]}")
+    return {"files": base["files"], "forbidden_imports": sorted(set(hits)), "ok": not hits}
+
+
+def integrity_failures(hv: dict, meta: dict, part_sha: str, scan: dict, frozen: dict | None) -> list[str]:
+    """Reasons that make a trusted evaluation INVALID (ACCEPTANCE_REFINE I1): recorded is not enough."""
+    out = []
+    if frozen and frozen.get("sha256"):
+        if hv.get("sha256") != frozen["sha256"]:
+            out.append(f"harness code differs from the frozen harness (now {hv.get('sha256', '')[:12]}, frozen "
+                       f"{frozen['sha256'][:12]} from {frozen.get('date', '?')})")
+    elif hv.get("sha256") != meta.get("harness", {}).get("sha256"):
+        out.append("harness code changed since the run started")
+    if hv.get("harness_modified"):
+        out.append(f"uncommitted changes in harness files: {', '.join(hv.get('modified_files', [])[:5])}")
+    if part_sha != meta.get("part_sha256"):
+        out.append("the part (STEP + fixture) changed since the run started")
+    if not scan.get("ok", True):
+        out.append(f"generator code uses the simulator or a CAM library: {'; '.join(scan.get('forbidden_imports', [])[:5])}")
+    return out
+
+
 def cmd_evaluate(a):
-    from .cli import pick_iteration
     run = Path(a.run_dir)
     hist = json.loads((run / "history.json").read_text())
-    n = a.iter or pick_iteration(hist)
+    n = a.iter or pick_iteration5(hist)
     final = run / "final"
     final.mkdir(exist_ok=True)
     shutil.copy(run / f"iter_{n:02d}" / "program.nc", final / "program.nc")
@@ -405,12 +660,22 @@ def _trusted_eval(run_dir, n):
     p = part5.load(meta["part_dir"], verbose=False)
     final = run / "final"
     res = sim5.run((final / "program.nc").read_text(), p)
-    write_feedback(p, res, final)
     hv = harness_fp()
-    ev = {"iteration": n, "metrics": res["metrics"],
-          "integrity": {"harness": hv, "part_sha256_now": p.sha, "part_unchanged": p.sha == meta["part_sha256"],
+    scan = scan_generator5(run / "work")
+    frozen = json.loads(FROZEN.read_text()) if FROZEN.exists() else None
+    fails = integrity_failures(hv, meta, p.sha, scan, frozen)
+    for f in fails:
+        res["issues"].append({"severity": "error", "kind": "integrity", "line": None, "msg": "integrity: " + f})
+    m = res["metrics"]
+    m["errors"] = sum(1 for i in res["issues"] if i["severity"] == "error")
+    m["valid"] = m["errors"] == 0
+    write_feedback(p, res, final)
+    save_probes(p, res, final)
+    ev = {"iteration": n, "metrics": m,
+          "integrity": {"ok": not fails, "failures": fails, "harness": hv, "frozen": frozen, "part_sha256_now": p.sha,
+                        "part_unchanged": p.sha == meta["part_sha256"],
                         "harness_unchanged_since_run_start": hv["sha256"] == meta["harness"]["sha256"],
-                        "generator_scan": cli.scan_generator(run / "work")}}
+                        "generator_scan": scan, "repo": str(REPO)}}
     mb = os.environ.get("MILLBILL_DIR")
     if mb and Path(mb).exists():
         try:
@@ -429,6 +694,98 @@ def _trusted_eval(run_dir, n):
     print(json.dumps({"iteration": n, "metrics": res["metrics"]}, indent=1))
 
 
+def save_probes(part, res, out: Path):
+    """Probe dump for independent re-computation of the score (reviewer checklist A1)."""
+    np.savez_compressed(out / "probes.npz", P=part.P.astype(np.float32), N=part.N.astype(np.float32),
+                        area=part.parea, dev=np.asarray(res["dev"], np.float32), edge=part.pedge,
+                        witness=np.asarray(res["witness"], bool), score_cls=res["score_cls"],
+                        reach_hint=part.pclass, face=part.pface.astype(np.int32), tol=np.float64(TOL))
+
+
+def partoff_png(part, res, path: Path):
+    """Part-off close-up: the underside (seen from below) coloured by deviation with the tabs marked, and the material
+    section across the stub gap with the allowed tab band."""
+    import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
+    from scipy.spatial import cKDTree
+    po = res.get("partoff") or {}
+    P, dev, sc = part.P, np.asarray(res["dev"]), res["score_cls"]
+    rgb = dev_colors(dev, sc)
+    gap = part.fixture["gap"]
+    ext = P.max(0) - P.min(0)
+    long_y = ext[1] > ext[0]
+    fig = plt.figure(figsize=(15, 5.2), dpi=110)
+    gs = fig.add_gridspec(1, 2, width_ratios=[2.3, 1], left=0.05, right=0.98, top=0.8, bottom=0.2, wspace=0.18)
+    ax = fig.add_subplot(gs[0, 0])
+    under = P[:, 2] < max(1.0, 0.04 * ext[2])
+    Q = P[under]
+    sub = Q[np.random.default_rng(0).choice(len(Q), size=min(len(Q), 20000), replace=False)]
+    px = max(ext.max() / 1400.0, 1.05 * float(np.median(cKDTree(Q).query(sub, k=2)[0][:, 1])))
+    u, v = (Q[:, 1], Q[:, 0]) if long_y else (-Q[:, 0], Q[:, 1])
+    img, extent = _zbuffer(u, v, -Q[:, 2], rgb[under], px)
+    ax.imshow(img, origin="lower", extent=extent, interpolation="nearest")
+    for i, t in enumerate(po.get("tabs", []), 1):
+        cx, cy, _ = t["centroid"]
+        tu, tv = (cy, cx) if long_y else (-cx, cy)
+        ax.plot(tu, tv, marker="o", mfc="none", mec="k", ms=16, mew=1.6)
+        ax.annotate(f"tab {i}: {t['area_mm2']:.1f} mm², {t['width_mm']:.1f} mm wide", (tu, tv),
+                    xytext=(12, 16 if i % 2 else -30),
+                    textcoords="offset points", fontsize=9,
+                    bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.5", alpha=0.95))
+    ax.set_aspect("equal")
+    ax.set_xlabel("Y (mm)" if long_y else "-X (mm)")
+    ax.set_ylabel("X (mm)" if long_y else "Y (mm)")
+    ax.set_title("Underside of the part, seen from below, with the tabs that hold it to the stub", fontsize=10)
+    ax2 = fig.add_subplot(gs[0, 1])
+    planes = po.get("planes", [])
+    if planes:
+        z = [p_["z"] for p_ in planes]
+        area = np.maximum([p_["area_mm2"] for p_ in planes], 0.5)
+        ax2.axvspan(2, 30, color=DEV_COLORS["in_tol"], alpha=0.15, label="allowed tab total (2–30 mm²)")
+        ax2.plot(area, z, "-o", ms=3, color="#333", label="material in the plane")
+        if po.get("weakest_z") is not None:
+            ax2.axhline(po["weakest_z"], color="#8e5bd0", lw=1, ls="--", label=f"weakest plane Z{po['weakest_z']:g}")
+        ax2.set_xscale("log")
+        ax2.set_xlim(0.5, max(area.max() * 1.5, 100))
+        ax2.set_ylim(-gap, 0.6)
+        ax2.set_xlabel("material cross-section (mm², log scale)")
+        ax2.set_ylabel("height in the stub gap, Z (mm)")
+        ax2.legend(fontsize=8, loc="lower right")
+        ax2.grid(alpha=0.25, which="both")
+    ax2.set_title("Stub gap: part above Z0, vise stub below", fontsize=10)
+    status = "part-off OK" if po.get("ok") else "part-off FAILED"
+    line1 = (f"{status}: {len(po.get('tabs', []))} tab(s), {po.get('total_mm2', 0):g} mm² in total; "
+             f"tab witness {po.get('witness_pct', 0):.2f}% of the surface ({po.get('witness_mm2', 0):g} mm²)")
+    reasons = "; ".join(po.get("reasons", []))
+    fig.suptitle(line1 + (chr(10) + (reasons[:190] + ("…" if len(reasons) > 190 else "")) if reasons else ""), fontsize=11)
+    handles = [Line2D([], [], marker="s", ls="", ms=9, color=DEV_COLORS["in_tol"], label=f"within ±{TOL:g} mm"),
+               Line2D([], [], marker="s", ls="", ms=9, color="#f39c34", label="proud"),
+               Line2D([], [], marker="s", ls="", ms=9, color="#8f1414", label="proud ≥ 1 mm"),
+               Line2D([], [], marker="s", ls="", ms=9, color=DEV_COLORS["gouge"], label="gouge"),
+               Line2D([], [], marker="s", ls="", ms=9, color=DEV_COLORS["witness"], label="tab witness (not scored)")]
+    fig.legend(handles=handles, loc="lower left", ncol=5, fontsize=9, frameon=False, bbox_to_anchor=(0.05, 0.0))
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def cmd_rescore(a):
+    """Re-score an existing run's final program with the current harness into a separate folder (old run untouched)."""
+    from . import sim5
+    run = Path(a.run_dir)
+    meta = json.loads((run / "run.json").read_text())
+    p = part5.load(Path(meta["part_dir"]) if Path(meta["part_dir"]).exists() else run / "part", verbose=True)
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    prog = (run / "final" / "program.nc").read_text()
+    shutil.copy(run / "final" / "program.nc", out / "program.nc")
+    res = sim5.run(prog, p)
+    write_feedback(p, res, out)
+    save_probes(p, res, out)
+    (out / "rescore.json").write_text(json.dumps({"source_run": str(run), "harness": harness_fp(),
+                                                  "metrics": res["metrics"]}, indent=1, default=float))
+    print(json.dumps(res["metrics"], indent=1))
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(prog="cncllm.x5")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -440,6 +797,7 @@ def main(argv=None):
     s = sub.add_parser("sim"); s.add_argument("run_dir"); s.add_argument("program"); s.add_argument("--note")
     s.set_defaults(f=cmd_sim)
     s = sub.add_parser("evaluate"); s.add_argument("run_dir"); s.add_argument("--iter", type=int); s.set_defaults(f=cmd_evaluate)
+    s = sub.add_parser("rescore"); s.add_argument("run_dir"); s.add_argument("out"); s.set_defaults(f=cmd_rescore)
     a = ap.parse_args(argv)
     a.f(a)
 

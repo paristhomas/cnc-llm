@@ -9,9 +9,10 @@ Fixture frame (= G54 work coordinates):
 fixture.json (chosen by the LLM; defaults shown):
   {"up": "+Z", "rot_z_deg": 0, "scale": 1.0, "margin": 3.0, "top": 1.5, "gap": 8.0, "grip": 8.0}
   "up" = which part-model axis points up in the vise (+X -X +Y -Y +Z -Z), rot_z_deg = rotation about the vertical after.
-Probe classes: 0 machinable (scored), 1 parting face (part bottom, finished by hand after break-off), 2 not reachable in
-3+2 with the library's smallest tools from any allowed direction (needs simultaneous 5-axis / a smaller tool / is
-hidden by the vise). Plus the 0.03 mm face-edge band (excluded), as in the 3-axis harness.
+Probe reach hint (pclass): 0 = the harness's quick reach search found a library tool + direction (with holder, vise as
+an obstacle) for this probe, 2 = it found none. This is a DIAGNOSTIC for the brief and feedback only: every probe is
+scored (whole-surface score, docs/ACCEPTANCE_REFINE.md H1); the only exclusions are the 0.03 mm face-edge band
+(metrology) and the tab witness (sim5.partoff_analysis).
 """
 from __future__ import annotations
 
@@ -169,7 +170,8 @@ def candidate_dirs(faces: list, Rfix: np.ndarray, max_tilt=MAX_TILT) -> np.ndarr
 REACH_TOOLS = ((4, 0.075), (8, 0.075), (3, 0.15), (7, 0.15), (2, 0.3), (6, 0.3), (1, 0.5))
 
 
-def reachability(V, F, vise, stock_lo, stock_hi, P, N, dirs, res=REACH_RES, tools=None, verbose=False):
+def reachability(V, F, vise, stock_lo, stock_hi, P, N, dirs, res=REACH_RES, tools=None, verbose=False,
+                 return_tool=False):
     """Per probe: index of a direction from which some library tool, WITH its holder (cylinder of the holder diameter
     from the stick-out up), can remove the material just outside the surface (tol + 0.03 mm) without gouging the part
     or entering the vise; -1 if none. Small tools are evaluated on fine rasters, large ones on coarser rasters."""
@@ -189,10 +191,11 @@ def reachability(V, F, vise, stock_lo, stock_hi, P, N, dirs, res=REACH_RES, tool
     corners = np.array([[x, y, z] for x in (stock_lo[0], stock_hi[0]) for y in (stock_lo[1], stock_hi[1])
                         for z in (stock_lo[2], stock_hi[2])])
     best = np.full(len(P), -1, np.int64)
+    btool = np.full(len(P), -1, np.int64)
     Q = P + N * (TOL + 0.03)
     groups = {}
-    for tn, r in tools:
-        groups.setdefault(r * scale, []).append(tn)
+    for ti, (tn, r) in enumerate(tools):
+        groups.setdefault(r * scale, []).append((ti, tn))
     for di, d in enumerate(dirs):
         t0 = time.time()
         R = frame_of(d)
@@ -205,21 +208,29 @@ def reachability(V, F, vise, stock_lo, stock_hi, P, N, dirs, res=REACH_RES, tool
             break
         q = Q[todo] @ R
         ok = np.zeros(len(todo), bool)
+        okt = np.full(len(todo), -1, np.int64)
         for rr, tns in sorted(groups.items()):
             nx, ny = int(math.ceil((hi2[0] - lo2[0]) / rr)), int(math.ceil((hi2[1] - lo2[1]) / rr))
             Ht = kernel.raster_top(Vk, FA, lo2[0], lo2[1], rr, nx, ny, -1e6)
             jj = np.clip(((q[:, 0] - lo2[0]) / rr - 0.5).round().astype(int), 0, nx - 1)
             ii = np.clip(((q[:, 1] - lo2[1]) / rr - 0.5).round().astype(int), 0, ny - 1)
-            for tn in tns:
-                t = LIBRARY[tn]
+            for ti, tn in tns:
+                t = LIBRARY[tn] if isinstance(tn, (int, np.integer)) else tn
                 row = t.row()
-                zf = holder_floor(Ht, rr, t.holder_diameter / 2, t.stickout, block=max(1, int(round(0.5 / rr))))
+                blk = max(1, int(round(0.5 / rr)))
+                zf = holder_floor(Ht, rr, t.holder_diameter / 2, t.stickout, block=blk)
+                if getattr(t, "neck_length", 0.0) > 0 and t.shank_diameter > t.diameter + 1e-9:
+                    # necked long-reach tool: the shank (wider than the neck) starts neck_length above the tip
+                    zf = np.maximum(zf, holder_floor(Ht, rr, t.shank_diameter / 2, t.neck_length, block=blk))
                 Hach = kernel.achievable(Ht, rr, int(row[0]), row[1], row[2], row[3], row[4], zf)
-                ok |= Hach[ii, jj] <= q[:, 2] + 0.03
+                hit = (Hach[ii, jj] <= q[:, 2] + 0.03) & ~ok
+                okt[hit] = ti
+                ok |= hit
         best[todo[ok]] = di
+        btool[todo[ok]] = okt[ok]
         if verbose:
             print(f"  dir {di} {np.round(d, 3)}: +{ok.sum()} reachable, {np.sum(best < 0)} left ({time.time() - t0:.1f}s)")
-    return best
+    return (best, btool) if return_tool else best
 
 
 def load(run_part_dir, rebuild=False, verbose=True) -> Part5:
@@ -227,7 +238,7 @@ def load(run_part_dir, rebuild=False, verbose=True) -> Part5:
     step = pdir / "part.step"
     setup = json.loads((pdir / "setup.json").read_text())
     sha = hashlib.sha256(step.read_bytes() + json.dumps(setup, sort_keys=True).encode()).hexdigest()
-    cfile = pdir / ".cache" / f"pre5b_{sha[:16]}.npz"
+    cfile = pdir / ".cache" / f"pre5c_{sha[:16]}.npz"
     if cfile.exists() and not rebuild:
         z = np.load(cfile, allow_pickle=False)
         meta = json.loads(str(z["meta"]))
@@ -241,8 +252,6 @@ def load(run_part_dir, rebuild=False, verbose=True) -> Part5:
     P, N, PF, PA = _sample(V, F, TF, None, rng)
     edge = edge_band(V, F, TF, P, PF)
     cls = np.zeros(len(P), np.int8)
-    parting = (P[:, 2] < 1e-3) & (N[:, 2] < -0.99)
-    cls[parting] = 1
     dirs = candidate_dirs(faces, np.eye(3))
     if verbose:
         print(f"[part5] {len(P)} probes, {len(dirs)} candidate directions")
@@ -256,6 +265,6 @@ def load(run_part_dir, rebuild=False, verbose=True) -> Part5:
     np.savez_compressed(cfile, V=V, F=F, TF=TF, P=P, N=N, pface=PF, parea=PA, pclass=cls, pedge=edge, dirs=dirs,
                         pdir=pd, meta=json.dumps({"faces": faces, "name": name}))
     if verbose:
-        print(f"[part5] classes {np.bincount(cls, minlength=3).tolist()} in {time.time() - t0:.0f}s")
+        print(f"[part5] reach hint: tool found {int((cls == 0).sum())}, none found {int((cls == 2).sum())} probes ({time.time() - t0:.0f}s)")
     return Part5(pdir, name, setup["fixture"], setup["stock"], setup["vise"], V, F, TF, faces, P, N, PF, PA, cls, edge,
                  dirs, pd, sha, setup)

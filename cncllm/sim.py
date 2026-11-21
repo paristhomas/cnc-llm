@@ -24,6 +24,14 @@ CAP = 5.0            # deviation cap (mm)
 EPS = 1e-3
 
 
+def shank_tables():
+    """Per tool row (same order as tool_tables): neck length (0 = no neck) and shank radius of necked tools."""
+    nums = sorted(LIBRARY)
+    nl = np.array([LIBRARY[n].neck_length for n in nums], np.float64)
+    sr = np.array([LIBRARY[n].shank_diameter / 2 for n in nums], np.float64)
+    return nl, sr
+
+
 def tool_tables():
     nums = sorted(LIBRARY)
     T = np.array([LIBRARY[n].row() for n in nums], np.float64)
@@ -154,8 +162,9 @@ def run(program_text: str, part: Part, res: float = SIM_RES, verbose: bool = Tru
             coarse[ci, cj] = H[ci * cblock:(ci + 1) * cblock, cj * cblock:(cj + 1) * cblock].max()
     t1 = time.time()
     if len(M):
+        nl, sr = shank_tables()
         vol, thick, flags = kernel.simulate_grid(np.ascontiguousarray(M), T, tool_rows, H, owner, x0, y0, res, fl, so, hr,
-                                                 coarse, cblock, 0.01)
+                                                 coarse, cblock, 0.01, nl, sr)
     else:
         vol, thick, flags = np.zeros(0), np.zeros(0), np.zeros(0, np.int32)
     t2 = time.time()
@@ -165,7 +174,8 @@ def run(program_text: str, part: Part, res: float = SIM_RES, verbose: bool = Tru
     stats = move_stats(M, vol, thick)
     names = {1: "rapid (G0) move removes material - crash", 2: "material removed with spindle stopped - crash",
              4: "material contact above the flute length (shank rubbing / tool too short)",
-             8: "tool holder collides with material (stick-out too short for this depth)"}
+             8: "tool holder collides with material (stick-out too short for this depth)",
+             32: "shank of a necked long-reach tool collides with material (deeper than the neck length)"}
     for bit, msg in names.items():
         k = np.where(flags & bit)[0]
         if len(k):

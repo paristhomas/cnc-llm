@@ -67,32 +67,138 @@ def _pt_box_d2(px, py, pz, lo, hi):
     return dx * dx + dy * dy + dz * dz
 
 
+FIXTURE_CLEARANCE = 1.0   # mm: the tool body must stay this far from the vise / table boxes (shop safety margin)
+
+
+@nb.njit(cache=True)
+def _disc_box_hit(cx, cy, cz, dx, dy, dz, r, lo, hi):
+    """True if the disc of radius r centred at c, perpendicular to the unit axis d, intersects the box [lo, hi]
+    (exact: the box is cut by the disc's plane into a convex polygon; the disc hits it if the polygon contains c or
+    comes within r of c)."""
+    if lo[0] <= cx <= hi[0] and lo[1] <= cy <= hi[1] and lo[2] <= cz <= hi[2]:
+        return True
+    # in-plane basis
+    if abs(dx) < 0.9:
+        ux, uy, uz = 0.0, dz, -dy
+    else:
+        ux, uy, uz = -dz, 0.0, dx
+    nu = math.sqrt(ux * ux + uy * uy + uz * uz)
+    ux, uy, uz = ux / nu, uy / nu, uz / nu
+    vx, vy, vz = dy * uz - dz * uy, dz * ux - dx * uz, dx * uy - dy * ux
+    pu = np.empty(12)
+    pv = np.empty(12)
+    k = 0
+    for e in range(12):
+        # the 12 box edges: axis a varies, the other two coordinates fixed at lo/hi
+        ax = e // 4
+        b1 = (e // 2) % 2
+        b2 = e % 2
+        p0 = np.empty(3)
+        p1 = np.empty(3)
+        o1 = (ax + 1) % 3
+        o2 = (ax + 2) % 3
+        p0[ax] = lo[ax]
+        p1[ax] = hi[ax]
+        p0[o1] = lo[o1] if b1 == 0 else hi[o1]
+        p1[o1] = p0[o1]
+        p0[o2] = lo[o2] if b2 == 0 else hi[o2]
+        p1[o2] = p0[o2]
+        s0 = (p0[0] - cx) * dx + (p0[1] - cy) * dy + (p0[2] - cz) * dz
+        s1 = (p1[0] - cx) * dx + (p1[1] - cy) * dy + (p1[2] - cz) * dz
+        if (s0 <= 0.0 <= s1) or (s1 <= 0.0 <= s0):
+            if abs(s0 - s1) < 1e-15:
+                continue
+            t = s0 / (s0 - s1)
+            qx = p0[0] + t * (p1[0] - p0[0]) - cx
+            qy = p0[1] + t * (p1[1] - p0[1]) - cy
+            qz = p0[2] + t * (p1[2] - p0[2]) - cz
+            pu[k] = qx * ux + qy * uy + qz * uz
+            pv[k] = qx * vx + qy * vy + qz * vz
+            k += 1
+    if k == 0:
+        return False
+    # any vertex within r
+    for i in range(k):
+        if pu[i] * pu[i] + pv[i] * pv[i] < r * r:
+            return True
+    if k < 3:
+        # degenerate (edge-on): distance from origin to the segment(s)
+        for i in range(k):
+            for j in range(i + 1, k):
+                ex, ey = pu[j] - pu[i], pv[j] - pv[i]
+                L2 = ex * ex + ey * ey
+                t = 0.0 if L2 < 1e-18 else max(0.0, min(1.0, -(pu[i] * ex + pv[i] * ey) / L2))
+                fx, fy = pu[i] + t * ex, pv[i] + t * ey
+                if fx * fx + fy * fy < r * r:
+                    return True
+        return False
+    # order the convex polygon by angle about its centroid
+    mu, mv = 0.0, 0.0
+    for i in range(k):
+        mu += pu[i]
+        mv += pv[i]
+    mu /= k
+    mv /= k
+    ang = np.empty(k)
+    for i in range(k):
+        ang[i] = math.atan2(pv[i] - mv, pu[i] - mu)
+    order = np.argsort(ang)
+    inside = True
+    for ii in range(k):
+        i = order[ii]
+        j = order[(ii + 1) % k]
+        ex, ey = pu[j] - pu[i], pv[j] - pv[i]
+        if ex * (0.0 - pv[i]) - ey * (0.0 - pu[i]) < -1e-12:
+            inside = False
+        L2 = ex * ex + ey * ey
+        t = 0.0 if L2 < 1e-18 else max(0.0, min(1.0, -(pu[i] * ex + pv[i] * ey) / L2))
+        fx, fy = pu[i] + t * ex, pv[i] + t * ey
+        if fx * fx + fy * fy < r * r:
+            return True
+    return inside
+
+
 @nb.njit(parallel=True, cache=True)
-def fixture_hits(A, B, D, rad, so, hr, hl, boxes):
-    """Per move: 1 if the tool (radius rad up to stick-out so) or holder (radius hr from so to so+hl) intersects any box.
-    A, B: tip start/end in fixture coords (n,3); D: tool axis (n,3); boxes (nb,2,3)."""
+def fixture_hits2(A, B, D, rad, so, hr, hl, boxes, nl, sr, clearance=FIXTURE_CLEARANCE):
+    """Per move: 1 + 2*box + part if the tool body touches a fixture box (grown by `clearance`). The body is a stack
+    of exact discs perpendicular to the tool axis, every 0.5 mm from the tip: cutter/neck radius rad up to nl (necked
+    tools) or so, shank radius sr from nl to the stick-out so, holder radius hr from so to so + hl. The move is
+    sampled every min(rad, 2) mm. part = 0 tool/neck/shank, 1 holder. A, B: tip start/end (n,3); D: tool axis (n,3)."""
     n = A.shape[0]
     out = np.zeros(n, np.int8)
+    nbx = boxes.shape[0]
+    gl = np.empty((nbx, 3))
+    gh = np.empty((nbx, 3))
+    for b in range(nbx):
+        for c in range(3):
+            gl[b, c] = boxes[b, 0, c] - clearance
+            gh[b, c] = boxes[b, 1, c] + clearance
     for m in nb.prange(n):
         L = math.sqrt((B[m, 0] - A[m, 0]) ** 2 + (B[m, 1] - A[m, 1]) ** 2 + (B[m, 2] - A[m, 2]) ** 2)
         ns = int(L / max(min(rad[m], 2.0), 0.5)) + 1
         hit = False
         code = 0
+        neck = nl[m] if nl[m] > 0.0 else so[m]
+        total = so[m] + hl
+        na = int(total * 2) + 1
         for s in range(ns + 1):
             t = s / ns
             tx = A[m, 0] + (B[m, 0] - A[m, 0]) * t
             ty = A[m, 1] + (B[m, 1] - A[m, 1]) * t
             tz = A[m, 2] + (B[m, 2] - A[m, 2]) * t
-            total = so[m] + hl
-            na = int(total) + 1
             for a in range(na + 1):
                 h = total * a / na
-                r = rad[m] if h <= so[m] else hr[m]
+                if h <= neck:
+                    r = rad[m]
+                elif h <= so[m]:
+                    r = sr[m]
+                else:
+                    r = hr[m]
                 px = tx + D[m, 0] * h
                 py = ty + D[m, 1] * h
                 pz = tz + D[m, 2] * h
-                for b in range(boxes.shape[0]):
-                    if _pt_box_d2(px, py, pz, boxes[b, 0], boxes[b, 1]) < r * r:
+                for b in range(nbx):
+                    if _disc_box_hit(px, py, pz, D[m, 0], D[m, 1], D[m, 2], r, gl[b], gh[b]):
                         hit = True
                         code = 1 + b * 2 + (1 if h > so[m] else 0)
                         break
@@ -103,3 +209,8 @@ def fixture_hits(A, B, D, rad, so, hr, hl, boxes):
         if hit:
             out[m] = code
     return out
+
+
+def fixture_hits(A, B, D, rad, so, hr, hl, boxes):
+    """Back-compatible wrapper (tools without a neck)."""
+    return fixture_hits2(A, B, D, rad, so, hr, hl, boxes, np.zeros(len(rad)), np.asarray(rad, np.float64))

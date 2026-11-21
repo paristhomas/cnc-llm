@@ -95,14 +95,50 @@ def zcut(x0, y0, z0, x1, y1, z1, kind, R, cr, tip, cot, px, py):
 
 
 @nb.njit(cache=True)
-def simulate_grid(M, T, tool_rows, H, owner, x0, y0, res, flute_len, stickout, holder_R, coarse, cblock, eps):
+def _body_hit(H, coarse, cblock, x0, y0, res, ax, ay, az, bx, by, bz, zoff, HR, eps):
+    """True if a cylinder of radius HR whose bottom rides zoff above the tool tip (holder, or the shank of a necked
+    tool) touches material of the height field H anywhere along the move."""
+    ny, nx = H.shape
+    cny, cnx = coarse.shape
+    zh = min(az, bz) + zoff
+    cj0 = max(int(math.floor((min(ax, bx) - HR - x0) / (res * cblock))), 0)
+    cj1 = min(int(math.floor((max(ax, bx) + HR - x0) / (res * cblock))), cnx - 1)
+    ci0 = max(int(math.floor((min(ay, by) - HR - y0) / (res * cblock))), 0)
+    ci1 = min(int(math.floor((max(ay, by) + HR - y0) / (res * cblock))), cny - 1)
+    maybe = False
+    for ci in range(ci0, ci1 + 1):
+        for cj in range(cj0, cj1 + 1):
+            if coarse[ci, cj] > zh + eps:
+                maybe = True
+    if not maybe:
+        return False
+    j0 = max(int(math.floor((min(ax, bx) - HR - x0) / res)), 0)
+    j1 = min(int(math.ceil((max(ax, bx) + HR - x0) / res)), nx - 1)
+    i0 = max(int(math.floor((min(ay, by) - HR - y0) / res)), 0)
+    i1 = min(int(math.ceil((max(ay, by) + HR - y0) / res)), ny - 1)
+    for i in range(i0, i1 + 1):
+        py = y0 + (i + 0.5) * res
+        for j in range(j0, j1 + 1):
+            if H[i, j] > zh + eps:
+                px = x0 + (j + 0.5) * res
+                zc = zcut(ax, ay, az + zoff, bx, by, bz + zoff, 0, HR, 0.0, 0.0, 0.0, px, py)
+                if zc < H[i, j] - eps:
+                    return True
+    return False
+
+
+@nb.njit(cache=True)
+def simulate_grid(M, T, tool_rows, H, owner, x0, y0, res, flute_len, stickout, holder_R, coarse, cblock, eps,
+                  neck_len=None, shank_R=None):
     """Replay moves in order on the height field H (ny, nx), cell centres x0 + (j + .5) res.
 
     M rows: x0 y0 z0 x1 y1 z1 tool rapid feed rpm line spindle ; tool_rows[tool] -> row in T (or -1: no tool).
     Returns per-move arrays: removed volume, max removed column thickness, flags bitmask
         1 rapid removes material  2 spindle off while removing  4 shank contact (above flute length)
         8 holder collision        16 non-centre-cutting plunge  (set by caller)
+        32 shank collision (necked long-reach tools: the shank, wider than the neck, starts neck_len above the tip)
     coarse: per-block max of H (block size cblock cells) for fast holder rejection.
+    neck_len / shank_R: per tool row (0 = no neck); optional.
     """
     n = M.shape[0]
     ny, nx = H.shape
@@ -120,36 +156,12 @@ def simulate_grid(M, T, tool_rows, H, owner, x0, y0, res, flute_len, stickout, h
         zlo = min(az, bz)
         fl = flute_len[tr]
         # ---- holder collision (material above tip + stickout within holder radius)
-        HR = holder_R[tr]
-        zh = zlo + stickout[tr]
-        cj0 = max(int(math.floor((min(ax, bx) - HR - x0) / (res * cblock))), 0)
-        cj1 = min(int(math.floor((max(ax, bx) + HR - x0) / (res * cblock))), cnx - 1)
-        ci0 = max(int(math.floor((min(ay, by) - HR - y0) / (res * cblock))), 0)
-        ci1 = min(int(math.floor((max(ay, by) + HR - y0) / (res * cblock))), cny - 1)
-        maybe = False
-        for ci in range(ci0, ci1 + 1):
-            for cj in range(cj0, cj1 + 1):
-                if coarse[ci, cj] > zh + eps:
-                    maybe = True
-        if maybe:
-            j0 = max(int(math.floor((min(ax, bx) - HR - x0) / res)), 0)
-            j1 = min(int(math.ceil((max(ax, bx) + HR - x0) / res)), nx - 1)
-            i0 = max(int(math.floor((min(ay, by) - HR - y0) / res)), 0)
-            i1 = min(int(math.ceil((max(ay, by) + HR - y0) / res)), ny - 1)
-            hit = False
-            for i in range(i0, i1 + 1):
-                py = y0 + (i + 0.5) * res
-                for j in range(j0, j1 + 1):
-                    if H[i, j] > zh + eps:
-                        px = x0 + (j + 0.5) * res
-                        zc = zcut(ax, ay, az + stickout[tr], bx, by, bz + stickout[tr], 0, HR, 0.0, 0.0, 0.0, px, py)
-                        if zc < H[i, j] - eps:
-                            hit = True
-                            break
-                if hit:
-                    break
-            if hit:
-                flags[m] |= 8
+        if _body_hit(H, coarse, cblock, x0, y0, res, ax, ay, az, bx, by, bz, stickout[tr], holder_R[tr], eps):
+            flags[m] |= 8
+        # ---- shank of a necked tool (between the neck and the holder)
+        if neck_len is not None and neck_len[tr] > 0.0:
+            if _body_hit(H, coarse, cblock, x0, y0, res, ax, ay, az, bx, by, bz, neck_len[tr], shank_R[tr], eps):
+                flags[m] |= 32
         # ---- material removal
         j0 = max(int(math.floor((min(ax, bx) - R - x0) / res)), 0)
         j1 = min(int(math.ceil((max(ax, bx) + R - x0) / res)), nx - 1)

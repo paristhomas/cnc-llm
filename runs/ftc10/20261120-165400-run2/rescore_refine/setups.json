@@ -1,0 +1,777 @@
+{
+ "segments": [
+  {
+   "segment": 1,
+   "frame": 0,
+   "first_line": 11,
+   "last_line": 45675,
+   "moves": 61943,
+   "tools": [
+    1,
+    2,
+    3,
+    6
+   ],
+   "A_deg": 0.0,
+   "C_deg": 0.0,
+   "tool_axis": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "removed_cm3": 74.21
+  },
+  {
+   "segment": 2,
+   "frame": 1,
+   "first_line": 45681,
+   "last_line": 245527,
+   "moves": 267007,
+   "tools": [
+    1,
+    2,
+    3,
+    4,
+    6
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 102.894
+  },
+  {
+   "segment": 3,
+   "frame": 2,
+   "first_line": 245535,
+   "last_line": 253726,
+   "moves": 7894,
+   "tools": [
+    1,
+    2,
+    3
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 106.361
+  },
+  {
+   "segment": 4,
+   "frame": 3,
+   "first_line": 253733,
+   "last_line": 253758,
+   "moves": 25,
+   "tools": [
+    1
+   ],
+   "A_deg": 55.0,
+   "C_deg": 90.0,
+   "tool_axis": [
+    0.0,
+    0.8192,
+    0.5736
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    180.0,
+    55.0,
+    0.0
+   ],
+   "removed_cm3": 4.855
+  },
+  {
+   "segment": 5,
+   "frame": 4,
+   "first_line": 253762,
+   "last_line": 253787,
+   "moves": 25,
+   "tools": [
+    1
+   ],
+   "A_deg": 55.0,
+   "C_deg": -90.0,
+   "tool_axis": [
+    0.0,
+    -0.8192,
+    0.5736
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    0.0,
+    55.0,
+    0.0
+   ],
+   "removed_cm3": 4.84
+  },
+  {
+   "segment": 6,
+   "frame": 5,
+   "first_line": 253791,
+   "last_line": 253832,
+   "moves": 41,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -180.0,
+   "tool_axis": [
+    -1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    -90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 21.98
+  },
+  {
+   "segment": 7,
+   "frame": 6,
+   "first_line": 253836,
+   "last_line": 253877,
+   "moves": 41,
+   "tools": [
+    1
+   ],
+   "A_deg": 90.0,
+   "C_deg": -0.0,
+   "tool_axis": [
+    1.0,
+    -0.0,
+    0.0
+   ],
+   "origin": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "ijk": [
+    90.0,
+    90.0,
+    0.0
+   ],
+   "removed_cm3": 23.952
+  }
+ ],
+ "rigidity": {
+  "stock_section_mm2": 6068.0,
+  "part_off_line": 253724,
+  "checks": [
+   {
+    "after_segment": 1,
+    "line": 45675,
+    "area_mm2": 6068.0,
+    "weakest_z": -15.7,
+    "fraction": 1.0,
+    "islands": [
+     6068.0
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 2,
+    "line": 245527,
+    "area_mm2": 4200.44,
+    "weakest_z": -0.1,
+    "fraction": 0.6922,
+    "islands": [
+     4200.44
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 3,
+    "line": 253726,
+    "area_mm2": 3605.81,
+    "weakest_z": -0.1,
+    "fraction": 0.5942,
+    "islands": [
+     3605.81
+    ],
+    "part_off": false
+   },
+   {
+    "after_segment": 4,
+    "line": 253758,
+    "area_mm2": 3590.62,
+    "weakest_z": -0.1,
+    "fraction": 0.5917,
+    "islands": [
+     3590.62
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 5,
+    "line": 253787,
+    "area_mm2": 3575.44,
+    "weakest_z": -0.1,
+    "fraction": 0.5892,
+    "islands": [
+     3575.44
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 6,
+    "line": 253832,
+    "area_mm2": 2010.0,
+    "weakest_z": -2.7,
+    "fraction": 0.3312,
+    "islands": [
+     2010.0
+    ],
+    "part_off": true
+   },
+   {
+    "after_segment": 7,
+    "line": 253877,
+    "area_mm2": 13.0,
+    "weakest_z": -5.3,
+    "fraction": 0.0021,
+    "islands": [
+     6.5,
+     6.5
+    ],
+    "part_off": true
+   }
+  ],
+  "partoff": {
+   "ok": false,
+   "tabs": [
+    {
+     "area_mm2": 6.48,
+     "width_mm": 2.0,
+     "centroid": [
+      -0.0,
+      -40.0,
+      -5.7
+     ]
+    },
+    {
+     "area_mm2": 6.48,
+     "width_mm": 2.0,
+     "centroid": [
+      -0.0,
+      40.0,
+      -5.7
+     ]
+    }
+   ],
+   "total_mm2": 12.96,
+   "weakest_z": -5.7,
+   "witness_mm2": 8586.6,
+   "witness_pct": 17.693,
+   "joint_mm2": 8121.16,
+   "reasons": [
+    "tab witness 17.69% of the surface (8587 mm2; max 1.5%): proud material connected to the tabs covers too much of the part (an unfinished underside counts as tab joint)"
+   ],
+   "planes": [
+    {
+     "z": -15.7,
+     "area_mm2": 6053.2,
+     "connected_mm2": 6053.2,
+     "islands": 3
+    },
+    {
+     "z": -15.2,
+     "area_mm2": 5979.2,
+     "connected_mm2": 5979.2,
+     "islands": 3
+    },
+    {
+     "z": -14.7,
+     "area_mm2": 5897.8,
+     "connected_mm2": 5897.8,
+     "islands": 3
+    },
+    {
+     "z": -14.2,
+     "area_mm2": 5816.4,
+     "connected_mm2": 5816.4,
+     "islands": 3
+    },
+    {
+     "z": -13.7,
+     "area_mm2": 5735.0,
+     "connected_mm2": 5735.0,
+     "islands": 3
+    },
+    {
+     "z": -13.2,
+     "area_mm2": 5661.0,
+     "connected_mm2": 5661.0,
+     "islands": 3
+    },
+    {
+     "z": -12.7,
+     "area_mm2": 5579.6,
+     "connected_mm2": 5579.6,
+     "islands": 3
+    },
+    {
+     "z": -12.2,
+     "area_mm2": 5505.6,
+     "connected_mm2": 5505.6,
+     "islands": 3
+    },
+    {
+     "z": -11.7,
+     "area_mm2": 5424.2,
+     "connected_mm2": 5424.2,
+     "islands": 3
+    },
+    {
+     "z": -11.2,
+     "area_mm2": 5350.2,
+     "connected_mm2": 5350.2,
+     "islands": 3
+    },
+    {
+     "z": -10.7,
+     "area_mm2": 5261.4,
+     "connected_mm2": 5261.4,
+     "islands": 3
+    },
+    {
+     "z": -10.2,
+     "area_mm2": 512.96,
+     "connected_mm2": 512.96,
+     "islands": 6
+    },
+    {
+     "z": -9.7,
+     "area_mm2": 356.8,
+     "connected_mm2": 356.8,
+     "islands": 4
+    },
+    {
+     "z": -9.2,
+     "area_mm2": 299.8,
+     "connected_mm2": 299.8,
+     "islands": 4
+    },
+    {
+     "z": -8.7,
+     "area_mm2": 244.24,
+     "connected_mm2": 244.24,
+     "islands": 4
+    },
+    {
+     "z": -8.2,
+     "area_mm2": 189.56,
+     "connected_mm2": 189.56,
+     "islands": 4
+    },
+    {
+     "z": -7.7,
+     "area_mm2": 135.36,
+     "connected_mm2": 135.36,
+     "islands": 4
+    },
+    {
+     "z": -7.2,
+     "area_mm2": 81.96,
+     "connected_mm2": 81.96,
+     "islands": 4
+    },
+    {
+     "z": -6.7,
+     "area_mm2": 21.64,
+     "connected_mm2": 21.64,
+     "islands": 4
+    },
+    {
+     "z": -6.2,
+     "area_mm2": 13.44,
+     "connected_mm2": 13.44,
+     "islands": 2
+    },
+    {
+     "z": -5.7,
+     "area_mm2": 12.96,
+     "connected_mm2": 12.96,
+     "islands": 2
+    },
+    {
+     "z": -5.2,
+     "area_mm2": 12.96,
+     "connected_mm2": 12.96,
+     "islands": 2
+    },
+    {
+     "z": -4.7,
+     "area_mm2": 43.2,
+     "connected_mm2": 13.6,
+     "islands": 4
+    },
+    {
+     "z": -4.2,
+     "area_mm2": 34.32,
+     "connected_mm2": 14.4,
+     "islands": 4
+    },
+    {
+     "z": -3.7,
+     "area_mm2": 48.8,
+     "connected_mm2": 15.6,
+     "islands": 4
+    },
+    {
+     "z": -3.2,
+     "area_mm2": 67.24,
+     "connected_mm2": 17.44,
+     "islands": 4
+    },
+    {
+     "z": -2.7,
+     "area_mm2": 86.24,
+     "connected_mm2": 19.84,
+     "islands": 4
+    },
+    {
+     "z": -2.2,
+     "area_mm2": 104.64,
+     "connected_mm2": 23.04,
+     "islands": 4
+    },
+    {
+     "z": -1.7,
+     "area_mm2": 129.44,
+     "connected_mm2": 27.04,
+     "islands": 4
+    },
+    {
+     "z": -1.2,
+     "area_mm2": 155.84,
+     "connected_mm2": 32.64,
+     "islands": 4
+    },
+    {
+     "z": -0.7,
+     "area_mm2": 195.44,
+     "connected_mm2": 41.76,
+     "islands": 4
+    },
+    {
+     "z": -0.2,
+     "area_mm2": 3577.33,
+     "connected_mm2": 3577.33,
+     "islands": 1
+    },
+    {
+     "z": -0.05,
+     "area_mm2": 3577.42,
+     "connected_mm2": 3577.42,
+     "islands": 1
+    }
+   ],
+   "limits": {
+    "total_mm2": [
+     2.0,
+     30.0
+    ],
+    "max_fraction": 0.15,
+    "max_width_mm": 3.0,
+    "max_count": 4,
+    "witness_mm": 1.0,
+    "witness_max_pct": 1.5
+   }
+  }
+ },
+ "partoff": {
+  "ok": false,
+  "tabs": [
+   {
+    "area_mm2": 6.48,
+    "width_mm": 2.0,
+    "centroid": [
+     -0.0,
+     -40.0,
+     -5.7
+    ]
+   },
+   {
+    "area_mm2": 6.48,
+    "width_mm": 2.0,
+    "centroid": [
+     -0.0,
+     40.0,
+     -5.7
+    ]
+   }
+  ],
+  "total_mm2": 12.96,
+  "weakest_z": -5.7,
+  "witness_mm2": 8586.6,
+  "witness_pct": 17.693,
+  "joint_mm2": 8121.16,
+  "reasons": [
+   "tab witness 17.69% of the surface (8587 mm2; max 1.5%): proud material connected to the tabs covers too much of the part (an unfinished underside counts as tab joint)"
+  ],
+  "planes": [
+   {
+    "z": -15.7,
+    "area_mm2": 6053.2,
+    "connected_mm2": 6053.2,
+    "islands": 3
+   },
+   {
+    "z": -15.2,
+    "area_mm2": 5979.2,
+    "connected_mm2": 5979.2,
+    "islands": 3
+   },
+   {
+    "z": -14.7,
+    "area_mm2": 5897.8,
+    "connected_mm2": 5897.8,
+    "islands": 3
+   },
+   {
+    "z": -14.2,
+    "area_mm2": 5816.4,
+    "connected_mm2": 5816.4,
+    "islands": 3
+   },
+   {
+    "z": -13.7,
+    "area_mm2": 5735.0,
+    "connected_mm2": 5735.0,
+    "islands": 3
+   },
+   {
+    "z": -13.2,
+    "area_mm2": 5661.0,
+    "connected_mm2": 5661.0,
+    "islands": 3
+   },
+   {
+    "z": -12.7,
+    "area_mm2": 5579.6,
+    "connected_mm2": 5579.6,
+    "islands": 3
+   },
+   {
+    "z": -12.2,
+    "area_mm2": 5505.6,
+    "connected_mm2": 5505.6,
+    "islands": 3
+   },
+   {
+    "z": -11.7,
+    "area_mm2": 5424.2,
+    "connected_mm2": 5424.2,
+    "islands": 3
+   },
+   {
+    "z": -11.2,
+    "area_mm2": 5350.2,
+    "connected_mm2": 5350.2,
+    "islands": 3
+   },
+   {
+    "z": -10.7,
+    "area_mm2": 5261.4,
+    "connected_mm2": 5261.4,
+    "islands": 3
+   },
+   {
+    "z": -10.2,
+    "area_mm2": 512.96,
+    "connected_mm2": 512.96,
+    "islands": 6
+   },
+   {
+    "z": -9.7,
+    "area_mm2": 356.8,
+    "connected_mm2": 356.8,
+    "islands": 4
+   },
+   {
+    "z": -9.2,
+    "area_mm2": 299.8,
+    "connected_mm2": 299.8,
+    "islands": 4
+   },
+   {
+    "z": -8.7,
+    "area_mm2": 244.24,
+    "connected_mm2": 244.24,
+    "islands": 4
+   },
+   {
+    "z": -8.2,
+    "area_mm2": 189.56,
+    "connected_mm2": 189.56,
+    "islands": 4
+   },
+   {
+    "z": -7.7,
+    "area_mm2": 135.36,
+    "connected_mm2": 135.36,
+    "islands": 4
+   },
+   {
+    "z": -7.2,
+    "area_mm2": 81.96,
+    "connected_mm2": 81.96,
+    "islands": 4
+   },
+   {
+    "z": -6.7,
+    "area_mm2": 21.64,
+    "connected_mm2": 21.64,
+    "islands": 4
+   },
+   {
+    "z": -6.2,
+    "area_mm2": 13.44,
+    "connected_mm2": 13.44,
+    "islands": 2
+   },
+   {
+    "z": -5.7,
+    "area_mm2": 12.96,
+    "connected_mm2": 12.96,
+    "islands": 2
+   },
+   {
+    "z": -5.2,
+    "area_mm2": 12.96,
+    "connected_mm2": 12.96,
+    "islands": 2
+   },
+   {
+    "z": -4.7,
+    "area_mm2": 43.2,
+    "connected_mm2": 13.6,
+    "islands": 4
+   },
+   {
+    "z": -4.2,
+    "area_mm2": 34.32,
+    "connected_mm2": 14.4,
+    "islands": 4
+   },
+   {
+    "z": -3.7,
+    "area_mm2": 48.8,
+    "connected_mm2": 15.6,
+    "islands": 4
+   },
+   {
+    "z": -3.2,
+    "area_mm2": 67.24,
+    "connected_mm2": 17.44,
+    "islands": 4
+   },
+   {
+    "z": -2.7,
+    "area_mm2": 86.24,
+    "connected_mm2": 19.84,
+    "islands": 4
+   },
+   {
+    "z": -2.2,
+    "area_mm2": 104.64,
+    "connected_mm2": 23.04,
+    "islands": 4
+   },
+   {
+    "z": -1.7,
+    "area_mm2": 129.44,
+    "connected_mm2": 27.04,
+    "islands": 4
+   },
+   {
+    "z": -1.2,
+    "area_mm2": 155.84,
+    "connected_mm2": 32.64,
+    "islands": 4
+   },
+   {
+    "z": -0.7,
+    "area_mm2": 195.44,
+    "connected_mm2": 41.76,
+    "islands": 4
+   },
+   {
+    "z": -0.2,
+    "area_mm2": 3577.33,
+    "connected_mm2": 3577.33,
+    "islands": 1
+   },
+   {
+    "z": -0.05,
+    "area_mm2": 3577.42,
+    "connected_mm2": 3577.42,
+    "islands": 1
+   }
+  ],
+  "limits": {
+   "total_mm2": [
+    2.0,
+    30.0
+   ],
+   "max_fraction": 0.15,
+   "max_width_mm": 3.0,
+   "max_count": 4,
+   "witness_mm": 1.0,
+   "witness_max_pct": 1.5
+  }
+ }
+}

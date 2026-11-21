@@ -1,0 +1,49 @@
+[part5] 250165 probes, 18 candidate directions
+  dir 0 [-0.707 -0.707  0.   ]: +64579 reachable, 185586 left (10.0s)
+  dir 1 [-0.577 -0.577  0.577]: +54084 reachable, 131502 left (27.8s)
+  dir 2 [-1.  0.  0.]: +10968 reachable, 120534 left (7.1s)
+  dir 3 [-0.707  0.     0.707]: +12002 reachable, 108532 left (11.6s)
+  dir 4 [-0.707  0.707  0.   ]: +13761 reachable, 94771 left (6.1s)
+  dir 5 [-0.577  0.577  0.577]: +9309 reachable, 85462 left (24.7s)
+  dir 6 [ 0. -1.  0.]: +7114 reachable, 78348 left (4.9s)
+  dir 7 [ 0.    -0.707  0.707]: +24512 reachable, 53836 left (10.2s)
+  dir 8 [0. 0. 1.]: +18650 reachable, 35186 left (13.6s)
+  dir 9 [0. 1. 0.]: +10737 reachable, 24449 left (7.6s)
+  dir 10 [0.    0.707 0.707]: +4 reachable, 24445 left (12.9s)
+  dir 11 [ 0.707 -0.707  0.   ]: +15575 reachable, 8870 left (8.0s)
+  dir 12 [ 0.577 -0.577  0.577]: +35 reachable, 8835 left (18.6s)
+  dir 13 [1. 0. 0.]: +3687 reachable, 5148 left (5.4s)
+  dir 14 [0.707 0.    0.707]: +39 reachable, 5109 left (11.0s)
+  dir 15 [0.707 0.707 0.   ]: +0 reachable, 5109 left (8.8s)
+  dir 16 [0.577 0.577 0.577]: +16 reachable, 5093 left (17.3s)
+  dir 17 [-0.736 -0.     0.677]: +1 reachable, 5092 left (8.6s)
+[part5] reach hint: tool found 245073, none found 5092 probes (227s)
+[sim5] 143095 moves, 28 segments; replay 19.2s, metric 586.1s; whole surface in tol 80.059% (tab witness 0.00%), errors 3
+{
+ "whole_surface_in_tol_pct": 80.059,
+ "whole_surface_gouge_pct": 0.001,
+ "whole_surface_proud_pct": 19.94,
+ "tab_witness_pct": 0.0,
+ "tab_witness_mm2": 0.0,
+ "edge_band_excluded_pct": 1.001,
+ "max_gouge_mm": 5.0,
+ "max_proud_mm": 5.0,
+ "proud_area_mm2": 9460.05,
+ "gouge_area_mm2": 0.38,
+ "hint_no_tool_found_pct": 1.982,
+ "surface_area_mm2": 47921.9,
+ "scored_area_mm2": 47442.4,
+ "probes": 250165,
+ "tolerance_mm": 0.1,
+ "tabs": 2,
+ "tab_total_mm2": 2650.78,
+ "tab_max_width_mm": 38.2,
+ "partoff_ok": false,
+ "cycle_time_min": 40.53,
+ "setups": 28,
+ "distinct_orientations": 13,
+ "final_connection_mm2": 2660.06,
+ "errors": 3,
+ "warnings": 0,
+ "valid": false
+}

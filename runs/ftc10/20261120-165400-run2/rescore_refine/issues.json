@@ -1,0 +1,8 @@
+[
+ {
+  "severity": "error",
+  "kind": "part-off",
+  "line": 253877,
+  "msg": "part-off: tab witness 17.69% of the surface (8587 mm2; max 1.5%): proud material connected to the tabs covers too much of the part (an unfinished underside counts as tab joint)"
+ }
+]

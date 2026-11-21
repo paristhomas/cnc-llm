@@ -1,0 +1,20 @@
+[
+ {
+  "severity": "error",
+  "kind": "part-off",
+  "line": 124383,
+  "msg": "part-off: tabs total 2650.8 mm2 at the weakest plane Z-13.2 (max 30 mm2)"
+ },
+ {
+  "severity": "error",
+  "kind": "part-off",
+  "line": 124383,
+  "msg": "part-off: 2 tab(s) wider than 3 mm in their smallest direction (widest 38.20 mm): not removable by hand"
+ },
+ {
+  "severity": "error",
+  "kind": "part-off",
+  "line": 124383,
+  "msg": "part-off: tab witness 21.60% of the surface (10350 mm2; max 1.5%): proud material connected to the tabs covers too much of the part (an unfinished underside counts as tab joint)"
+ }
+]

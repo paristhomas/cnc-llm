@@ -35,6 +35,8 @@ class Tool:
     max_rpm: int = 24000
     center_cutting: bool = True
     note: str = ""
+    neck_length: float = 0.0     # necked long-reach tools: tip to the start of the shank (reach); 0 = no neck
+    catalogue: str = ""          # catalogue reference for added tools (ACCEPTANCE_REFINE J)
 
     @property
     def R(self) -> float:
@@ -101,12 +103,36 @@ MACHINE = Machine()
 
 def library_table() -> str:
     """Markdown table of the tool library for the LLM."""
-    rows = ["| T | Tool | Kind | D (mm) | Flutes | Flute len | Stick-out | Holder D | Chipload (mm/t) | Max rpm | Notes |",
-            "|---|---|---|---|---|---|---|---|---|---|---|"]
+    rows = ["| T | Tool | Kind | D (mm) | Flutes | Flute len | Neck: reach / shank D | Stick-out | Holder D | Chipload (mm/t) | Max rpm | Notes |",
+            "|---|---|---|---|---|---|---|---|---|---|---|---|"]
     for t in LIBRARY.values():
         extra = t.note
         if t.kind == "bull":
             extra = f"corner r{t.corner_radius}"
-        rows.append(f"| T{t.number} | {t.name} | {t.kind} | {t.diameter:g} | {t.flutes} | {t.flute_length:g} | {t.stickout:g} | "
+        neck = f"{t.neck_length:g} / {t.shank_diameter:g}" if t.neck_length > 0 else "-"
+        rows.append(f"| T{t.number} | {t.name} | {t.kind} | {t.diameter:g} | {t.flutes} | {t.flute_length:g} | {neck} | {t.stickout:g} | "
                     f"{t.holder_diameter:g} | {t.chipload:g} | {min(t.max_rpm, MACHINE.max_rpm)} | {extra} |")
     return "\n".join(rows)
+
+
+# Candidate additions under rule R4 (docs/ACCEPTANCE_REFINE.md J): long-reach necked tools, real catalogue families,
+# conservative chip loads (about half the 1xD catalogue value because of the reach). They are NOT in the library until
+# the reach audit (docs/FTC10_REACH_AUDIT.md) shows they are needed; adoption is recorded in the acceptance addendum.
+CANDIDATES = [
+    Tool(11, "4 mm 2-flute long-neck flat endmill, neck 40 mm", "flat", 4.0, 2, 6.0, 55.0, 6.0, holder_diameter=22.0,
+         chipload=0.012, neck_length=40.0,
+         note="neck dia 3.8 to 40 mm, 6 mm shank, slim shrink-fit holder; finishing / light cuts only",
+         catalogue="long-neck square end mill families, e.g. NS Tool MHR230 4x40, Widin WE514 4 mm x 40 mm"),
+    Tool(12, "6 mm 3-flute long-reach flat endmill, reach 50 mm", "flat", 6.0, 3, 12.0, 60.0, 6.0, holder_diameter=22.0,
+         chipload=0.02, neck_length=50.0,
+         note="neck dia 5.7 to 50 mm, 6 mm shank, slim shrink-fit holder",
+         catalogue="long-reach / long-neck aluminium end mills, e.g. Garant 202247 long reach, MISUMI long-neck Al type"),
+    Tool(13, "2 mm ball long-neck endmill, neck 20 mm", "ball", 2.0, 2, 2.0, 35.0, 4.0, holder_diameter=16.0,
+         chipload=0.006, neck_length=20.0,
+         note="R1 ball, neck dia 1.9 to 20 mm, 4 mm shank, slim shrink-fit holder",
+         catalogue="long-neck ball end mill families, e.g. NS Tool MHR230 / MRBLN230 R1 x 20"),
+    Tool(14, "3 mm ball long-neck endmill, neck 30 mm", "ball", 3.0, 2, 3.0, 50.0, 6.0, holder_diameter=22.0,
+         chipload=0.01, neck_length=30.0,
+         note="R1.5 ball, neck dia 2.85 to 30 mm, 6 mm shank, slim shrink-fit holder",
+         catalogue="long-neck ball end mill families, e.g. NS Tool MRBLN230-6 (6 mm shank, deep ribbing)"),
+]
