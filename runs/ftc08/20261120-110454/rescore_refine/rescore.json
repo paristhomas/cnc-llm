@@ -2,7 +2,7 @@
  "source_run": "runs/ftc08/20261120-110454",
  "harness": {
   "sha256": "959c7f3f25997b4b23f64319ab82f4a9560820f15e6a90b291be04647560e0ac",
-  "git_head": "5c3f0d1",
+  "git_head": "8dfa829",
   "harness_modified": true,
   "modified_files": [
    "M cncllm/part5.py",

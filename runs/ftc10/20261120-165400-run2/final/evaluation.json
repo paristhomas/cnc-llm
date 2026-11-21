@@ -25,7 +25,7 @@
  "integrity": {
   "harness": {
    "sha256": "29692a9908ce8118b3f2b00bf15d11a44f6e2407be9fca8072b42c87f89ab884",
-   "git_head": "b63cd8f",
+   "git_head": "1a4009a",
    "harness_modified": false,
    "modified_files": []
   },

@@ -9,7 +9,7 @@
  "mode": "3+2",
  "harness": {
   "sha256": "85453d8f45965177fff9302d6f3e5d68d3222413e7fa943b4b84450009cd32c4",
-  "git_head": "27c5c7e",
+  "git_head": "e0d54be",
   "harness_modified": false,
   "modified_files": []
  }

@@ -24,7 +24,7 @@
  "integrity": {
   "harness": {
    "sha256": "6c682dc4220e89e3eacc40a1783e57b1056443da83760a6ea38096f998109a33",
-   "git_head": "ecbcf6a",
+   "git_head": "a3c3f2f",
    "harness_modified": true,
    "modified_files": [
     "M cncllm/sim.py"

@@ -34,14 +34,14 @@
   "failures": [],
   "harness": {
    "sha256": "63bd0ddc6479d309e2f6091ddf771cadce756f4c3af560610fb38f2ab2e619a0",
-   "git_head": "4557aec",
+   "git_head": "2a3b37d",
    "harness_modified": false,
    "modified_files": []
   },
   "frozen": {
    "sha256": "63bd0ddc6479d309e2f6091ddf771cadce756f4c3af560610fb38f2ab2e619a0",
    "date": "2026-11-21 08:24 UTC",
-   "parent_commit": "780f8ef",
+   "parent_commit": "e399112",
    "files": [
     "cli.py",
     "crosscheck.py",
@@ -105,7 +105,7 @@
    "ok": true
   },
   "repo": "/tmp/cncllm-frozen-GgvTYr",
-  "frozen_checkout_commit": "4557aec"
+  "frozen_checkout_commit": "2a3b37d"
  },
  "crosscheck_millbill": {
   "points": 250000,

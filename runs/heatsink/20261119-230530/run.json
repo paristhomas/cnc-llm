@@ -6,7 +6,7 @@
  "label": "",
  "harness": {
   "sha256": "945d17f7b0d4559030f63b0314b8887e2ef65c4a1d72c73f293a984ecae92fa9",
-  "git_head": "8a46718",
+  "git_head": "45706ac",
   "harness_modified": false,
   "modified_files": []
  },

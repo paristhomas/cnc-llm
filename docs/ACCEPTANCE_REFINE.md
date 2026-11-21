@@ -149,8 +149,8 @@ Record each change with its date, its reason, and whether it tightens or loosens
   FTC-10 evidence only. CTC-04 was not looked at.
 - **Fingerprint.** `cli.py` added to the hashed harness core (it holds the generator scan). This tightens the check.
 - **Frozen harness:** sha256 `0b28d03c4c1fbdc6822025f0d56a623c323fcd606c7c008b6bb2848223bc8605`, file
-  `harness_frozen.json`, freeze commit `3ccb111`.
-  - Final evaluations re-run from a clean checkout of `3ccb111` with `tools/frozen_eval.sh <run>`.
+  `harness_frozen.json`, freeze commit `1cbfa1d`.
+  - Final evaluations re-run from a clean checkout of `1cbfa1d` with `tools/frozen_eval.sh <run>`.
   - The skill `skills/cnc-gcode-3plus2/SKILL.md` and the prompts `docs/LLM_AGENT_PROMPT.md` and
     `docs/reviews/CRITICAL_REVIEWER_PROMPT.md` are frozen at the same commit.
 
@@ -194,13 +194,13 @@ edge-band issue. Each fix below makes the evaluation stricter; none loosens a ru
   form the shape, or the feature was not machined. They no longer say "stepover / scallop".
 
 ### 2026-11-21 06:22 UTC: harness v2 frozen
-- sha256 `2d1c96e2c70975b1e36abb62d260dd0e68b5b9908a2d63c69095a131b6d4fc8b`, freeze commit `6423e06`. All final evaluations of the refine phase are re-run with
-  `CNCLLM_EXPECTED_HARNESS=2d1c96e2c70975b1e36abb62d260dd0e68b5b9908a2d63c69095a131b6d4fc8b tools/frozen_eval.sh <run> 6423e06`. The v1 evaluations (frozen `3ccb111`) are kept in the
+- sha256 `2d1c96e2c70975b1e36abb62d260dd0e68b5b9908a2d63c69095a131b6d4fc8b`, freeze commit `9c0dad0`. All final evaluations of the refine phase are re-run with
+  `CNCLLM_EXPECTED_HARNESS=2d1c96e2c70975b1e36abb62d260dd0e68b5b9908a2d63c69095a131b6d4fc8b tools/frozen_eval.sh <run> 9c0dad0`. The v1 evaluations (frozen `1cbfa1d`) are kept in the
   git history.
 - **v2.1 (06:33 UTC).** The v2 part verification rejected every run: it compared the run's absolute source
   path with the root of the frozen checkout. It now looks up the same tracked file inside the evaluating checkout,
-  which is the frozen commit's copy. The check is unchanged otherwise. Frozen sha256 `f99d775150b78d84ac985e5a024b05bb6414960ecf0f1eedc7f85dd7b5dce6cd`, freeze commit `29abeb2`.
-  The v2 freeze `6423e06` is superseded.
+  which is the frozen commit's copy. The check is unchanged otherwise. Frozen sha256 `f99d775150b78d84ac985e5a024b05bb6414960ecf0f1eedc7f85dd7b5dce6cd`, freeze commit `87fb673`.
+  The v2 freeze `9c0dad0` is superseded.
 
 ### 2026-11-21: harness v3. Loopholes closed after the re-review (tightening only)
 The re-review (`docs/reviews/critical_review_refine_v2.md`) found these gaps. All fixes are stricter. The reviewer's
@@ -216,7 +216,7 @@ attack tests (`tests/test_review_v2_attacks.py`) were marked xfail and now pass.
 - **Other changes.**
   - `regions.json` now lists up to 100 regions; it used to stop at 30.
   - `tools/frozen_eval.sh` is executable.
-- **v3 frozen - **v3 frozen 08:24 UTC:** sha256 `63bd0ddc6479d309e2f6091ddf771cadce756f4c3af560610fb38f2ab2e619a0`, freeze commit `4557aec`. It supersedes v2.1 (`29abeb2`).
+- **v3 frozen - **v3 frozen 08:24 UTC:** sha256 `63bd0ddc6479d309e2f6091ddf771cadce756f4c3af560610fb38f2ab2e619a0`, freeze commit `2a3b37d`. It supersedes v2.1 (`87fb673`).
 - **Skill updated after the runs.** `skills/cnc-gcode-3plus2/SKILL.md` now states the v3 rules: the edge band is scored
   by its neighbours, the tab total, count and width apply at every height, and tabs flare towards the part. The two
-  LLM runs of this phase used the skill text frozen at `3ccb111`, which described v1.
+  LLM runs of this phase used the skill text frozen at `1cbfa1d`, which described v1.

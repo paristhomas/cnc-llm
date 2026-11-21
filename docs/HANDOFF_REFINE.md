@@ -21,7 +21,7 @@ Brief: `docs/BRIEF_REFINE_3PLUS2.md`. Criteria fixed before any result: `docs/AC
 5. **Reviews.** Read the verdict tables in `docs/reviews/`. Round 1 is `critical_review_refine*.md`; round 2 is
    `*_v2.md`; the machinist review is `machinist_review_ftc10_refine.md`. Round 3 is pending; see the end of this file.
 
-## Results (trusted evaluation, clean checkout of frozen harness v3 `4557aec`)
+## Results (trusted evaluation, clean checkout of frozen harness v3 `2a3b37d`)
 | Part | Role | Whole surface in ±0.1 | Valid | Tabs | Witness | Cycle | MillBill |
 |---|---|---|---|---|---|---|---|
 | **NIST FTC-10** (native) | showcase | **99.890 %** (proud 53 mm², no gouge) | **yes** | 2 × 11.44 mm², 2.6 mm wide; ≤ 24.4 mm² up to the part | 0.157 % | 117.6 min | 100 % of 250k points |
@@ -83,14 +83,14 @@ the part. That is 1.2 mm² over the limit v3 now applies at every height, after 
 ## Harness versions (all changes tighten; each is dated in `docs/ACCEPTANCE_REFINE.md`)
 | Version | Frozen | Why |
 |---|---|---|
-| v1 | `3ccb111` | Before any LLM run: whole-surface score, part-off and tab witness, integrity, long-reach tools, exact fixture check. |
-| v2 / v2.1 | `29abeb2` | Round 1 findings M1–M4: tab pads, witness growth, scan bypasses, in-tree trust. The edge band is now scored. v2.1 fixed my own part-verification bug, which had rejected every run. |
-| v3 | `4557aec` | Round 2 findings: tab total and count at every height (N1), parts manifest (N3), wider scan (N2), 100 regions. |
+| v1 | `1cbfa1d` | Before any LLM run: whole-surface score, part-off and tab witness, integrity, long-reach tools, exact fixture check. |
+| v2 / v2.1 | `87fb673` | Round 1 findings M1–M4: tab pads, witness growth, scan bypasses, in-tree trust. The edge band is now scored. v2.1 fixed my own part-verification bug, which had rejected every run. |
+| v3 | `2a3b37d` | Round 2 findings: tab total and count at every height (N1), parts manifest (N3), wider scan (N2), 100 regions. |
 
 The final evaluations use v3:
 ```bash
 CNCLLM_EXPECTED_HARNESS=63bd0ddc6479d309e2f6091ddf771cadce756f4c3af560610fb38f2ab2e619a0 \
-  tools/frozen_eval.sh runs/ftc10/20261121-012221-refine 4557aec --iter 10
+  tools/frozen_eval.sh runs/ftc10/20261121-012221-refine 2a3b37d --iter 10
 ```
 The expected sha256 is taken from this file and the acceptance addendum, never from `harness_frozen.json` in the tree
 being evaluated.

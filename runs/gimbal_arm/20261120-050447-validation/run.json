@@ -6,7 +6,7 @@
  "label": "validation",
  "harness": {
   "sha256": "f4ff400f9db81bf7c3f46584bdf437325aade9b618420c187d0426dffd0663c9",
-  "git_head": "04d482b",
+  "git_head": "83f9309",
   "harness_modified": false,
   "modified_files": []
  },

@@ -2,7 +2,7 @@
 
 Reviewer: independent page reviewer, re-review. I did not build this work and did not see the builder's summary. I
 read the previous page review (`critical_review_refine_page.md`) and checked each FAIL and each defect D1-D14 against
-the pages as they are now (FTC-10 report rebuilt at `2e9ebef` with iteration 10; CTC-04 report rebuilt at `9722447`).
+the pages as they are now (FTC-10 report rebuilt at `b8c22db` with iteration 10; CTC-04 report rebuilt at `11671a5`).
 Grading inputs: `CRITICAL_REVIEW_CHECKLIST.md` §C, `ACCEPTANCE_REFINE.md` (including the v2/v2.1 addendum: the edge
 band is now scored by its neighbours, not excluded), `BRIEF_REFINE_3PLUS2.md` §6.
 
