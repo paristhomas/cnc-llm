@@ -192,3 +192,8 @@ edge-band issue. Each fix below makes the evaluation stricter; none loosens a ru
   - the reach hint can miss tools whose radius equals a hole's radius;
 - **Region hints (wording, fixed in v2).** Leftovers over 0.5 mm now say that the pass stops short, the tool cannot
   form the shape, or the feature was not machined. They no longer say "stepover / scallop".
+
+### 2026-11-21 06:22 UTC: harness v2 frozen
+- sha256 `2d1c96e2c70975b1e36abb62d260dd0e68b5b9908a2d63c69095a131b6d4fc8b`, freeze commit `6423e06`. All final evaluations of the refine phase are re-run with
+  `CNCLLM_EXPECTED_HARNESS=2d1c96e2c70975b1e36abb62d260dd0e68b5b9908a2d63c69095a131b6d4fc8b tools/frozen_eval.sh <run> 6423e06`. The v1 evaluations (frozen `3ccb111`) are kept in the
+  git history.
