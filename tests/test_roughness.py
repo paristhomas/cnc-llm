@@ -1,7 +1,8 @@
 """Validation of the kinematic roughness measurement (cncllm/roughness.py) against cases with a known answer.
 
 1. ideal circular-arc cusps: Ra = 4/(9 sqrt 3) h for s << R (exact numeric reference from cusp_reference)
-2. analytic sinusoid on a plane: Ra = 2A/pi
+2. analytic sinusoid on a plane: Ra = 2A/pi (lc 0.8 and, on a small face, the lc 0.25 tier); ripples on a small
+   cylinder (curved profiles, slope ~30 deg, slope correction + arc-length resampling)
 3. a perfect cylinder measured against its 4 um-chord faceted mesh: the target facets must NOT show up (Ra ~ 0)
 4. the real simulator kernel: a T6 (ball R3) raster with stepover 0.25 mm on a flat -> cusp Ra/Rz; along the lay ~0
 5. the real simulator kernel: a flat end mill facing pass -> ~0
@@ -89,6 +90,47 @@ def test_cylinder_facets_do_not_leak():
     assert R["valid"].all()
     assert (R["lc_mm"] == 0.8).all()
     assert (R["Ra_um"] < 0.05).all(), R["Ra_um"]
+
+
+def test_short_tier_sinusoid():
+    """lc 0.25 mm tier (face only ~1.8 mm across)."""
+    A, lam = 0.0005, 0.05
+    R = _measure(lambda Q: Q[:, 2] < A * np.sin(2 * np.pi * Q[:, 0] / lam), _square_target(half=0.9, density=60.0),
+                 [(0, 0)])
+    assert R["valid"].all() and (R["lc_mm"] == 0.25).all()
+    assert np.allclose(R["Ra_um"], 1e3 * 2 * A / math.pi, rtol=0.03), R["Ra_um"]
+    assert np.allclose(R["Rz_um"], 2e3 * A, rtol=0.05), R["Rz_um"]
+
+
+def test_rippled_small_cylinder():
+    """Curved face (r 1.5 mm, profile slope up to ~30 deg, lc 0.25 tier): axial ripples of amplitude A must read
+    Ra = 2A/pi and Rz = 2A across the lay (round the circumference), ~0 along it."""
+    import trimesh
+    r, A, n = 1.5, 0.0005, 118                                    # pitch 2 pi r / n = 0.080 mm
+    sec = int(math.ceil(math.pi / math.acos(1 - 0.004 / r)))
+    m = trimesh.creation.cylinder(radius=r, height=8.0, sections=sec)
+    V, F = np.asarray(m.vertices), np.asarray(m.faces)
+    fn = np.asarray(m.face_normals)
+    TF = np.where(np.abs(fn[:, 2]) < 0.5, 0, np.where(fn[:, 2] > 0, 1, 2))
+    rng = np.random.default_rng(2)
+    side = np.where(TF == 0)[0]
+    a = np.asarray(m.area_faces)[side]
+    ti = rng.choice(side, size=4000, p=a / a.sum())
+    r1, r2 = rng.random(len(ti)), rng.random(len(ti))
+    s1 = np.sqrt(r1)
+    tri = V[F[ti]]
+    P = tri[:, 0] * (1 - s1)[:, None] + tri[:, 1] * (s1 * (1 - r2))[:, None] + tri[:, 2] * (s1 * r2)[:, None]
+    ci = [int(np.argmin(np.linalg.norm(P - q, axis=1))) for q in ([r, 0, 0], [0, -r, 1.0])]
+    inside = lambda Q: ((np.hypot(Q[:, 0], Q[:, 1]) < r + A * np.sin(n * np.arctan2(Q[:, 1], Q[:, 0])))  # noqa: E731
+                        & (np.abs(Q[:, 2]) < 4))
+    R = rg.measure(rg.SimSurface(inside), V, F, TF, P, fn[ti], np.zeros(len(P), int),
+                   np.full(len(P), a.sum() / len(P)), centres=np.array(ci), verbose=False)
+    assert R["valid"].all() and (R["lc_mm"] == 0.25).all()
+    assert (R["slope_max_deg_dir"][:, 0] > 12).all()             # the profile really is curved
+    assert np.allclose(R["Ra_um"], 1e3 * 2 * A / math.pi, rtol=0.04), R["Ra_um"]
+    assert np.allclose(R["Rz_um"], 2e3 * A, rtol=0.06), R["Rz_um"]
+    assert (np.abs(R["dirs"][:, 0, 2]) < 0.1).all()               # across the lay = round the circumference
+    assert (R["Ra_um_dir"][:, 1] < 0.03).all()
 
 
 class _Stock:

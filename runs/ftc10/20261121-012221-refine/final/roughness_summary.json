@@ -5,6 +5,99 @@
  "surface_area_mm2": 48530.6,
  "evaluated_area_mm2": 48061.7,
  "evaluated_pct": 99.03,
+ "evaluated_note": "evaluated = surface represented by a valid patch on the same B-rep face (edge strips with no room for a profile take the nearest same-face patch); traced = area of the valid patches' own cells",
+ "traced_area_mm2": 43485.4,
+ "traced_pct": 89.6,
+ "by_tool_dominant_on_profile": {
+  "T1": {
+   "tool": "T1 10 mm 3-flute flat endmill",
+   "area_mm2": 24614.8,
+   "area_pct_of_evaluated": 51.21,
+   "Ra_median_um": 0.0,
+   "Ra_p90_um": 0.14,
+   "Pa_median_um": 0.0
+  },
+  "T2": {
+   "tool": "T2 6 mm 3-flute flat endmill",
+   "area_mm2": 2051.6,
+   "area_pct_of_evaluated": 4.27,
+   "Ra_median_um": 0.042,
+   "Ra_p90_um": 0.142,
+   "Pa_median_um": 0.135
+  },
+  "T3": {
+   "tool": "T3 3 mm 2-flute flat endmill",
+   "area_mm2": 1260.3,
+   "area_pct_of_evaluated": 2.62,
+   "Ra_median_um": 0.002,
+   "Ra_p90_um": 0.153,
+   "Pa_median_um": 0.004
+  },
+  "T4": {
+   "tool": "T4 1.5 mm 2-flute flat endmill",
+   "area_mm2": 2.9,
+   "area_pct_of_evaluated": 0.01,
+   "Ra_median_um": 0.0,
+   "Ra_p90_um": 0.071,
+   "Pa_median_um": 0.0
+  },
+  "T5": {
+   "tool": "T5 8 mm bull-nose endmill r1",
+   "area_mm2": 7025.4,
+   "area_pct_of_evaluated": 14.62,
+   "Ra_median_um": 0.0,
+   "Ra_p90_um": 0.152,
+   "Pa_median_um": 0.0
+  },
+  "T6": {
+   "tool": "T6 6 mm ball endmill",
+   "area_mm2": 8903.5,
+   "area_pct_of_evaluated": 18.53,
+   "Ra_median_um": 2.883,
+   "Ra_p90_um": 3.599,
+   "Pa_median_um": 4.594
+  },
+  "T7": {
+   "tool": "T7 3 mm ball endmill",
+   "area_mm2": 2504.1,
+   "area_pct_of_evaluated": 5.21,
+   "Ra_median_um": 0.192,
+   "Ra_p90_um": 2.255,
+   "Pa_median_um": 0.957
+  },
+  "T11": {
+   "tool": "T11 4 mm 2-flute long-neck flat endmill, neck 40 mm",
+   "area_mm2": 19.2,
+   "area_pct_of_evaluated": 0.04,
+   "Ra_median_um": 8.866,
+   "Ra_p90_um": 14.801,
+   "Pa_median_um": 11.566
+  },
+  "T12": {
+   "tool": "T12 6 mm 3-flute long-reach flat endmill, reach 50 mm",
+   "area_mm2": 270.4,
+   "area_pct_of_evaluated": 0.56,
+   "Ra_median_um": 0.139,
+   "Ra_p90_um": 0.141,
+   "Pa_median_um": 0.145
+  },
+  "T13": {
+   "tool": "T13 2 mm ball long-neck endmill, neck 20 mm",
+   "area_mm2": 711.2,
+   "area_pct_of_evaluated": 1.48,
+   "Ra_median_um": 1.716,
+   "Ra_p90_um": 9.918,
+   "Pa_median_um": 7.789
+  },
+  "T14": {
+   "tool": "T14 3 mm ball long-neck endmill, neck 30 mm",
+   "area_mm2": 698.2,
+   "area_pct_of_evaluated": 1.45,
+   "Ra_median_um": 0.173,
+   "Ra_p90_um": 1.076,
+   "Pa_median_um": 0.18
+  }
+ },
  "area_by_status_mm2": {
   "ok": 48061.72,
   "face too small for a profile": 71.47,
@@ -538,8 +631,8 @@
   "total_s": 1617.8,
   "ray_points": 19934016,
   "sim_s": 129.1,
-  "outputs_s": 14.5,
-  "total_s_all": 1761.4
+  "outputs_s": 7.6,
+  "total_s_all": 1754.5
  },
  "meta": {
   "method": "profile method, ISO 4287 parameters, ISO 16610-21 Gaussian filter (truncated at +-lc/2, evaluation = traced length - lc); form = 4th-order LSQ polynomial in the profile plane, residual normal to the form, resampled uniformly in arc length; heights by bisection on the exact simulated workpiece along rays parallel to the patch normal (~0.015 um resolution); lay found from 4 short star profiles; patch value = max over across/along-lay profiles",
@@ -571,6 +664,7 @@
   "units": "um (Ra/Rz/...), mm (positions, lengths)",
   "frame": "fixture / G54 coordinates, Z up (same as part/ and probes.npz)"
  },
+ "tools_on_profile_note": "roughest_areas[].tools_on_profile: tools forming the across-lay profile, most frequent first (only the dominant one after an --outputs-only rebuild of an older npz)",
  "Ra_median_um": 0.004,
  "Ra_p90_um": 2.904,
  "Ra_p95_um": 3.438,

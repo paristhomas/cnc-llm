@@ -5,6 +5,51 @@
  "surface_area_mm2": 40960.3,
  "evaluated_area_mm2": 39766.4,
  "evaluated_pct": 97.09,
+ "evaluated_note": "evaluated = surface represented by a valid patch on the same B-rep face (edge strips with no room for a profile take the nearest same-face patch); traced = area of the valid patches' own cells",
+ "traced_area_mm2": 34944.0,
+ "traced_pct": 85.31,
+ "by_tool_dominant_on_profile": {
+  "T2": {
+   "tool": "T2 6 mm 3-flute flat endmill",
+   "area_mm2": 38215.2,
+   "area_pct_of_evaluated": 96.1,
+   "Ra_median_um": 0.0,
+   "Ra_p90_um": 0.217,
+   "Pa_median_um": 0.0
+  },
+  "T3": {
+   "tool": "T3 3 mm 2-flute flat endmill",
+   "area_mm2": 351.9,
+   "area_pct_of_evaluated": 0.88,
+   "Ra_median_um": 0.156,
+   "Ra_p90_um": 10.716,
+   "Pa_median_um": 0.162
+  },
+  "T4": {
+   "tool": "T4 1.5 mm 2-flute flat endmill",
+   "area_mm2": 34.2,
+   "area_pct_of_evaluated": 0.09,
+   "Ra_median_um": 0.159,
+   "Ra_p90_um": 0.159,
+   "Pa_median_um": 0.163
+  },
+  "T7": {
+   "tool": "T7 3 mm ball endmill",
+   "area_mm2": 501.5,
+   "area_pct_of_evaluated": 1.26,
+   "Ra_median_um": 0.578,
+   "Ra_p90_um": 0.605,
+   "Pa_median_um": 0.592
+  },
+  "T9": {
+   "tool": "T9 6 mm 90deg chamfer mill",
+   "area_mm2": 663.6,
+   "area_pct_of_evaluated": 1.67,
+   "Ra_median_um": 0.158,
+   "Ra_p90_um": 0.159,
+   "Pa_median_um": 0.163
+  }
+ },
  "area_by_status_mm2": {
   "ok": 39766.39,
   "face too small for a profile": 641.2,
@@ -530,8 +575,8 @@
   "total_s": 360.6,
   "ray_points": 16067904,
   "sim_s": 151.7,
-  "outputs_s": 13.9,
-  "total_s_all": 526.2
+  "outputs_s": 8.5,
+  "total_s_all": 520.8
  },
  "meta": {
   "method": "profile method, ISO 4287 parameters, ISO 16610-21 Gaussian filter (truncated at +-lc/2, evaluation = traced length - lc); form = 4th-order LSQ polynomial in the profile plane, residual normal to the form, resampled uniformly in arc length; heights by bisection on the exact simulated workpiece along rays parallel to the patch normal (~0.015 um resolution); lay found from 4 short star profiles; patch value = max over across/along-lay profiles",
@@ -563,6 +608,7 @@
   "units": "um (Ra/Rz/...), mm (positions, lengths)",
   "frame": "fixture / G54 coordinates, Z up (same as part/ and probes.npz)"
  },
+ "tools_on_profile_note": "roughest_areas[].tools_on_profile: tools forming the across-lay profile, most frequent first (only the dominant one after an --outputs-only rebuild of an older npz)",
  "Ra_median_um": 0.0,
  "Ra_p90_um": 0.291,
  "Ra_p95_um": 10.535,

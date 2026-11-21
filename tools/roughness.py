@@ -80,6 +80,47 @@ def ideal_cusp_um(t, pitch):
     return round(1e3 * (r - math.sqrt(r * r - (pitch / 2) ** 2)), 2)
 
 
+# ------------------------------------------------------------------ glb
+def write_glb(path, V, F, rgb_srgb, extras):
+    """Minimal glTF 2.0 binary: positions (Y-up), smooth normals, COLOR_0 (linear, as glTF requires), a matte
+    non-metallic material (glTF's default material is fully metallic and renders dark), legend in scene extras."""
+    import struct
+    import trimesh
+    Vg = np.c_[V[:, 0], V[:, 2], -V[:, 1]].astype(np.float32)
+    Fi = np.ascontiguousarray(F, np.uint32)
+    Nn = np.asarray(trimesh.Trimesh(Vg, Fi, process=False).vertex_normals, np.float32)
+    c = np.clip(rgb_srgb, 0, 1)
+    lin = np.where(c <= 0.04045, c / 12.92, ((c + 0.055) / 1.055) ** 2.4).astype(np.float32)
+    blobs = [Vg.tobytes(), Nn.tobytes(), lin.tobytes(), Fi.tobytes()]
+    views, off = [], 0
+    for b, tgt in zip(blobs, (34962, 34962, 34962, 34963)):
+        views.append({"buffer": 0, "byteOffset": off, "byteLength": len(b), "target": tgt})
+        off += (len(b) + 3) // 4 * 4
+    binary = b"".join(b + bytes((4 - len(b) % 4) % 4) for b in blobs)
+    gl = {"asset": {"version": "2.0", "generator": "cnc-llm tools/roughness.py"},
+          "scene": 0, "scenes": [{"nodes": [0], "extras": extras}], "nodes": [{"mesh": 0, "name": "part"}],
+          "meshes": [{"name": "part_roughness", "primitives": [{"attributes": {"POSITION": 0, "NORMAL": 1,
+                                                                              "COLOR_0": 2},
+                                                                 "indices": 3, "material": 0}]}],
+          "materials": [{"name": "matte", "pbrMetallicRoughness": {"baseColorFactor": [1, 1, 1, 1],
+                                                                  "metallicFactor": 0.0, "roughnessFactor": 0.75},
+                         "doubleSided": True}],
+          "buffers": [{"byteLength": len(binary)}], "bufferViews": views,
+          "accessors": [
+              {"bufferView": 0, "componentType": 5126, "count": len(Vg), "type": "VEC3",
+               "min": Vg.min(0).tolist(), "max": Vg.max(0).tolist()},
+              {"bufferView": 1, "componentType": 5126, "count": len(Vg), "type": "VEC3"},
+              {"bufferView": 2, "componentType": 5126, "count": len(Vg), "type": "VEC3"},
+              {"bufferView": 3, "componentType": 5125, "count": int(Fi.size), "type": "SCALAR"}]}
+    js = json.dumps(gl, separators=(",", ":")).encode()
+    js += b" " * ((4 - len(js) % 4) % 4)
+    total = 12 + 8 + len(js) + 8 + len(binary)
+    with open(path, "wb") as fh:
+        fh.write(struct.pack("<III", 0x46546C67, 2, total))
+        fh.write(struct.pack("<II", len(js), 0x4E4F534A) + js)
+        fh.write(struct.pack("<II", len(binary), 0x004E4942) + binary)
+
+
 # ------------------------------------------------------------------ views
 def splat_zbuffer(u, v, depth, rgb, px, rad=4, tol=0.6):
     """Gap-free orthographic render of a probe cloud. Each probe covers a disc of `rad` pixels: (1) the nearest depth per
@@ -260,11 +301,11 @@ def write_outputs(run_dir, p, R, timing, spacing, t0, verbose=True):
     np.save(out / "roughness_vertex_status.npy", vst.astype(np.uint8))   # 0 ok, else rg.REASONS / 5 = no patch
     pval, pst = rg.map_to_points(R, p.P, p.pface, R["Ra_um"].astype(float))
     # GLB (glTF is Y-up: (x, y, z) -> (x, z, -y))
-    import trimesh
-    Vg = np.c_[p.V[:, 0], p.V[:, 2], -p.V[:, 1]].astype(np.float32)
-    rgba = np.c_[(255 * colours(vval, vst)).round(), np.full(len(p.V), 255)].astype(np.uint8)
-    mesh = trimesh.Trimesh(Vg, p.F, vertex_colors=rgba, process=False)
-    mesh.export(out / "roughness_model.glb", file_type="glb", include_normals=True)
+    write_glb(out / "roughness_model.glb", p.V, p.F, colours(vval, vst),
+              {"title": "kinematic surface roughness Ra (um)", "caveat": rg.CAVEAT,
+               "colour_stops_um_hex": [[a, c] for a, c in SCALE],
+               "status_colours": {v_[1]: v_[0] for k, v_ in STATUS.items() if k != 5},
+               "axes": "glTF Y-up: (x, y, z)_G54 -> (x, z, -y)", "units": "mm"})
     # statistics
     pct = rg.wpercentile(ra, w, [10, 25, 50, 75, 90, 95, 99]) if len(ra) else [None] * 7
     share = lambda lim: float(w[ra <= lim].sum() / max(w.sum(), 1e-12))  # noqa: E731
@@ -314,10 +355,28 @@ def write_outputs(run_dir, p, R, timing, spacing, t0, verbose=True):
             "ideal_cusp_um_for_pitch": ideal_cusp_um(tl, pitch),
             "coarse_marks": bool(R["coarse_marks"][j])})
     meas_area = float(w.sum())
+    cellT, _ = rg.area_weights(R, p.P, p.pface, p.parea, drop_no_room=False)
+    traced_area = float(cellT[v].sum())
+    by_tool = {}
+    for t_ in sorted(set(int(x) for x in R["tool_mode"][v])):
+        mt = v & (R["tool_mode"] == t_)
+        if cellA[mt].sum() <= 0:
+            continue
+        q = rg.wpercentile(R["Ra_um"][mt].astype(float), cellA[mt], [50, 90])
+        by_tool["none" if t_ < 0 else f"T{t_}"] = {
+            "tool": tool_desc(t_), "area_mm2": round(float(cellA[mt].sum()), 1),
+            "area_pct_of_evaluated": round(100 * float(cellA[mt].sum()) / max(meas_area, 1e-9), 2),
+            "Ra_median_um": round(q[0], 3), "Ra_p90_um": round(q[1], 3),
+            "Pa_median_um": round(rg.wpercentile(R["Pa_um"][mt].astype(float), cellA[mt], [50])[0], 3)}
     summary = {
         "caveat": rg.CAVEAT, "run": str(run_dir), "program": "final/program.nc",
         "surface_area_mm2": round(total, 1),
         "evaluated_area_mm2": round(meas_area, 1), "evaluated_pct": round(100 * meas_area / total, 2),
+        "evaluated_note": "evaluated = surface represented by a valid patch on the same B-rep face (edge strips "
+                          "with no room for a profile take the nearest same-face patch); traced = area of the "
+                          "valid patches' own cells",
+        "traced_area_mm2": round(traced_area, 1), "traced_pct": round(100 * traced_area / total, 2),
+        "by_tool_dominant_on_profile": by_tool,
         "area_by_status_mm2": reason_area,
         "patches": int(len(R["Ra_um"])), "valid_patches": int(v.sum()),
         "Ra_um": dict(zip(["p10", "p25", "median", "p75", "p90", "p95", "p99"], [round(x, 3) for x in pct])),
@@ -335,6 +394,7 @@ def write_outputs(run_dir, p, R, timing, spacing, t0, verbose=True):
                                             "no patch on this face": c for k, (c, _) in STATUS.items()},
                          "n_grade_breaks_um": BREAKS},
         "timing_s": timing, "meta": meta,
+        "tools_on_profile_note": "roughest_areas[].tools_on_profile: tools forming the across-lay profile, most frequent first (only the dominant one after an --outputs-only rebuild of an older npz)",
     }
     lo = 0.0
     for b, g in rg.N_GRADES:
@@ -347,8 +407,9 @@ def write_outputs(run_dir, p, R, timing, spacing, t0, verbose=True):
     name = run_dir.parent.name.upper().replace("_", " ")
     title = (f"{name} kinematic surface roughness Ra   |   median {fmt(pct[2])} µm, 90th pct {fmt(pct[4])} µm   |   "
              f"≤ Ra 1.6: {100 * share(1.6):.0f} %,  ≤ Ra 3.2: {100 * share(3.2):.0f} % of evaluated area "
-             f"({100 * meas_area / total:.0f} % of the surface)")
+             f"(represents {100 * meas_area / total:.0f} % of the surface)")
     lines = [f"evaluated  {meas_area:8.0f} mm²  {100 * meas_area / total:5.1f} %",
+             f"  traced   {traced_area:8.0f} mm²  {100 * traced_area / total:5.1f} %",
              f"surface    {total:8.0f} mm²", "",
              f"Ra p10 / p50 / p90   {fmt(pct[0])} / {fmt(pct[2])} / {fmt(pct[4])} µm",
              f"Ra p99               {pct[6]:.2f} µm",

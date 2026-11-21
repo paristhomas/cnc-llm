@@ -22,7 +22,11 @@ Method (per patch, ISO 4287 / ISO 16610-21 style, profile method):
     resampled uniformly in arc length (P profile); ISO 16610-21 Gaussian filter (truncated at +-lc/2) gives the mean
     line (W profile); roughness R = P - W, evaluated over the traced length minus lc/2 at each end;
   * cut-off by room available: lc = 0.8 mm (traced 2.4 .. 4.0 mm, dx 5 um) or lc = 0.25 mm (traced 0.75 .. 1.5 mm,
-    dx 2.5 um); smaller room -> not evaluated;
+    dx 2.5 um); smaller room -> no profile. The curvature used for the length limit comes from a quadratic fitted
+    over up to 2.5 mm, which over-estimates the curvature of small radii (r <~ 3 mm): profiles there are shorter
+    than necessary (conservative; more of them fall in the lc 0.25 tier, which under-reads marks coarser than
+    ~0.25 mm - see Pa). Patches with no room (near face edges) are represented by the nearest patch of the same
+    face; faces with no patch at all are reported as not evaluated;
   * parameters: Ra, Rq, Rz (mean over the sampling lengths of the peak-to-valley), Rt (whole evaluation length),
     Pa/Pt (form removed, unfiltered) and Wt; the patch value is the max over the two directions (normally across lay).
     Pa >> Ra flags marks coarser than lc (e.g. step-downs >= ~1 mm), which the lc filter classes as waviness.
@@ -506,14 +510,15 @@ def map_to_points(R, Q, qface, values, k=4):
     return val, st
 
 
-def area_weights(R, P, pface, parea):
-    """Probe -> nearest same-face centre; area of each centre's cell (mm^2)."""
+def area_weights(R, P, pface, parea, drop_no_room=True):
+    """Probe -> nearest same-face centre; area of each centre's cell (mm^2). drop_no_room=False keeps the patches that
+    had no room for a profile as owners (-> the area actually traced vs. merely represented by a same-face patch)."""
     w = np.zeros(len(R["P"]))
     owner = np.full(len(P), -1)
     CP = R["P"].astype(float)
     for f in np.unique(pface):
         qi = np.where(pface == f)[0]
-        ca = _face_centres(R, f)
+        ca = _face_centres(R, f) if drop_no_room else np.where(R["face"] == f)[0]
         if not len(ca):
             continue
         _, nn = cKDTree(CP[ca]).query(P[qi])
