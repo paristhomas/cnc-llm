@@ -292,7 +292,7 @@ METRIC5 = [
     ("max_gouge_mm", "Max gouge depth", "mm"),
     ("tab_witness_pct", "Tab witness excluded (part-off tab joints)", "%"),
     ("tab_witness_mm2", "Tab witness area", "mm²"),
-    ("edge_band_excluded_pct", "Edge band (metrology) excluded", "%"),
+    ("edge_band_scored_by_neighbour_pct", "Edge band (0.03 mm along face edges), scored with the nearest interior deviation", "%"),
     ("tabs", "Part-off tabs", ""),
     ("tab_total_mm2", "Tab section, total", "mm²"),
     ("tab_max_width_mm", "Widest tab (smallest direction)", "mm"),
@@ -566,6 +566,10 @@ def _partoff_block(po: dict | None, rg: dict, m: dict, img: str | None) -> str:
                + (f'Only this area and the edge band are left out of the score (tab witness excluded {excl:.2f}%).' if excl
                   else 'It is not left out of the score here, because the part-off does not pass.' if ok is False else ''))
     why = "".join(f"<li>{_esc(r)}</li>" for r in reasons)
+    mw = (po or {}).get("max_width_to_part") or {}
+    if mw.get("width_mm") is not None:
+        wit = (f'Checked at every height between the stub and the part, the tabs are at most <b>{mw["width_mm"]:g} mm</b> wide '
+               f'(widest at Z {mw.get("z", 0):g} mm). ') + wit
     lim = (f'Limits: total 2–30 mm² and at most 15% of the stub section, each tab at most 3 mm across, at most 4 tabs, witness at most 1.5% '
            f'of the surface (review target 2–4 tabs, 20–30 mm², witness ≤ 0.5%).')
     view3d = ('<figure class="po-3d"><div class="viewport po-view" id="tabview"><div class="vp-msg">Loading the 3D close-up…</div></div>'
@@ -923,10 +927,13 @@ def build(run_dir, source: str | None = None) -> Path:
             vs.append(f'The program is <strong>invalid</strong>: {m.get("errors", 0)} error{"s" if m.get("errors", 0) != 1 else ""}{fl}: {_esc(first.get("msg", ""))}.')
         if score is not None:
             w_, e_ = ws.get("tab_witness_pct"), ws.get("edge_band_excluded_pct")
+            nb = m.get("edge_band_scored_by_neighbour_pct")
             vs.append(f'<strong>{score:.2f}%</strong> of the whole part surface is within ±{tol:g} mm. Everything else counts as failed: '
                       f'{_pct(ws["whole_surface_proud_pct"])} is proud (material left) and {_pct(ws["whole_surface_gouge_pct"])} is gouged. '
-                      f'The only areas not scored are the tab witness ({_pct(w_)}) and a 0.03 mm band along face edges '
-                      f'(edge band (metrology) excluded {_pct(e_)}).')
+                      + (f'The only area not scored is the tab witness ({_pct(w_)}); the 0.03 mm band along face edges ({_pct(nb)}) is scored '
+                       f'with the deviation of the nearest interior point.' if nb is not None else
+                       f'The only areas not scored are the tab witness ({_pct(w_)}) and a 0.03 mm band along face edges '
+                       f'(edge band (metrology) excluded {_pct(e_)}).'))
         else:
             vs.append("This run was simulated before the whole-surface scoring rule and has not been re-scored yet, so no score is shown.")
         if segs:
@@ -1008,7 +1015,9 @@ def build(run_dir, source: str | None = None) -> Path:
         score_label = 'no whole-surface score: this run was simulated before the rule and has not been re-scored yet'
     score2 = (f'<div class="score-2"><span>proud (failed) <b>{_pct(ws["whole_surface_proud_pct"])}</b></span>'
               f'<span>gouged (failed) <b>{_pct(ws["whole_surface_gouge_pct"])}</b></span></div>'
-              f'<div class="score-3">Not scored: tab witness excluded {_pct(w_)} · edge band (metrology) excluded {_pct(e_)}</div>') if score is not None else ""
+              + (f'<div class="score-3">Not scored: tab witness excluded {_pct(w_)} only. The edge band ({_pct(m.get("edge_band_scored_by_neighbour_pct"))}) is scored by its neighbours.</div>'
+               if m.get("edge_band_scored_by_neighbour_pct") is not None else
+               f'<div class="score-3">Not scored: tab witness excluded {_pct(w_)} · edge band (metrology) excluded {_pct(e_)}</div>')) if score is not None else ""
     # human title from the run description ("NIST FTC-10 (ASME …), …" -> "NIST FTC-10 test part")
     import re as _re
     t0 = _re.split(r"[(,;]", desc or "")[0].strip() if desc else ""

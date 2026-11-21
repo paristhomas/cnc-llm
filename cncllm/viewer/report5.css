@@ -240,3 +240,6 @@ td.lines .where-w { font-size: 13px; color: var(--ink); font-weight: 600; margin
   .tab-btns button { padding: 4px 8px; }
 }
 @media (max-width: 560px) { .res-ctl .seg.views, .ctl-row .seg.views { flex-wrap: wrap; } }
+@media (min-width: 561px) { .x5 .vp-legend { max-width: calc(100% - 330px); } }
+@media (max-width: 560px) { .cmaps { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .cmap svg { max-height: 100px; } }
+.imsg, .ilines, .notes { overflow-wrap: anywhere; }

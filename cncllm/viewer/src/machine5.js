@@ -78,7 +78,7 @@ export function buildMachine(meta) {
     accent: new THREE.MeshStandardMaterial({ color: 0xf2a33a, metalness: 0.2, roughness: 0.5 }),
     // spindle cartridge drawn see-through so it never hides the cut under it
     head: new THREE.MeshStandardMaterial({ color: 0xe1e4e8, metalness: 0.2, roughness: 0.45, transparent: true, opacity: 0.32, depthWrite: false }),
-    nose: new THREE.MeshStandardMaterial({ color: 0x4b5058, metalness: 0.7, roughness: 0.35 }),
+    nose: new THREE.MeshStandardMaterial({ color: 0x4b5058, metalness: 0.7, roughness: 0.35, transparent: true, opacity: 0.5, depthWrite: false }),
   };
   const fixed = new THREE.Group(), cradle = new THREE.Group(), platter = new THREE.Group(), part = new THREE.Group();
   cradle.add(platter); platter.add(part);
