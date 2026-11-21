@@ -25,10 +25,10 @@ such areas alone.
 ### The score
 - **Score = share of the WHOLE part surface within ±0.1 mm**, two-sided: proud (material left) and gouged (too deep)
   both fail.
-- Only two things are not scored:
-  - the 0.03 mm face-edge band, a metrology artefact (< 1 %);
-  - the **tab witness**: part surface within 1.0 mm of where your tabs meet the part. It is excused only if the
-    part-off is valid.
+- Only one thing is not scored: the **tab witness**, the part surface within 1.0 mm of where a tab body meets the part.
+  It is excused only if the part-off is valid.
+- Probes in the 0.03 mm face-edge band (a metrology artefact) are scored with the deviation of their nearest neighbour
+  outside the band.
 - The underside, inside holes, undercuts and surfaces that are awkward to reach **all count**. There is no
   "unreachable".
 
@@ -45,13 +45,15 @@ These make the program INVALID:
 - **Fixture contact:** tool, shank or holder within 1.0 mm of the vise jaws, vise body or table, in any orientation.
 - **Rigidity:** before `(PART-OFF)`, the weakest plane of the stub gap must keep ≥ 30 % of the stock section after
   every setup.
-- **Part-off,** checked on the final material:
-  - tab total between 2 and 30 mm² at the weakest plane (and ≤ 15 % of the section);
+- **Part-off,** checked on the final material at EVERY height from the weakest plane up to 0.2 mm below the part:
+  - tab total between 2 and 30 mm² (and ≤ 15 % of the section);
   - ≤ 4 tabs, each ≤ 3.0 mm across in its smallest direction;
   - tab witness ≤ 1.5 % of the surface.
 
-  An **unfinished underside that touches the tabs counts as tab joint**, so it blows the witness limit. Finish the
-  underside before you leave the tabs.
+  Side-milled tabs **flare towards the part**: the round flank of a horizontal tool leaves extra material near Z0
+  where a pass stops. Size the tabs so the flared joint, 0.2 mm under the part, still totals ≤ 30 mm² (smaller tabs or
+  a smaller tool for the last web passes). Unfinished skin next to a tab, or on the underside, is failed surface: it
+  is not forgiven as tab joint. Finish the underside before you leave the tabs.
 
 ### Targets the reviewer checks (not validity rules)
 - 2–4 tabs, 20–30 mm² in total;
