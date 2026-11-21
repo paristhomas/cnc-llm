@@ -167,7 +167,8 @@ def candidate_dirs(faces: list, Rfix: np.ndarray, max_tilt=MAX_TILT) -> np.ndarr
 
 
 # tools used for reachability (holder-aware) and the raster resolution each is evaluated at
-REACH_TOOLS = ((4, 0.075), (8, 0.075), (3, 0.15), (7, 0.15), (2, 0.3), (6, 0.3), (1, 0.5))
+REACH_TOOLS = ((4, 0.075), (8, 0.075), (13, 0.075), (3, 0.15), (7, 0.15), (11, 0.15), (14, 0.15), (2, 0.3), (6, 0.3),
+               (12, 0.3), (1, 0.5))
 
 
 def reachability(V, F, vise, stock_lo, stock_hi, P, N, dirs, res=REACH_RES, tools=None, verbose=False,

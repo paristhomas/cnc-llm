@@ -106,3 +106,38 @@ screenshots.
 
 ## Addendum: changes after this date
 Record each change with its date, its reason, and whether it tightens or loosens. Loosening needs the owner.
+
+### 2026-11-21: implementation notes and corrections (before any LLM run of this phase)
+- **H3 witness implementation (as specified, conservative).**
+  - Tab tops: the material at Z−0.05 connected plane by plane (every 0.5 mm) to the stub just above the jaws.
+  - Joint: every proud probe in a proud region (probes linked through 0.5 mm voxels) that touches a tab top.
+  - Consequence: an unfinished underside that touches a tab counts entirely as joint, which blows the 1.5 % limit
+    (attack b). A proud skin linked only through material thinner than the probe spacing is scored as failed, not
+    forgiven, which is stricter.
+- **H4 tab width.** Tab width is 2 × the largest inscribed radius of the island on a 0.1 mm raster. It is rounded up
+  by up to 0.1 mm, which is stricter.
+- **Fixture collision model: correction, flagged as both tighter and looser.**
+  - The previous `kernel5.fixture_hits` treated each axial sample of the tool body as a sphere. That turned the body
+    into a capsule reaching one radius past its ends: 5 mm below a T1 tip, and 16 mm below a 32 mm holder face. This
+    is a modelling error, not a threshold.
+  - Replaced by exact discs perpendicular to the tool axis, every 0.5 mm, against the boxes grown by an explicit
+    **1.0 mm safety clearance** (`kernel5.FIXTURE_CLEARANCE`).
+  - Net effect: stricter at the sides of the body (+1 mm everywhere), less over-conservative at the tip and holder
+    face. Verified against brute force (`tests/test_tools_refine.py::test_disc_box_exact_against_bruteforce`).
+  - Recorded here because it is a change to a safety check. It removes false positives only where the old model
+    claimed contact with no real geometry.
+- **Necked long-reach tools** are supported by the simulator (shank stage, flag 32) and by the fixture check, with
+  tests. They are added to the library only as recorded below.
+- **Integrity (I1).** The trusted evaluation now invalidates on:
+  - a harness hash differing from `harness_frozen.json`;
+  - uncommitted harness edits;
+  - a changed part;
+  - a generator scan hit (imports, `importlib`, `__import__`, or any `cncllm` / `millbill` mention in code).
+
+  Tests: `tests/test_refine_eval.py`.
+- **Re-scores under H (no new G-code):**
+  - FTC-10 run 2: **79.50 % whole surface, INVALID.** Witness 17.7 %: the underside was left about 0.3 mm proud and
+    touches the tabs.
+  - FTC-08 ×0.5: **80.06 %, INVALID.** The part-off left 2,651 mm² of web.
+
+  Files: `runs/<part>/<run>/rescore_refine/`.

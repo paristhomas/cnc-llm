@@ -83,6 +83,6 @@ def box_program(variant: str = "ideal") -> str:
             g += [_end_frame()]
         # split the remaining web in the middle with a plunge from -Y through it -> two tabs
         g += [_index((0, 90, 0), (0, -sy, -5))]
-        g += ["G0 X0 Y%g Z10" % fy, f"G1 Z{-sy - 2.3:g} F600", "G0 Z10", _end_frame()]
+        g += ["G0 X0 Y%g Z10" % fy, f"G1 Z{-sy - 2.3:g} F{F_PLUNGE}", "G0 Z10", _end_frame()]
     g += ["M5", "M30", ""]
     return "\n".join(g)

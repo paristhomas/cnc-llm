@@ -102,10 +102,11 @@ def suggest(step: Path, scale=1.0, res=0.2, nprobe=25000):
             out[-1]["bottom_width_mm"] = round(min(fp), 1)
             slender = out[-1]["height_mm"] / max(min(fp), 1e-6)
             out[-1]["slenderness"] = round(slender, 2)
-            # practical ranking (a hint): whole-surface tool coverage, minus tall slender stick-out, minus a bottom
-            # footprint too wide for side tools to finish the underside and part off (T1 reaches ~35 mm from each side)
+            # practical ranking (a hint, not a rule): whole-surface tool coverage first; a mild penalty for tall
+            # slender stick-out (rigidity, chatter: deepen the grip) and for a bottom footprint too wide for side tools
+            # to finish the underside and part off (T1 reaches ~35 mm from each side)
             wide = max(0.0, min(fp) - 70.0)
-            out[-1]["suggest_score"] = round(reach - 5.0 * max(0.0, slender - 3.0) - 0.2 * wide, 2)
+            out[-1]["suggest_score"] = round(reach - 1.0 * max(0.0, slender - 3.0) - 0.2 * wide, 2)
             print(json.dumps(out[-1]), flush=True)
     out.sort(key=lambda r: (-r["suggest_score"], r["no_tool_found_mm2"], r["height_mm"]))
     return out
@@ -143,7 +144,7 @@ def write_brief(part, run: Path):
 {s.get('description', '')}
 
 - Material **AL6061-T6**, tolerance **+-{TOL} mm** on every scored surface.
-- **Fixture frame (G54):** part bottom = parting plane at **Z0**, part centred in XY. Part bbox X [{bb[0]:.2f}, {bb[3]:.2f}]
+- **Fixture frame (G54):** part bottom (the face towards the vise stub, machined in the part-off) at **Z0**, part centred in XY. Part bbox X [{bb[0]:.2f}, {bb[3]:.2f}]
   Y [{bb[1]:.2f}, {bb[4]:.2f}] Z [{bb[2]:.2f}, {bb[5]:.2f}].
 - **Orientation chosen:** model axis `{fx['up']}` points up, then rotated {fx['rot_z_deg']:g} deg about Z, scale {fx.get('scale', 1)}.
 - **Stock:** box X [{lo[0]:.2f}, {hi[0]:.2f}] Y [{lo[1]:.2f}, {hi[1]:.2f}] Z [{lo[2]:.2f}, {hi[2]:.2f}]: part + {fx['margin']:g} mm sides,

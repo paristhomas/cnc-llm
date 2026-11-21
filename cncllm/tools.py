@@ -115,9 +115,9 @@ def library_table() -> str:
     return "\n".join(rows)
 
 
-# Candidate additions under rule R4 (docs/ACCEPTANCE_REFINE.md J): long-reach necked tools, real catalogue families,
-# conservative chip loads (about half the 1xD catalogue value because of the reach). They are NOT in the library until
-# the reach audit (docs/FTC10_REACH_AUDIT.md) shows they are needed; adoption is recorded in the acceptance addendum.
+# Additions under rule R4 (docs/ACCEPTANCE_REFINE.md J): long-reach necked tools, real catalogue families,
+# conservative chip loads (about half the 1xD catalogue value because of the reach). Adopted 2026-11-21 on the evidence
+# of the reach audit (docs/FTC10_REACH_AUDIT.md); frozen with the harness.
 CANDIDATES = [
     Tool(11, "4 mm 2-flute long-neck flat endmill, neck 40 mm", "flat", 4.0, 2, 6.0, 55.0, 6.0, holder_diameter=22.0,
          chipload=0.012, neck_length=40.0,
@@ -136,3 +136,6 @@ CANDIDATES = [
          note="R1.5 ball, neck dia 2.85 to 30 mm, 6 mm shank, slim shrink-fit holder",
          catalogue="long-neck ball end mill families, e.g. NS Tool MRBLN230-6 (6 mm shank, deep ribbing)"),
 ]
+
+for _t in CANDIDATES:
+    LIBRARY[_t.number] = _t
