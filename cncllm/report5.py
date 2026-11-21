@@ -741,7 +741,7 @@ def build(run_dir, source: str | None = None) -> Path:
     except Exception:
         created_h = created
     st = setup.get("stock") or vmeta.get("stock") or {}
-    stock_txt = (" × ".join(f"{st['hi'][i] - st['lo'][i]:g}" for i in range(3)) + " mm") if st.get("lo") else "?"
+    stock_txt = (" × ".join(f"{round(st['hi'][i] - st['lo'][i], 1):g}" for i in range(3)) + " mm") if st.get("lo") else "?"
     fx = setup.get("fixture") or vmeta.get("fixture") or {}
     hold = f"5-axis vise · {fx.get('grip', '?'):g} mm grip · {fx.get('gap', '?'):g} mm stub gap" if fx else "5-axis vise"
     score = ws["whole_surface_in_tol_pct"]
@@ -959,7 +959,7 @@ def build(run_dir, source: str | None = None) -> Path:
       {f'<p class="int-fail" role="alert">{integrity_fail}</p>' if integrity_fail else ''}
       <div class="score-top">
         <span class="badge lg {'valid' if valid else 'invalid'}">{'VALID' if valid else 'INVALID'}</span>
-        <span class="muted">{n_err} error{'s' if n_err != 1 else ''} · {n_warn} warning{'s' if n_warn != 1 else ''}</span>
+        <span class="muted">{n_err} error{'s' if n_err != 1 else ''} · {n_warn} warning{'s' if n_warn != 1 else ''}{' · under the checks of the time (no part-off tab checks yet)' if score is None else ''}</span>
       </div>
       <div class="score-num">{(f'{score:.2f}' if score is not None else '–')}<span>%</span></div>
       <div class="score-label">{score_label}</div>
