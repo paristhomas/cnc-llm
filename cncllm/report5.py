@@ -243,6 +243,7 @@ def export_data(part, res: dict, final_dir) -> Path:
                            "corner_radius": t.corner_radius, "half_angle": t.half_angle,
                            "tip_diameter": t.tip_diameter, "flute_length": t.flute_length, "stickout": t.stickout,
                            "shank_diameter": t.shank_diameter, "holder_diameter": t.holder_diameter, "flutes": t.flutes,
+                           "neck_length": float(getattr(t, "neck_length", 0) or 0),
                            "row": t.row()}
     stats = res.get("stats", {})
     vise = [{"lo": [float(v) for v in bx[0]], "hi": [float(v) for v in bx[1]],
@@ -638,7 +639,7 @@ def build(run_dir, source: str | None = None) -> Path:
         b64 = base64.b64encode((vd / "data.bin.gz").read_bytes()).decode("ascii")
         extra = {"regions": regs, "issues": [{k: v for k, v in i.items() if k != "lines"} | {"lines": i.get("lines", [])[:30]}
                                               for i in issues[:200]],
-                 "part": meta.get("part"), "tolerance": m.get("tolerance_mm", TOL_DEFAULT)}
+                 "part": meta.get("part"), "tolerance": m.get("tolerance_mm", TOL_DEFAULT), "score": ws}
         with open(out / "assets" / "data.js", "w") as fh:
             fh.write("window.CNCLLM_DATA={meta:")
             fh.write(json.dumps(vmeta | extra))
@@ -872,6 +873,8 @@ def build(run_dir, source: str | None = None) -> Path:
         if not t:
             continue
         geo = {"flat": "flat", "ball": "ball", "bull": f"bull r{t.corner_radius:g}", "cone": f"cone {2 * t.half_angle:g}°"}.get(t.kind, t.kind)
+        if getattr(t, "neck_length", 0):
+            geo += f", neck to {t.neck_length:g} mm"
         trows.append(f'<tr><td><span class="swatch" data-tool="{tn}"></span>T{tn}</td><td>{_esc(t.name)}</td><td>{geo}</td>'
                      f'<td class="num">{t.diameter:g}</td><td class="num">{t.stickout:g}</td><td class="num">{t.holder_diameter:g}</td>'
                      f'<td class="num">{d["time_s"] / 60:.1f}</td><td class="num">{d["cut_mm"] / 1000:.2f}</td>'

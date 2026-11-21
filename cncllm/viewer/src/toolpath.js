@@ -5,7 +5,7 @@ import { RAPID, hexRgb } from './colors.js';
 
 const VS = `
 attribute vec3 color; attribute float aIdx; attribute float aDist; attribute float aRapid;
-uniform float uCur; uniform float uWin;
+uniform float uCur; uniform float uWin; uniform float uFrom;
 varying vec3 vCol; varying float vDist; varying float vRapid; varying float vPast;
 void main() {
   vCol = color; vDist = aDist; vRapid = aRapid; vPast = aIdx < uCur ? (aIdx < uCur - uWin ? 0.5 : 1.0) : 0.0;
@@ -14,6 +14,7 @@ void main() {
   // without letting paths inside uncut material show through the stock
   mv.xyz *= max(1.0 - 0.04 / max(length(mv.xyz), 1e-3), 0.0);
   gl_Position = projectionMatrix * mv;
+  if (aIdx < uFrom) gl_Position = vec4(2.0, 2.0, 2.0, 1.0);   // before the window start: clipped
 }`;
 const FS = `
 uniform float uPastA; uniform float uFutA; uniform float uOldA; uniform float uDash; uniform float uRapids; uniform float uFuture; uniform float uCuts;
@@ -61,7 +62,7 @@ export function buildToolpath(S, E, TL, toolColor, scale) {
   const mat = new THREE.ShaderMaterial({
     vertexShader: VS, fragmentShader: FS, transparent: true, depthWrite: false,
     uniforms: {
-      uCur: { value: 0 }, uWin: { value: 1e9 }, uPastA: { value: 0.95 }, uFutA: { value: 0.22 }, uOldA: { value: 0.16 }, uDash: { value: Math.max(0.6, scale / 80) },
+      uCur: { value: 0 }, uWin: { value: 1e9 }, uFrom: { value: -1 }, uPastA: { value: 0.95 }, uFutA: { value: 0.22 }, uOldA: { value: 0.16 }, uDash: { value: Math.max(0.6, scale / 80) },
       uRapids: { value: 1 }, uFuture: { value: 1 }, uCuts: { value: 1 },
     },
   });

@@ -118,3 +118,11 @@ def test_table_rotation_closed_form():
             d = np.array([math.sin(a) * math.cos(c), math.sin(a) * math.sin(c), math.cos(a)])
             Rt = rx(a) @ rz(math.radians(90 - C))
             assert np.allclose(Rt @ d, [0, 0, 1], atol=1e-12)
+
+
+@pytest.mark.skipif(NODE is None, reason="node not installed")
+def test_platter_does_not_wind_up():
+    """Alternating half turns (azimuth 180, 0, 180, ...) must not accumulate platter angle over the program."""
+    frames = [gcode.euler_zxz(*ijk) for ijk in [(-90, 90, 0), (90, 90, 0)] * 6 + [(0, 0, 0), (-90, 90, 0)]]
+    res = run_node(frames)
+    assert max(abs(r["Ck"]) for r in res) <= 180 + 1e-9, [r["Ck"] for r in res]

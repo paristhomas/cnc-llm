@@ -371,7 +371,7 @@ export class SimView5 {
       if (this.playTime >= this.total) { this.playTime = this.total; this.playing = false; this.syncPlay(); }
       this.cursor = this.timeToCursor(this.playTime);
     }
-    const caught = this.advance(now + (this.playing ? 12 : 16));
+    const caught = this.advance(now + (this.playing ? 12 : 60));   // paused (scrubbing): catch up faster
     this.caught = caught;
     let changed = false;
     if (this.cs >= 0) {
@@ -388,6 +388,8 @@ export class SimView5 {
       this.shownPos = pos;
       this.placeTool(pos);
       this.path.material.uniforms.uCur.value = pos;
+      // recent-path modes show the current setup's passes only (earlier setups' paths sit on other faces)
+      this.path.material.uniforms.uFrom.value = (this.pathMode === 'recent' || this.pathMode === 'next') && this.n ? this.segs[this.segOf(this.moveAt(pos))].a : -1;
       changed = true;
     }
     if (this.toolObj && this.spinning && this.playing && this.toolObj.visible) {
@@ -872,6 +874,8 @@ export class SimView5 {
   }
   setPathMode(v) {
     const u = this.path.material.uniforms;
+    this.pathMode = v;
+    this.shownPos = undefined;
     this.path.visible = v !== 'none';
     u.uFuture.value = v === 'past' || v === 'recent' ? 0 : 1;
     u.uWin.value = v === 'recent' || v === 'next' ? Math.max(400, this.n * 0.02) : 1e9;
@@ -962,7 +966,7 @@ export class SimView5 {
       this.hud.querySelector('.dot').style.background = td ? this.toolColor(t) : 'transparent';
       this.hud.querySelector('.tname').textContent = toolTxt;
       this.hud.querySelector('.hud-state').textContent =
-        `${rapid ? 'G0 rapid' : 'F' + Math.round(D.feed[m])}  ${spin ? 'S' + Math.round(rpm) : 'spindle off'}\nG54 X${px.toFixed(3)} Y${py.toFixed(3)} Z${pz.toFixed(3)} (setup frame)`;
+        `${rapid ? 'G0 rapid' : 'F' + Math.round(D.feed[m])}  ${spin ? 'S' + Math.round(rpm) : 'spindle off'}\nX${px.toFixed(3)} Y${py.toFixed(3)} Z${pz.toFixed(3)} (G68.2 setup frame)`;
     }
     this.updateStatus();
   }

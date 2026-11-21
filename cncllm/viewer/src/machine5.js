@@ -143,11 +143,11 @@ export function buildMachine(meta) {
   platter.add(mesh(rim, M.dark, false));
   // ---- spindle head (origin = top of the tool holder)
   const head = new THREE.Group();
-  const nose = new THREE.CylinderGeometry(36, 40, 46, 64); nose.rotateX(Math.PI / 2); nose.translate(0, 0, 23);
-  const ring = new THREE.CylinderGeometry(42, 42, 8, 64); ring.rotateX(Math.PI / 2); ring.translate(0, 0, 50);
-  const body = new THREE.CylinderGeometry(58, 58, 120, 64); body.rotateX(Math.PI / 2); body.translate(0, 0, 54 + 60);
-  const casting = box([-80, -40, 120], [80, 130, 420]);
-  head.add(mesh(nose, M.nose), mesh(ring, M.dark), mesh(body, M.head), mesh(casting, M.head));
+  // kept slim (nose + spindle cartridge, no head casting) so it does not hide the cut from the default camera
+  const nose = new THREE.CylinderGeometry(30, 34, 40, 64); nose.rotateX(Math.PI / 2); nose.translate(0, 0, 20);
+  const ring = new THREE.CylinderGeometry(36, 36, 7, 64); ring.rotateX(Math.PI / 2); ring.translate(0, 0, 43);
+  const body = new THREE.CylinderGeometry(44, 44, 260, 64); body.rotateX(Math.PI / 2); body.translate(0, 0, 46 + 130);
+  head.add(mesh(nose, M.nose), mesh(ring, M.dark), mesh(body, M.head));
   return { dims: d, fixed, cradle, platter, part, head, mats: M };
 }
 

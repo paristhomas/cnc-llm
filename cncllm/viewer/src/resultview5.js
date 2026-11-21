@@ -28,9 +28,12 @@ export class ResultView5 {
     // frame the whole part when the view first scrolls in (unless the reader already moved the camera)
     this.touched = false;
     els.view.addEventListener('pointerdown', () => { this.touched = true; });
-    const io = new IntersectionObserver((e) => { if (e[0].isIntersecting) { if (!this.touched) { st.resize(); this.view('iso', false); } io.disconnect(); } });
+    // default camera: of the overview directions, the one that sees the most failed area (area-weighted region
+    // normals), so a large failure on the underside or the back is not hidden behind a green front
+    this.startView = this.bestView(D.meta.regions || []);
+    const io = new IntersectionObserver((e) => { if (e[0].isIntersecting) { if (!this.touched) { st.resize(); this.view(this.startView, false); } io.disconnect(); } });
     io.observe(els.view);
-    this.view('iso', false);
+    this.view(this.startView, false);
     const k = st.key.shadow.camera, s = st.diag * 1.1;
     Object.assign(k, { left: -s, right: s, top: s, bottom: -s, far: st.diag * 6 });
     k.updateProjectionMatrix();
@@ -85,11 +88,36 @@ export class ResultView5 {
     this.mode = 'dev';
     this.buildBar(els.bar);
     this.buildMarkers(els.view);
+    const sc = meta.score || {};
+    if (sc.whole_surface_in_tol_pct != null) {
+      const sum = document.createElement('div');
+      sum.className = 'res-sum';
+      const f = (v) => (v == null ? '–' : (+v).toFixed(2) + '%');
+      sum.innerHTML = `<b>${f(sc.whole_surface_in_tol_pct)}</b> in tolerance · <span class="rs-p">${f(sc.whole_surface_proud_pct)} proud</span> · <span class="rs-g">${f(sc.whole_surface_gouge_pct)} gouged</span>` +
+        `<div class="rs-v">Some failures face away from this view: use Below / Back, or click a region.</div>`;
+      els.view.appendChild(sum);
+    }
     this.buildCard(els.view);
     this.buildPick(els.view);
     st.onFrame = () => { this.placeMarkers(); return false; };
     els.view.querySelector('.vp-msg')?.remove();
     st.invalidate();
+  }
+  viewDirs() {
+    const st = this.stage;
+    return { iso: st.camera.aspect < 0.9 ? [-0.6, -1.0, 1.55] : [-0.85, -1.25, 1.05], top: [0, -0.0001, 1], front: [0, -1, 0.28], back: [0.0, 1, 0.28], right: [1, 0.0, 0.28], left: [-1, 0, 0.28], under: [-0.6, -1.0, -0.9], isoBack: [0.85, 1.25, 1.05] };
+  }
+  bestView(regs) {
+    const dirs = this.viewDirs();
+    let best = 'iso', bs = -Infinity;
+    for (const k of ['iso', 'under', 'isoBack']) {
+      const v = new THREE.Vector3(...dirs[k]).normalize();
+      let s = 0;
+      for (const r of regs) { const n = r.normal || [0, 0, 1]; s += (r.area_mm2 || 0) * Math.max(0, v.x * n[0] + v.y * n[1] + v.z * n[2]); }
+      if (k === 'iso') s *= 1.15;   // prefer the usual view unless another shows clearly more failure
+      if (s > bs) { bs = s; best = k; }
+    }
+    return best;
   }
   setGhostMach(on) {
     for (const m of this.machMats) {
@@ -116,7 +144,7 @@ export class ResultView5 {
   }
   view(name, animate = true) {
     const st = this.stage;
-    const dirs = { iso: st.camera.aspect < 0.9 ? [-0.6, -1.0, 1.55] : [-0.85, -1.25, 1.05], top: [0, -0.0001, 1], front: [0, -1, 0.28], back: [0.0, 1, 0.28], right: [1, 0.0, 0.28], left: [-1, 0, 0.28], under: [-0.6, -1.0, -0.9] };
+    const dirs = this.viewDirs();
     const v = new THREE.Vector3(...(dirs[name] || dirs.iso)).normalize();
     const { pos, target } = st.fitBox(v, this.partLo, this.partHi, name === 'top' ? 1.06 : 1.15);
     st.flyTo(pos, target, animate);

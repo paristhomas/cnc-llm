@@ -57,13 +57,19 @@ def grep_report(root: Path) -> dict:
 def wait_rendered(pg, timeout=60.0, frames=2):
     """Wait until the replay caught up with the cursor and the 3D stage drew `frames` new frames."""
     t0 = time.time()
-    pg.wait_for_function("() => window.__viewer && window.__viewer.state().caught", timeout=timeout * 1000)
-    f0 = pg.evaluate("() => window.CNCViewer.sim.stage.frames || 0")
-    pg.evaluate("() => window.CNCViewer.sim.stage.invalidate()")
+    # one frame first: `caught` is updated by the frame loop and may still describe the previous cursor
+    f0 = pg.evaluate("() => { const s = window.CNCViewer.sim.stage; s.invalidate(); return s.frames || 0; }")
     try:
-        pg.wait_for_function(f"() => (window.CNCViewer.sim.stage.frames || 0) >= {f0 + frames}", timeout=timeout * 1000)
+        pg.wait_for_function(f"() => (window.CNCViewer.sim.stage.frames || 0) > {f0}", timeout=timeout * 1000)
     except Exception:
         pass
+    pg.wait_for_function("() => window.__viewer && window.__viewer.state().caught", timeout=timeout * 1000)
+    for _ in range(frames):   # the stage renders on demand: ask for one frame at a time
+        f0 = pg.evaluate("() => { const s = window.CNCViewer.sim.stage; s.invalidate(); return s.frames || 0; }")
+        try:
+            pg.wait_for_function(f"() => (window.CNCViewer.sim.stage.frames || 0) > {f0}", timeout=timeout * 1000)
+        except Exception:
+            pass
     return time.time() - t0
 
 
@@ -94,9 +100,18 @@ def pick_swings(pg, k):
     return sorted(out)
 
 
-def shoot(el, path):
+def shoot(el, path, pg=None):
+    """Element screenshot. Under SwiftShader a 3D frame can take seconds, so Playwright's 'element is stable' wait
+    (two equal boxes in consecutive animation frames) can time out: for elements that fit the viewport, clip a page
+    screenshot instead."""
     el.scroll_into_view_if_needed()
-    el.screenshot(path=str(path))
+    box = el.bounding_box()
+    vp = pg.viewport_size if pg else None
+    if pg and box and vp and box["height"] <= vp["height"] and box["y"] >= 0:
+        pg.screenshot(path=str(path), clip={"x": max(box["x"], 0), "y": box["y"], "width": min(box["width"], vp["width"]),
+                                            "height": box["height"]}, timeout=180000)
+    else:
+        el.screenshot(path=str(path), timeout=180000)
     return path.name
 
 
@@ -106,6 +121,7 @@ def render(p, url, outdir: Path, vp, scheme, swings, full):
     res = {"viewport": tag, "shots": [], "console_errors": [], "console_warnings": []}
     b = p.chromium.launch(args=GL_ARGS)
     pg = b.new_page(viewport={"width": w, "height": h}, color_scheme=scheme, device_scale_factor=1)
+    pg.set_default_timeout(180000)
     pg.on("console", lambda m: (res["console_errors"] if m.type == "error" else res["console_warnings"]).append(m.text)
           if m.type in ("error", "warning") else None)
     pg.on("pageerror", lambda e: res["console_errors"].append("pageerror: " + str(e)))
@@ -113,12 +129,19 @@ def render(p, url, outdir: Path, vp, scheme, swings, full):
     pg.goto(url)
     pg.wait_for_function("() => window.CNCViewer && (window.CNCViewer.ready || window.CNCViewer.error)", timeout=120000)
     res["time_to_ready_s"] = round(time.time() - t0, 2)
+    # the sticky section bar would be captured over the middle of tall element screenshots
+    pg.add_style_tag(content=".toc { position: static !important; }")
     res["viewer_error"] = pg.evaluate("() => window.CNCViewer.error || null")
     if res["viewer_error"]:
         b.close()
         return res
     pg.wait_for_function("() => (window.CNCViewer.sim.stage.frames || 0) >= 1", timeout=120000)
     res["time_to_first_frame_s"] = round(time.time() - t0, 2)
+    try:   # keyframes of the background replay make seeking fast; wait for them (bounded)
+        pg.wait_for_function("() => ['done', 'failed', 'none'].includes(window.CNCViewer.sim.workerState)", timeout=240000)
+    except Exception:
+        pass
+    res["replay_precompute_s"] = round(time.time() - t0, 2)
     res["machine_check"] = pg.evaluate("() => window.__machineCheck")
     res["default_mode"] = pg.evaluate("() => window.__viewer.state().mode")
     res["scrollWidth"] = pg.evaluate("() => document.documentElement.scrollWidth")
@@ -128,7 +151,7 @@ def render(p, url, outdir: Path, vp, scheme, swings, full):
         .slice(0, 15).map(e => e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' ? '.' + e.className.split(' ').join('.') : '') + ' ' + Math.round(e.getBoundingClientRect().right))""")
     hero = pg.query_selector("header.hero")
     if hero:
-        res["shots"].append(shoot(hero, outdir / f"{tag}_header.png"))
+        res["shots"].append(shoot(hero, outdir / f"{tag}_header.png", pg))
     sim = pg.query_selector("#simview")
     sim.scroll_into_view_if_needed()
     targets = pick_swings(pg, swings)
@@ -139,19 +162,19 @@ def render(p, url, outdir: Path, vp, scheme, swings, full):
             pg.evaluate(f"() => window.__viewer.seekSwing({s}, {t})")
             wait_rendered(pg)
             rec["states"][name] = pg.evaluate("() => window.__viewer.state()")
-            res["shots"].append(shoot(sim, outdir / f"{tag}_machine_swing{k + 1}_{name}.png"))
+            res["shots"].append(shoot(sim, outdir / f"{tag}_machine_swing{k + 1}_{name}.png", pg))
         pg.evaluate(f"() => window.__viewer.gotoSeg({s})")
         pg.evaluate("() => { const v = window.CNCViewer.sim; const sg = v.segs[v.segOf(Math.floor(v.cursor))]; v.setCursor(sg.firstCut + Math.floor((sg.b - sg.firstCut) * 0.6)); }")
         wait_rendered(pg)
         rec["states"]["cut"] = pg.evaluate("() => window.__viewer.state()")
-        res["shots"].append(shoot(sim, outdir / f"{tag}_machine_cut{k + 1}.png"))
+        res["shots"].append(shoot(sim, outdir / f"{tag}_machine_cut{k + 1}.png", pg))
         res["swings"].append(rec)
     pg.evaluate("() => window.__viewer.setMode('part')")
     for k, s in enumerate(targets):
         pg.evaluate(f"() => window.__viewer.gotoSeg({s})")
         pg.evaluate("() => { const v = window.CNCViewer.sim; const sg = v.segs[v.segOf(Math.floor(v.cursor))]; v.setCursor(sg.firstCut + Math.floor((sg.b - sg.firstCut) * 0.6)); v.view('setup', false); }")
         wait_rendered(pg)
-        res["shots"].append(shoot(sim, outdir / f"{tag}_part_cut{k + 1}.png"))
+        res["shots"].append(shoot(sim, outdir / f"{tag}_part_cut{k + 1}.png", pg))
     pg.evaluate("() => window.__viewer.setMode('machine')")
     # scrubber: real mouse clicks at several fractions of the timeline track
     tl = pg.query_selector("#simcontrols .tl")
@@ -175,7 +198,7 @@ def render(p, url, outdir: Path, vp, scheme, swings, full):
                     pg.wait_for_function("() => window.CNCViewer.result && (window.CNCViewer.result.stage.frames || 0) >= 2", timeout=60000)
                 except Exception:
                     pass
-            res["shots"].append(shoot(el, outdir / f"{tag}_{name}.png"))
+            res["shots"].append(shoot(el, outdir / f"{tag}_{name}.png", pg))
     if full:
         pg.screenshot(path=str(outdir / f"{tag}_full.png"), full_page=True)
         res["shots"].append(f"{tag}_full.png")
