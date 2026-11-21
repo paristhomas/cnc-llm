@@ -495,7 +495,7 @@ def _partoff_block(po: dict | None, rg: dict, m: dict, img: str | None) -> str:
         for i, t in enumerate(tabs))
     widths = [t["width_mm"] for t in tabs if t.get("width_mm") is not None]
     tbl = (f'<div class="tablewrap"><table class="tabs"><thead><tr><th>Tab</th><th class="num">Section mm²</th>'
-           f'<th class="num">Width mm (smallest direction)</th><th class="num">Centre X, Y, Z (G54)</th></tr></thead>'
+           f'<th class="num" title="smallest direction: twice the largest inscribed radius of the tab section">Width mm</th><th class="num">Centre X, Y, Z (G54)</th></tr></thead>'
            f'<tbody>{rows or "<tr><td colspan=4 class=muted>No tabs: nothing connects the part to the stub.</td></tr>"}</tbody>'
            f'<tfoot><tr><th>{len(tabs)} tab{"s" if len(tabs) != 1 else ""}</th><th class="num">{total if total is not None else "–"}</th>'
            f'<th class="num">{f"max {max(widths):g}" if widths else "–"}</th><th></th></tr></tfoot></table></div>')
