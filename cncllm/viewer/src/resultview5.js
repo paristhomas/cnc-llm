@@ -149,6 +149,7 @@ export class ResultView5 {
     const v = new THREE.Vector3(...(dirs[name] || dirs.iso)).normalize();
     const { pos, target } = st.fitBox(v, this.partLo, this.partHi, name === 'top' ? 1.06 : 1.15);
     st.flyTo(pos, target, animate);
+    if (this.target && this.xray) this.setXray(false);
     if (this.markers) this.markers.forEach((m) => m.el.classList.remove('active'));
   }
   buildBar(bar) {
@@ -165,7 +166,7 @@ export class ResultView5 {
         <label class="chk"><input type="checkbox" class="vise"> <i class="sw" style="background:#6f7c8c"></i>vise</label>
         <label class="chk"><input type="checkbox" class="stk"> <i class="sw" style="background:#f0a030"></i>stock outline</label>
         <label class="chk"><input type="checkbox" class="mk" checked> region labels</label>
-        <span class="seg views" role="group" aria-label="View"><button type="button" data-view="iso" title="Reset to the isometric overview">Iso</button><button type="button" data-view="top">Top</button><button type="button" data-view="front">Front</button><button type="button" data-view="back">Back</button><button type="button" data-view="right">Side</button><button type="button" data-view="under">Below</button></span>
+        <span class="seg views" role="group" aria-label="View"><button type="button" data-view="iso" title="Reset to the isometric overview">Iso</button><button type="button" data-view="top">Top</button><button type="button" data-view="front">Front</button><button type="button" data-view="back">Back</button><button type="button" data-view="right">Side</button><button type="button" data-view="under">Below</button>${(D.meta.partoff && (D.meta.partoff.tabs || []).length) ? '<button type="button" data-view="tabs" title="The part-off tabs on the machined part">Tabs</button>' : ''}</span>
       </div>
       <div class="cbar dev-legend">
         <div class="cb-title">Signed deviation of the machined part from the target surface (mm). Anything not green is out of tolerance.</div>
@@ -188,7 +189,7 @@ export class ResultView5 {
     bar.querySelector('.vise').onchange = (e) => { this.vise.group.visible = e.target.checked; this.stage.invalidate(); };
     bar.querySelector('.stk').onchange = (e) => { this.stockGhost.visible = e.target.checked; this.stage.invalidate(); };
     bar.querySelector('.mk').onchange = (e) => { this.markerLayer.hidden = !e.target.checked; };
-    bar.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => this.view(b.dataset.view)));
+    bar.querySelectorAll('[data-view]').forEach((b) => (b.onclick = () => (b.dataset.view === 'tabs' ? this.viewTabs(0) : this.view(b.dataset.view))));
   }
   regionPoint(r) {
     const b = r.bbox, nn = r.normal || [0, 0, 1];
@@ -216,9 +217,18 @@ export class ResultView5 {
   }
   placeMarkers() {
     if (this.markerLayer.hidden) return;
+    // labels in region order; a label that would overlap an earlier one is pushed down until it is clear
+    const placed = [];
     for (const mk of this.markers) {
       const s = this.stage.project(mk.p);
-      mk.el.style.transform = `translate(${s.x.toFixed(1)}px, ${s.y.toFixed(1)}px)`;
+      let x = s.x, y = s.y;
+      for (let k = 0; k < 8; k++) {
+        const hit = placed.find((q) => Math.abs(q[0] - x) < 34 && Math.abs(q[1] - y) < 22);
+        if (!hit) break;
+        y = hit[1] + 23;
+      }
+      placed.push([x, y]);
+      mk.el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
       mk.el.hidden = s.behind;
     }
     if (this.focus && !this.card.hidden) {
@@ -233,7 +243,9 @@ export class ResultView5 {
     c.hidden = true;
     c.setAttribute('role', 'dialog');
     c.setAttribute('aria-label', 'Region details');
-    view.appendChild(c);
+    // on phones the card goes under the 3D view (it would cover it), on wider screens over its corner
+    if (window.matchMedia && window.matchMedia('(max-width: 560px)').matches && this.bar) { c.classList.add('below'); this.bar.prepend(c); }
+    else view.appendChild(c);
     const pin = this.pin = document.createElement('div');
     pin.className = 'region-pin';
     pin.hidden = true;
@@ -247,11 +259,13 @@ export class ResultView5 {
     this.card.innerHTML = `<button type="button" class="rc-x" aria-label="Close">×</button>
       <div class="rc-h"><span class="pill ${esc(r.type)}">${esc(r.type)}</span> <b>R${r.id}</b> · ${r.area_mm2} mm² · worst ${r.dev_extreme > 0 ? '+' : ''}${(+r.dev_extreme).toFixed(3)} mm</div>
       <div class="rc-why">Failed: ${why}.</div>
-      ${r.hint ? `<div class="rc-hint"><b>Why:</b> ${esc(r.hint)}</div>` : ''}
+      ${r.where ? `<div class="rc-where"><b>Where:</b> ${esc(r.where)}</div>` : ''}
+      ${r.hint ? `<div class="rc-hint"><b>Why:</b> ${esc(r.hint_display || r.hint)}</div>` : ''}
+      ${this.xray ? '<div class="rc-f muted">Shown see-through: other faces of the part are in front of this region.</div>' : ''}
       <div class="rc-f muted">${esc((r.faces || []).slice(0, 3).join(', '))}</div>
       ${passes ? `<div class="rc-p"><span class="muted">Nearest passes (G-code line):</span> ${passes}</div>` : '<div class="rc-p muted">No pass of the program came near this region.</div>'}`;
     this.card.hidden = false;
-    this.card.querySelector('.rc-x').onclick = () => { this.card.hidden = true; this.pin.hidden = true; this.markers.forEach((m) => m.el.classList.remove('active')); };
+    this.card.querySelector('.rc-x').onclick = () => { this.card.hidden = true; this.pin.hidden = true; this.setXray(false); this.markers.forEach((m) => m.el.classList.remove('active')); };
   }
   focusRegion(id, scroll = true) {
     const r = this.regions.find((x) => x.id === id);
@@ -261,13 +275,43 @@ export class ResultView5 {
     const b = r.bbox, nn = r.normal || [0, 0, 1];
     const c = new THREE.Vector3((b[0] + b[3]) / 2, (b[1] + b[4]) / 2, (b[2] + b[5]) / 2);
     const ext = Math.max(b[3] - b[0], b[4] - b[1], b[5] - b[2], 6);
-    const dir = new THREE.Vector3(...nn).normalize().add(new THREE.Vector3(-0.3, -0.4, 0.4)).normalize();
+    // look along the region's mean normal (a small tilt keeps the orbit controls off the pole): for a failure at the
+    // bottom of a hole this looks straight down the bore instead of past its wall
+    const n = new THREE.Vector3(...nn).normalize();
+    const side = Math.abs(n.z) > 0.9 ? new THREE.Vector3(-0.6, -0.8, 0) : new THREE.Vector3(0, 0, 1);
+    const dir = n.clone().addScaledVector(side.sub(n.clone().multiplyScalar(side.dot(n))).normalize(), 0.06).normalize();
+    const dist = ext * 1.6 + this.stage.diag * 0.3;
+    const pos = c.clone().addScaledVector(dir, dist);
+    // anything of the part between the camera and the region? then show the part see-through while it is focused
+    const ray = new THREE.Raycaster(pos, c.clone().sub(pos).normalize(), 0, dist);
+    const hit = ray.intersectObject(this.target, false)[0];
+    this.setXray(!!hit && hit.distance < dist - ext * 0.75 - 1.0);
     this.touched = true;
-    this.stage.flyTo(c.clone().addScaledVector(dir, ext * 1.6 + this.stage.diag * 0.3), c);
+    this.stage.flyTo(pos, c);
     this.markers.forEach((m) => m.el.classList.toggle('active', m.r.id === id));
     this.focus = this.regionPoint(r);
     this.showCard(r);
     this.stage.invalidate();
+  }
+  setXray(on) {
+    this.xray = on;
+    const m = this.target.material;
+    m.transparent = on; m.opacity = on ? 0.38 : 1; m.depthWrite = !on; m.needsUpdate = true;
+    this.stage.invalidate();
+  }
+  // part-off tabs: the machined part from below-side at a tab (or all tabs)
+  viewTabs(k = 0) {
+    const tabs = (this.D.meta.partoff && this.D.meta.partoff.tabs) || [];
+    if (!tabs.length) return;
+    this.setXray(false);
+    if (this.mode !== 'mach') this.setMode('mach');
+    const sel = k < 0 ? tabs : [tabs[Math.min(k, tabs.length - 1)]];
+    const lo = new THREE.Vector3(Infinity, Infinity, Infinity), hi = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+    for (const t of sel) { const c = new THREE.Vector3(...t.centroid); lo.min(c); hi.max(c); }
+    lo.add(new THREE.Vector3(-10, -10, -8)); hi.add(new THREE.Vector3(10, 10, 8));
+    const { pos, target } = this.stage.fitBox(new THREE.Vector3(-1, -0.3, 0.05).normalize(), lo, hi, 1.1);
+    this.touched = true;
+    this.stage.flyTo(pos, target);
   }
   // nearest region (by bounding box) to a picked surface point
   regionAt(p) {
@@ -308,5 +352,71 @@ export class ResultView5 {
       tip.hidden = false;
       if (reg) { this.focus = this.regionPoint(reg); this.showCard(reg); this.markers.forEach((m) => m.el.classList.toggle('active', m.r.id === reg.id)); }
     });
+  }
+}
+
+// Part-off close-up: the machined part (stock ∩ every setup's cut) seen from below-side at the tabs, with the target's
+// feature edges drawn for reference and a label per tab (from the simulator's part-off table).
+export class TabsView {
+  constructor(D, el) {
+    this.D = D;
+    const meta = D.meta, tabs = this.tabs = (meta.partoff && meta.partoff.tabs) || [];
+    const st = this.stage = new Stage(el, meta.stock);
+    st.plate.visible = false;
+    armZoom(st, el);
+    const mach = this.mach = new Material5(st.renderer, D.segs, meta.stock, [], SETUP_PALETTE.map(hexRgb));
+    D.segs.forEach((sg, i) => { if (sg.grid) mach.write(i, sg.finalH, sg.finalOwn); });
+    mach.setActive(D.segs.length);
+    mach.setMode(2);
+    st.scene.add(mach.group);
+    if (D.meshEdges && D.meshEdges.length) {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(D.meshEdges, 3));
+      st.scene.add(new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color: 0x1d5fbf, transparent: true, opacity: 0.55 })));
+    }
+    const k = st.key.shadow.camera, s = st.diag * 1.1;
+    Object.assign(k, { left: -s, right: s, top: s, bottom: -s, far: st.diag * 6 });
+    k.updateProjectionMatrix();
+    const layer = this.layer = document.createElement('div');
+    layer.className = 'markers';
+    el.appendChild(layer);
+    this.labels = tabs.map((t, i) => {
+      const e = document.createElement('div');
+      e.className = 'tab-label';
+      e.textContent = `Tab ${i + 1} · ${t.area_mm2} mm² · ${t.width_mm} mm wide`;
+      layer.appendChild(e);
+      return { e, p: new THREE.Vector3(...t.centroid) };
+    });
+    const bar = document.createElement('div');
+    bar.className = 'tab-btns seg';
+    bar.innerHTML = tabs.map((t, i) => `<button type="button" data-tab="${i}">Tab ${i + 1}</button>`).join('') +
+      (tabs.length > 1 ? '<button type="button" data-tab="-1">All</button>' : '');
+    el.appendChild(bar);
+    this.btns = [...bar.querySelectorAll('[data-tab]')];
+    this.btns.forEach((b) => (b.onclick = () => this.show(+b.dataset.tab)));
+    st.onFrame = () => { this.place(); return false; };
+    el.querySelector('.vp-msg')?.remove();
+    this.show(0, false);
+    const io = new IntersectionObserver((e) => { if (e[0].isIntersecting) { st.resize(); this.show(this.cur, false); io.disconnect(); } });
+    io.observe(el);
+  }
+  show(k, animate = true) {
+    const tabs = this.tabs;
+    if (!tabs.length) return;
+    this.cur = k;
+    const sel = k < 0 ? tabs : [tabs[Math.min(k, tabs.length - 1)]];
+    const lo = new THREE.Vector3(Infinity, Infinity, Infinity), hi = new THREE.Vector3(-Infinity, -Infinity, -Infinity);
+    for (const t of sel) { const c = new THREE.Vector3(...t.centroid); lo.min(c); hi.max(c); }
+    lo.add(new THREE.Vector3(-10, -10, -8)); hi.add(new THREE.Vector3(10, 10, 8));
+    const { pos, target } = this.stage.fitBox(new THREE.Vector3(-1, -0.3, 0.05).normalize(), lo, hi, 1.05);
+    this.stage.flyTo(pos, target, animate);
+    this.btns.forEach((b) => b.setAttribute('aria-pressed', String(+b.dataset.tab === k)));
+  }
+  place() {
+    for (const l of this.labels) {
+      const s = this.stage.project(l.p);
+      l.e.style.transform = `translate(${s.x.toFixed(1)}px, ${(s.y + 18).toFixed(1)}px)`;
+      l.e.hidden = s.behind;
+    }
   }
 }

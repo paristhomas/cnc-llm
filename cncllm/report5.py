@@ -108,18 +108,27 @@ def _segment_fields(M, a, b, g, lo, hi, cap):
 
 
 def _conn_masks(res, part):
-    """Material in the connection plane (middle of the stub gap) after every segment, as row runs."""
+    """Material in the stub gap after every segment, as row runs, drawn at the plane the numbers refer to: the weakest
+    plane of that segment's rigidity check, and for the last segment of a program with a part-off analysis the plane
+    of the reported tabs (setups.json partoff.weakest_z)."""
     from . import sim5
     M, frames = res["moves"], res["frames"]
     lo, hi = part.stock_lo, part.stock_hi
-    zc = -part.fixture["gap"] / 2
+    z_mid = -part.fixture["gap"] / 2
+    checks = (res.get("rigidity") or {}).get("checks") or []
+    po = res.get("partoff") or {}
     r = CONN_RES
     xs = np.arange(lo[0] + r / 2, hi[0], r)
     ys = np.arange(lo[1] + r / 2, hi[1], r)
     X, Y = np.meshgrid(xs, ys)
-    P = np.c_[X.ravel(), Y.ravel(), np.full(X.size, zc)]
-    out = []
-    for a, b, k in sim5.segments(M):
+    out, zs = [], []
+    segs = sim5.segments(M)
+    for si, (a, b, k) in enumerate(segs):
+        zc = float(checks[si]["weakest_z"]) if si < len(checks) and "weakest_z" in checks[si] else z_mid
+        if si == len(segs) - 1 and po.get("weakest_z") is not None:
+            zc = float(po["weakest_z"])
+        zs.append(zc)
+        P = np.c_[X.ravel(), Y.ravel(), np.full(X.size, zc)]
         wp = sim5.Workpiece5(M, frames, part, upto=b)
         ins = wp.inside(P).reshape(X.shape)
         runs = []
@@ -128,7 +137,8 @@ def _conn_masks(res, part):
             st, en = np.where(d == 1)[0], np.where(d == -1)[0]
             runs.append([int(v) for p in zip(st, en - st) for v in p])
         out.append(runs)
-    return {"x0": float(lo[0]), "y0": float(lo[1]), "res": r, "nx": len(xs), "ny": len(ys), "z": zc, "masks": out}
+    return {"x0": float(lo[0]), "y0": float(lo[1]), "res": r, "nx": len(xs), "ny": len(ys), "z": z_mid, "zs": zs,
+            "masks": out}
 
 
 def export_data(part, res: dict, final_dir) -> Path:
@@ -351,6 +361,51 @@ def _setup_label(s):
     return f"A{round(s.get('A_deg', 0))} C{round(s.get('C_deg', 0))}"
 
 
+def display_hint(r: dict) -> str:
+    """Report-side wording of the simulator's region hint (regions.json is written by the frozen harness and is shown
+    as data; this only rewords it): 'stepover / scallop' is not offered for leftovers above 0.5 mm, and the trailing
+    'It still counts' fragment is completed."""
+    import re as _re
+    h = (r.get("hint") or "").strip()
+    if not h:
+        return ""
+    if abs(r.get("dev_mean", 0) or 0) > 0.5:
+        h = _re.sub(r"(leave \+?[\d.]+ mm on average): stepover / scallop, the tool radius, or a stop short",
+                    r"\1: the pass stops short of this area or the feature was not machined", h)
+    h = _re.sub(r"\.?\s*It still counts\.?$", ". It still counts as failed.", h)
+    return h
+
+
+def where_words(r: dict) -> str:
+    """Plain-language location of a region from its B-rep face types and mean normal."""
+    import re as _re
+    faces = r.get("faces") or []
+    n = r.get("normal") or [0, 0, 1]
+    kinds = []
+    for f in faces[:2]:
+        m = _re.search(r"\(([a-z]+)(?: r([\d.]+))?\)", f)
+        if not m:
+            continue
+        t, rad = m.group(1), float(m.group(2)) if m.group(2) else None
+        if t == "cone":
+            k = "the conical bottom of a drilled hole (drill point)" if abs(n[2] if len(n) > 2 else 0) > 0.7 else "a chamfer or conical face"
+        elif t == "cylinder" and rad is not None and rad <= 3:
+            k = f"a small rounded edge or fillet (radius {rad:g} mm)"
+        elif t == "cylinder":
+            k = f"a curved wall (radius {rad:g} mm: a hole, bore or round)" if rad else "a curved wall"
+        elif t == "plane":
+            k = "a flat face"
+        elif t in ("torus", "bspline", "bezier", "surface"):
+            k = "a blended / fillet surface"
+        else:
+            k = f"a {t} face"
+        if k not in kinds:
+            kinds.append(k)
+    nz = n[2] if len(n) > 2 else 0
+    side = "facing up" if nz > 0.7 else "on the underside" if nz < -0.7 else "on a side"
+    return (" and ".join(kinds[:2]) or "part surface") + f", {side}"
+
+
 def _issue_rows5(issues: list) -> str:
     if not issues:
         return '<p class="ok-note">No safety, fixture or plausibility issues.</p>'
@@ -394,7 +449,7 @@ def _region_rows5(regs: list, segs: list) -> str:
                 f'<td class="num" data-l="Worst mm">{r.get("dev_extreme", 0):+.3f}</td>'
                 f'<td data-l="Faces">{_esc(", ".join(r.get("faces", [])[:3]))}<div class="muted small">normal ({", ".join(f"{v:g}" for v in nn)})</div></td>'
                 f'<td class="where" data-l="Where">{where}</td>'
-                f'<td class="lines" data-l="Why">{("<div class=hint>" + _esc(r["hint"]) + "</div>") if r.get("hint") else ""}'
+                f'<td class="lines" data-l="Why"><div class=where-w>{_esc(where_words(r))}</div>{("<div class=hint>" + _esc(display_hint(r)) + "</div>") if r.get("hint") else ""}'
                 f'{("<span class=muted>nearest passes</span> " + lk) if lk else ""}</td></tr>')
 
     head = ('<thead><tr><th>Region</th><th>Type</th><th class="num">Area mm²</th><th class="num">Worst mm</th>'
@@ -513,12 +568,16 @@ def _partoff_block(po: dict | None, rg: dict, m: dict, img: str | None) -> str:
     why = "".join(f"<li>{_esc(r)}</li>" for r in reasons)
     lim = (f'Limits: total 2–30 mm² and at most 15% of the stub section, each tab at most 3 mm across, at most 4 tabs, witness at most 1.5% '
            f'of the surface (review target 2–4 tabs, 20–30 mm², witness ≤ 0.5%).')
-    fig = (f'<figure class="po-img"><a href="{img}" target="_blank"><img src="{img}" alt="Close-up of the part-off: the tabs left between the part and the stub" loading="lazy"></a>'
-           f'<figcaption>Close-up of the tabs after the part-off (simulated material).</figcaption></figure>') if img else ""
+    view3d = ('<figure class="po-3d"><div class="viewport po-view" id="tabview"><div class="vp-msg">Loading the 3D close-up…</div></div>'
+              '<figcaption>The simulated part after the part-off, seen from the side at the height of the tabs (aluminium = remaining material; the '
+              'part above, the gripped stub below). Drag to turn, pick a tab with the buttons.</figcaption></figure>') if tabs else ""
+    fig = (f'<details class="po-chart"><summary>Simulator plot of the part-off (underside probe map, per-tab zooms, material section)</summary>'
+           f'<figure class="po-img"><a href="{img}" target="_blank"><img src="{img}" alt="Part-off plot: underside probe map with the tabs circled and the material section through the stub gap" loading="lazy"></a>'
+           f'<figcaption>From the evaluation\'s probe data. Open the image for full size.</figcaption></figure></details>') if img else ""
     return (f'<div class="po"><div class="po-main"><p class="po-status">{status} {len(tabs)} tab{"s" if len(tabs) != 1 else ""}'
             f'{f", {total:g} mm² in total" if total is not None else ""}{f", widest {max(widths):g} mm" if widths else ""}.'
             f'{"" if measured else " Tab widths were not measured when this run was simulated."}</p>'
-            f'{tbl}<p class="small">{wit}</p>{f"<ul class=po-why>{why}</ul>" if why else ""}<p class="muted small">{lim}</p></div>{fig}</div>')
+            f'{tbl}<p class="small">{wit}</p>{f"<ul class=po-why>{why}</ul>" if why else ""}<p class="muted small">{lim}</p></div>{view3d}{fig}</div>')
 
 
 def _history_svg5(hist: list, final_iter) -> str:
@@ -542,16 +601,19 @@ def _history_svg5(hist: list, final_iter) -> str:
             f'<p class="muted small chart-note">Score axis zoomed to {ticks[0]:.{nd}f}–100 %. Values as simulated at each iteration.</p>')
 
 
-def _conn_maps(cm, checks):
-    """Small multiples: the connection plane after each setup where it changed (material dark, cut light)."""
+def _conn_maps(cm, checks, po=None):
+    """Small multiples: the material in the stub gap after each setup where it changed (material dark, cut light), each
+    drawn at the plane its caption reports (rigidity.json "zs"; older exports drew one fixed plane, said so below)."""
     if not cm or not cm.get("masks"):
         return ""
     nx, ny, r = cm["nx"], cm["ny"], cm["res"]
     W, Hh = nx * r, ny * r
+    zs = cm.get("zs")
     out, prev = [], None
+    n = len(cm["masks"])
     for i, runs in enumerate(cm["masks"]):
-        key = json.dumps(runs)
-        last = i == len(cm["masks"]) - 1
+        last = i == n - 1
+        key = json.dumps(runs) + (f"{zs[i]:.3f}" if zs else "")
         if key == prev and not last:
             continue
         prev = key
@@ -561,15 +623,23 @@ def _conn_maps(cm, checks):
                 path.append(f"M{rr[k] * r:g} {(ny - 1 - row) * r:g}h{rr[k + 1] * r:g}v{r:g}h{-rr[k + 1] * r:g}z")
         c = checks[i] if i < len(checks) else {}
         isl = c.get("islands") or []
-        lbl = (f'After setup {i + 1}: <b>{c.get("area_mm2", 0):g} mm²</b> ({100 * c.get("fraction", 0):.0f}%)'
-               + (f' · {len(isl)} piece{"s" if len(isl) != 1 else ""}' if len(isl) > 1 or c.get("part_off") else "")
-               + (" · part-off" if c.get("part_off") else ""))
-        out.append(f'<figure class="cmap{" final" if last else ""}"><svg viewBox="0 0 {W:g} {Hh:g}" preserveAspectRatio="xMidYMid meet" role="img" '
-                   f'aria-label="Connection plane after setup {i + 1}"><rect class="cut" width="{W:g}" height="{Hh:g}"/>'
+        if last and po and zs:
+            tabs = po.get("tabs") or []
+            lbl = (f'After the part-off, at Z {zs[i]:g} mm: <b>{po.get("total_mm2", 0):g} mm²</b> in {len(tabs)} tab{"s" if len(tabs) != 1 else ""} '
+                   f'(the part-off analysis; its 7-plane rigidity scan found {c.get("area_mm2", 0):g} mm² at Z {c.get("weakest_z", 0):g}, '
+                   f'which includes material not connected to the part)')
+        else:
+            at = f' at Z {zs[i]:g} mm' if zs else ''
+            lbl = (f'After setup {i + 1}{at}: <b>{c.get("area_mm2", 0):g} mm²</b> ({100 * c.get("fraction", 0):.0f}%)'
+                   + (f' · {len(isl)} piece{"s" if len(isl) != 1 else ""}' if len(isl) > 1 or c.get("part_off") else "")
+                   + (" · part-off" if c.get("part_off") else ""))
+        out.append(f'<figure class="cmap"><svg viewBox="0 0 {W:g} {Hh:g}" preserveAspectRatio="xMidYMid meet" role="img" '
+                   f'aria-label="Material in the stub gap after setup {i + 1}"><rect class="cut" width="{W:g}" height="{Hh:g}"/>'
                    f'<path class="mat" d="{"".join(path)}"/></svg><figcaption>{lbl}</figcaption></figure>')
-    return (f'<div class="cmaps">{"".join(out)}</div><p class="muted small">Seen from above at Z {cm["z"]:g} mm (middle of the stub gap; the rigidity check uses the weakest plane), '
-            f'X {cm["x0"]:g}…{cm["x0"] + W:g} mm left to right, Y up. Filled = material still connecting the part to the gripped stub. '
-            f'Only setups that changed the plane are shown.</p>')
+    plane = ("Each section is drawn at the plane its caption names (the weakest plane of that check)." if zs else
+             f"All sections are drawn at Z {cm['z']:g} mm (middle of the stub gap); the numbers are from the weakest plane, so they can differ.")
+    return (f'<div class="cmaps">{"".join(out)}</div><p class="muted small">Seen from above, X {cm["x0"]:g}…{cm["x0"] + W:g} mm left to right, Y up. '
+            f'Filled = material in the plane. {plane} Only setups that changed the section are shown.</p>')
 
 
 def build(run_dir, source: str | None = None) -> Path:
@@ -637,7 +707,9 @@ def build(run_dir, source: str | None = None) -> Path:
         except Exception:
             pass
         b64 = base64.b64encode((vd / "data.bin.gz").read_bytes()).decode("ascii")
-        extra = {"regions": regs, "issues": [{k: v for k, v in i.items() if k != "lines"} | {"lines": i.get("lines", [])[:30]}
+        extra = {"regions": [r | {"hint_display": display_hint(r), "where": where_words(r)} for r in regs],
+                 "partoff": {k: v for k, v in (po or {}).items() if k != "planes"} if po else None,
+                 "issues": [{k: v for k, v in i.items() if k != "lines"} | {"lines": i.get("lines", [])[:30]}
                                               for i in issues[:200]],
                  "part": meta.get("part"), "tolerance": m.get("tolerance_mm", TOL_DEFAULT),
                  "score": {k: ws.get(k) for k in ("whole_surface_in_tol_pct", "whole_surface_proud_pct", "whole_surface_gouge_pct")}}
@@ -705,6 +777,14 @@ def build(run_dir, source: str | None = None) -> Path:
                      f'<img src="iter/{n:02d}/deviation_views.png" alt="Deviation views, iteration {n}" loading="lazy"></a>')
         notes = (it / "notes.md").read_text() if (it / "notes.md").exists() else ""
         prev = next((x for x in hist if x["iter"] == n - 1), None)
+        cyc_note = ""
+        if prev and hm.get("cycle_time_min") and prev["metrics"].get("cycle_time_min"):
+            dc = hm["cycle_time_min"] - prev["metrics"]["cycle_time_min"]
+            if abs(dc) >= max(5.0, 0.1 * prev["metrics"]["cycle_time_min"]):
+                first = (notes.strip().splitlines() or [""])[0][:160]
+                cyc_note = (f'<p class="cyc-note"><b>Cycle time {"+" if dc > 0 else ""}{dc:.1f} min</b> against iteration {n - 1}'
+                            + (f' (score {"unchanged" if abs(hm.get("whole_surface_in_tol_pct", 0) - prev["metrics"].get("whole_surface_in_tol_pct", 0)) < 1e-6 else "changed"})' if new_rule else '')
+                            + (f': {_esc(first)}' if first else '') + '</p>')
         delta = ""
         if prev and new_rule and prev["metrics"].get("whole_surface_in_tol_pct") is not None:
             d = hm["whole_surface_in_tol_pct"] - prev["metrics"]["whole_surface_in_tol_pct"]
@@ -735,7 +815,7 @@ def build(run_dir, source: str | None = None) -> Path:
       </dl>
       {thumb}
     </div>
-    <div class="notes">{err_html}{(md_to_html(notes) if new_rule else '<details class="old-notes"><summary>The agent’s own notes for this iteration (verbatim, written under the earlier scoring rule)</summary>' + md_to_html(notes) + '</details>') if notes.strip() else '<p class="muted">No notes from the LLM for this iteration.</p>'}</div>
+    <div class="notes">{cyc_note}{err_html}{(md_to_html(notes) if new_rule else '<details class="old-notes"><summary>The agent’s own notes for this iteration (verbatim, written under the earlier scoring rule)</summary>' + md_to_html(notes) + '</details>') if notes.strip() else '<p class="muted">No notes from the LLM for this iteration.</p>'}</div>
   </div>
   <footer class="links">{''.join(links)}</footer>
 </article>""")
@@ -858,12 +938,19 @@ def build(run_dir, source: str | None = None) -> Path:
                       + (' for the operator to break off and file flush.' if not po_bad and po is not None else
                          ', but the part-off fails its checks (see Part-off below).' if po_bad else
                          '; tab sizes were not measured when this run was simulated.'))
+        rub = [i for i in issues if i.get("severity") == "warning" and "rubbing" in (i.get("msg") or "")]
+        if rub:
+            nrub = sum(int(i.get("count") or 1) for i in rub)
+            vs.append(f'Warnings: {nrub:,} moves are flagged as "rubbing" (feed per tooth below 0.2× the recommended chip load, '
+                      f'tools {", ".join(sorted({(i.get("msg") or "").split(" for ")[1].split(" ")[0] for i in rub if " for " in (i.get("msg") or "")}))}). '
+                      'The checker computes the chip load at the tool centre, which under-reads helical and edge-compensated moves whose '
+                      'feed is programmed for the wall, so many of these are an artefact of the check; they are listed under Problems, not hidden.')
         top = sorted(regs, key=lambda r: -r.get("area_mm2", 0))[:3]
         if top:
             items = []
             for r in top:
-                h = (r.get("hint") or "").replace("failed: ", "").split(";")[0].strip()
-                items.append(f'<button class="region-btn inline" data-region="{r["id"]}">R{r["id"]}</button> {r["type"]} '
+                h = display_hint(r).replace("failed: ", "").split(";")[0].strip()
+                items.append(f'<button class="region-btn inline" data-region="{r["id"]}">R{r["id"]}</button> {_esc(where_words(r))}: {r["type"]} '
                              f'{r["area_mm2"]:g} mm² (worst {r["dev_extreme"]:+.2f} mm{"; " + _esc(h) if h else ""})')
             vs.append("Biggest problems: " + "; ".join(items) + ".")
         verdict = " ".join(vs)
@@ -922,6 +1009,41 @@ def build(run_dir, source: str | None = None) -> Path:
     score2 = (f'<div class="score-2"><span>proud (failed) <b>{_pct(ws["whole_surface_proud_pct"])}</b></span>'
               f'<span>gouged (failed) <b>{_pct(ws["whole_surface_gouge_pct"])}</b></span></div>'
               f'<div class="score-3">Not scored: tab witness excluded {_pct(w_)} · edge band (metrology) excluded {_pct(e_)}</div>') if score is not None else ""
+    # human title from the run description ("NIST FTC-10 (ASME …), …" -> "NIST FTC-10 test part")
+    import re as _re
+    t0 = _re.split(r"[(,;]", desc or "")[0].strip() if desc else ""
+    title = (t0 + " test part") if t0 and t0.lower() != name.lower() and not t0.lower().startswith(name.lower() + " ") else (t0 or name)
+    if "held-out" in (desc or "").lower():
+        title += " (held-out validation)"
+    hero_img = ('<figure class="hero-img"><img src="img/target_iso.png" alt="The finished part (target model, shaded)" '
+                'width="640" height="480"><figcaption>The part to be made (target model)</figcaption></figure>'
+                if (out / "img" / "target_iso.png").exists() else "")
+    dev_fig = ('<figure class="dev-map"><a href="img/deviation_views.png" target="_blank"><img src="img/deviation_views.png" '
+               'alt="Deviation of the machined part, six orthographic views" loading="lazy"></a><figcaption>The same deviation in six flat '
+               'views (top, bottom, front, back, left, right): small failures inside holes and on the underside are easier to spot '
+               'here. Open the image for full size.</figcaption></figure>' if (out / "img" / "deviation_views.png").exists() else "")
+    # two plain sentences for a non-machinist
+    if score is not None:
+        proud_mm2 = m.get("proud_area_mm2")
+        top = sorted(regs, key=lambda r: -r.get("area_mm2", 0))[:2]
+        groups = {}
+        for r in top:
+            groups.setdefault(where_words(r).split(",")[0], []).append(f'{r["area_mm2"]:g}')
+        where = "; ".join(f'{" and ".join(v)} mm² on {k}' for k, v in groups.items())
+        left = (f' What is not finished is mostly a little extra metal ({where}).' if top else '')
+        if po is not None and not po_bad:
+            wtab = [t.get("width_mm") for t in tabs if t.get("width_mm") is not None]
+            off = (f' It comes off the block on {len(tabs)} tab{"s" if len(tabs) != 1 else ""} about {max(wtab):g} mm wide, '
+                   'which the operator snaps off and files flush.') if wtab else ''
+        elif po_bad:
+            off = ' The final part-off does not yet pass its checks (see Holding and part-off).'
+        else:
+            off = ''
+        plain = (f'The {title.replace(" (held-out validation)", "")} was cut, in simulation, by a program the agent wrote: '
+                 f'<b>{score:.2f}%</b> of its surface ends within a tenth of a millimetre of the drawing'
+                 f'{"" if valid else ", but the program breaks a safety or part-off rule"}.{left}{off}')
+    else:
+        plain = 'This run was simulated before the whole-surface scoring rule; it has no headline score.'
     help_txt = """<details class="help-k"><summary>How the Machine view works</summary>
   <p>The machine is a trunnion (table-table) 5-axis mill. The spindle always points straight down and only moves in X, Y and Z.
   The <b>A axis</b> tilts the cradle about the machine X axis; the <b>C axis</b> turns the round platter on the cradle; the vise,
@@ -949,10 +1071,13 @@ def build(run_dir, source: str | None = None) -> Path:
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="hero-main">
-      <div class="eyebrow">CNC-LLM run report · 3+2 indexed 5-axis · {_esc(run.name)}</div>
-      <h1>{_esc(name)}</h1>
+      <div class="eyebrow">CNC-LLM run report · 3+2 indexed 5-axis · {_esc(name)} · {_esc(run.name)}</div>
+      <h1>{_esc(title)}</h1>
       <p class="desc">{_esc(desc)}</p>
-      <dl class="facts">
+      <p class="plain">{plain}</p>
+    </div>
+    {hero_img}
+    <dl class="facts">
         <div><dt>Material</dt><dd>AL6061 billet</dd></div>
         <div><dt>Stock</dt><dd>{_esc(stock_txt)}</dd></div>
         <div><dt>Workholding</dt><dd>{_esc(hold)}</dd></div>
@@ -961,8 +1086,7 @@ def build(run_dir, source: str | None = None) -> Path:
         <div><dt>Programmed by</dt><dd>{AGENT_LABEL}</dd></div>
         <div><dt>Date</dt><dd>{_esc(created_h)}</dd></div>
         <div><dt>Iterations</dt><dd>{len(hist)}{f' · final = #{final_iter}' if final_iter else ''}</dd></div>
-      </dl>
-    </div>
+    </dl>
     <div class="hero-score" aria-label="Final score">
       {f'<p class="int-fail" role="alert">{integrity_fail}</p>' if integrity_fail else ''}
       <div class="score-top">
@@ -999,6 +1123,7 @@ def build(run_dir, source: str | None = None) -> Path:
   anything that is not green is a failure (orange to dark red: material left; blue: cut too deep). Purple marks the tab witness, the
   small areas where a part-off tab joins the part. Click a marker, a region in the Problems table or the surface itself to see why it failed.</p></div>
   {res_block}
+  {dev_fig}
 </section>
 <section id="partoff">
   <div class="sec-head"><h2>Holding and part-off</h2><p class="sub">The part is machined out of a block held by its bottom in one vise. It must stay connected to the gripped
@@ -1008,7 +1133,7 @@ def build(run_dir, source: str | None = None) -> Path:
   <h3 class="sub-h">Rigidity through the program</h3>
   <div class="two rig-two">
     <div class="card chart-card">{_rigidity_chart(rg)}</div>
-    <div>{_conn_maps(cm, conn) or '<p class="muted">No connection-plane maps.</p>'}</div>
+    <div>{_conn_maps(cm, conn, po) or '<p class="muted">No connection-plane maps.</p>'}</div>
   </div>
 </section>
 <section id="problems">
@@ -1023,7 +1148,8 @@ def build(run_dir, source: str | None = None) -> Path:
   {_setups_table(segs, conn, fixmoves)}
 </section>
 <section id="history">
-  <div class="sec-head"><h2>Iteration history</h2><p class="sub">Score per simulated iteration and the agent's own notes on what it changed.</p></div>
+  <div class="sec-head"><h2>Iteration history</h2><p class="sub">Score per simulated iteration and the agent's own notes on what it changed.
+  Every area counts in every score; the notes are the agent's working comments and do not change any number.</p></div>
   <div class="card chart-card">{_history_svg5(hist, final_iter)}</div>
   <div class="iters">{''.join(cards)}</div>
 </section>

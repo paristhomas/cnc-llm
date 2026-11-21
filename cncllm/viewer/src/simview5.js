@@ -123,8 +123,9 @@ export class SimView5 {
     mc.part.add(this.vise.group);
     // machine framing: the platter and the swing envelope of the job around the rotary centre
     const d = mc.dims;
-    this.mFitLo = new THREE.Vector3(-d.xa - d.ta * 0.5, -d.Rp * 0.95, d.zT - d.tp * 0.6);
-    this.mFitHi = new THREE.Vector3(d.xa + d.ta * 0.5, d.Rp * 0.95, Math.max(d.rStock * 0.95, 30));
+    const rj = Math.max(d.rStock, 30);
+    this.mFitLo = new THREE.Vector3(-rj * 0.78, -rj * 0.78, -rj * 0.62);
+    this.mFitHi = new THREE.Vector3(rj * 0.78, rj * 0.78, rj * 0.78);
     // per-setup table angles: displayed = sim5.frame_angles, kinematic = true azimuth, unwrapped (short way)
     const ang = setupAngles(segs.map((s) => s.R));
     segs.forEach((s, i) => {
@@ -170,7 +171,8 @@ export class SimView5 {
     els.view.querySelector('.vp-msg')?.remove();
     this.mode = null;
     this.setMode('machine', false);
-    this.setCursor(0);
+    // open on the end of the first setup (machined top, the table about to tilt), not on a blank block
+    this.setCursor(this.N > 1 ? segs[1].a : 0);
     this.updateTool(0);
     this.stage.invalidate();
   }
@@ -337,6 +339,18 @@ export class SimView5 {
   swingMoves(s) {   // does the table actually move between segment s-1 and s
     const a = this.segs[s - 1].ang, b = this.segs[s].ang;
     return Math.abs(a.Ak - b.Ak) > 1e-6 || Math.abs(a.Ck - b.Ck) > 1e-6;
+  }
+  swingText(a, b) {
+    const A = this.segs[a].ang, B = this.segs[b].ang, f = (v) => `${Math.round(v * 10) / 10}°`;
+    const dA = Math.abs(A.Ak - B.Ak) > 1e-6, dC = Math.abs(A.Ck - B.Ck) > 1e-6;
+    const ta = `cradle tilts A ${f(A.A)} → ${f(B.A)}`, tc = `platter turns C ${f(A.C)} → ${f(B.C)}`;
+    return dA && dC ? `${ta}, ${tc}` : dA ? ta : dC ? tc : 'same table angles, new work plane';
+  }
+  playFirstTilt() {
+    if (this.N < 2) { this.togglePlay(); return; }
+    const a = this.segs[1].a, c = this.D.cum;
+    this.setCursor(this.timeToCursor(Math.max(0, c[a] - this.speed * 1.2)));
+    if (!this.playing) this.togglePlay();
   }
   advanceClock(dt) {
     let t = this.playTime, budget = dt;   // real seconds
@@ -555,7 +569,7 @@ export class SimView5 {
     const st = this.stage;
     let v, lo = this.fitLo, hi = this.fitHi, margin = 1.3;
     if (this.mode === 'machine') {
-      lo = this.mFitLo; hi = this.mFitHi; margin = 1.08;
+      lo = this.mFitLo; hi = this.mFitHi; margin = 1.0;
       const portrait = st.camera.aspect < 0.9;
       const dirs = { machine: portrait ? [-0.7, -1.0, 0.9] : [-0.78, -1.2, 0.74], iso: [-0.78, -1.2, 0.74], front: [0, -1, 0.3], side: [-1, -0.08, 0.3], top: [0, -0.0001, 1], back: [0.6, 1, 0.55] };
       v = new THREE.Vector3(...(dirs[name] || dirs.machine));
@@ -611,7 +625,7 @@ export class SimView5 {
   seekSwing(seg, t) {
     const s = this.segs[Math.max(1, Math.min(seg, this.N - 1))];
     const a = s.a, p = this.D.phi[a] || 0;
-    this.playing = false; this.syncPlay();
+    this.playing = false; this.syncPlay(); this.hideCta();
     this.setCursor(a + Math.min(Math.max(t, 0), 1) * p);
     this.shownPos = undefined;
     return { seg: Math.max(1, Math.min(seg, this.N - 1)), cursor: this.cursor, phi: p };
@@ -721,7 +735,7 @@ export class SimView5 {
     this.tlEl = q('.tl');
     this.timeEl = q('.time');
     this.playBtn.onclick = () => this.togglePlay();
-    const stop = () => { this.playing = false; this.syncPlay(); };
+    const stop = () => { this.playing = false; this.syncPlay(); this.hideCta(); };
     els.controls.querySelectorAll('[data-act]').forEach((b) => (b.onclick = () => {
       const a = b.dataset.act;
       stop();
@@ -811,6 +825,13 @@ export class SimView5 {
     els.view.appendChild(tog);
     this.modeBtns = [...tog.querySelectorAll('[data-mode]')];
     this.modeBtns.forEach((b) => (b.onclick = () => this.setMode(b.dataset.mode)));
+    const cta = document.createElement('button');
+    cta.type = 'button';
+    cta.className = 'vp-cta';
+    cta.innerHTML = `${ICON.play}<span>Play the first table move</span>`;
+    cta.onclick = () => { cta.hidden = true; this.playFirstTilt(); };
+    els.view.appendChild(cta);
+    this.cta = cta;
     const dro = document.createElement('div');
     dro.className = 'dro';
     dro.setAttribute('aria-label', 'Machine position readout');
@@ -868,6 +889,7 @@ export class SimView5 {
     this.gotoSeg(Math.max(0, Math.min(t, this.N - 1)), dir > 0 && cur >= this.N - 1);
   }
   gotoSeg(s, toEnd = false) {
+    this.hideCta();
     if (toEnd) { this.setCursor(this.n); return; }
     const sg = this.segs[s];
     // at the start of the setup's first feed move (the tool shown at its first cutting position, not parked)
@@ -886,7 +908,9 @@ export class SimView5 {
     u.uOldA.value = 0.1;
     this.stage.invalidate();
   }
+  hideCta() { if (this.cta) this.cta.hidden = true; }
   togglePlay() {
+    this.hideCta();
     if (!this.playing && this.cursor >= this.n) this.setCursor(0);
     this.playing = !this.playing;
     this.lastT = performance.now();
@@ -957,9 +981,10 @@ export class SimView5 {
       const v = { X: mp.tip[0], Y: mp.tip[1], Z: mp.tip[2], A: mp.dispA, C: mp.dispC };
       for (const k of Object.keys(v)) this.droV[k].textContent = fmtN(v[k], 9);
       this.droEl.querySelector('.dot').style.background = td ? this.toolColor(t) : 'transparent';
-      this.droEl.querySelector('.dro-tool').textContent = toolTxt;
+      const dt = this.droEl.querySelector('.dro-tool');
+      dt.textContent = toolTxt; dt.title = toolTxt;
       this.droEl.querySelector('.dro-line').textContent = `N${showLine}  ${code.trim()}`;
-      const ph = mp.indexing ? { retract: 'retract (Z up)', swing: mp.tableMoves ? 'table swings: A and C turn the part' : 'same table angles, new work plane', approach: 're-approach' }[mp.phase] : '';
+      const ph = mp.indexing ? { retract: 'retract (Z up)', swing: this.swingText(mp.from, mp.seg), approach: 're-approach' }[mp.phase] : '';
       const pe = this.droEl.querySelector('.dro-phase');
       pe.textContent = mp.indexing ? `Re-orienting to setup ${si + 1} · ${ph}` : `Setup ${si + 1}/${this.N} · ${rapid ? 'G0 rapid' : 'F' + Math.round(D.feed[m])} · ${spin && !mp.indexing ? 'S' + Math.round(rpm) : 'spindle off'}`;
       pe.classList.toggle('on', !!mp.indexing);

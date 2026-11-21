@@ -2,7 +2,7 @@
 // 3+2 cutting simulation and the final result view. Exposes window.CNCViewer for tests.
 import * as THREE from 'three';
 import { SimView5 } from './simview5.js';
-import { ResultView5 } from './resultview5.js';
+import { ResultView5, TabsView } from './resultview5.js';
 import { TOOL_PALETTE } from './colors.js';
 import { topField } from './geom5.js';
 import workerSrc from '../dist/worker5.txt';
@@ -150,6 +150,14 @@ async function boot() {
     return api.result;
   };
   api.makeResult = makeResult;
+  // part-off 3D close-up, created when its section comes near the viewport
+  const tabEl = document.getElementById('tabview');
+  if (tabEl) {
+    const makeTabs = () => { if (api.tabs) return api.tabs; try { api.tabs = new TabsView(D, tabEl); } catch (e) { fail(e); } return api.tabs; };
+    api.makeTabs = makeTabs;
+    if (STATIC) makeTabs();
+    else { const io2 = new IntersectionObserver((e) => { if (e[0].isIntersecting) { makeTabs(); io2.disconnect(); } }, { rootMargin: '400px' }); io2.observe(tabEl); }
+  }
   if (resEl) {
     if (STATIC) makeResult();
     else {
