@@ -9,7 +9,7 @@ Brief: `docs/BRIEF_REFINE_3PLUS2.md`. Criteria fixed before any result: `docs/AC
 > `Documents/open_source/cnc-llm`). To publish: `git push origin claude/3plus2-refine`.
 
 ## The owner's 5-minute check
-1. **Headline.** Open the FTC-10 report (artifact link in the final message, or
+1. **Headline.** Open the FTC-10 report (artifact https://claude.ai/artifact/8SUv9o6UWXEH1dwkh3xe2a, private to the owner until shared; or
    `runs/ftc10/20261121-012221-refine/report/index.html`). The headline is the **whole-surface** score, 99.89 %. The
    tab witness (0.16 %) is shown separately. Nothing else is excluded; the edge band is scored by its neighbours.
 2. **Machine view.** Press "Play the first table move". At each change of orientation, the cradle (A) and the platter
