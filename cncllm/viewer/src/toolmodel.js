@@ -64,11 +64,22 @@ export function buildTool(t, color) {
   cutter.castShadow = true;
   const spin = new THREE.Group();
   spin.add(cutter);
+  // neck (long-reach tools): 0.95 x D from the flute length up to neck_length (tip to shank start)
+  const nl = t.neck_length || 0;
+  let shank0 = topCut;
+  if (nl > topCut + 0.01) {
+    const nr = 0.95 * t.diameter / 2;
+    const ng = new THREE.CylinderGeometry(nr, nr, nl - topCut, 32, 1, false);
+    ng.rotateX(Math.PI / 2); ng.translate(0, 0, topCut + (nl - topCut) / 2);
+    const neck = new THREE.Mesh(ng, shankM); neck.castShadow = true;
+    spin.add(neck);
+    shank0 = nl;
+  }
   // shank
   const sr = (t.shank_diameter || t.diameter) / 2;
-  const shLen = Math.max(so - topCut, 0.1);
+  const shLen = Math.max(so - shank0, 0.1);
   const sh = new THREE.CylinderGeometry(sr, sr, shLen, 32, 1, false);
-  sh.rotateX(Math.PI / 2); sh.translate(0, 0, topCut + shLen / 2);
+  sh.rotateX(Math.PI / 2); sh.translate(0, 0, shank0 + shLen / 2);
   const shank = new THREE.Mesh(sh, shankM); shank.castShadow = true;
   spin.add(shank);
   // colour band identifying the tool (matches the legend / toolpath colour)

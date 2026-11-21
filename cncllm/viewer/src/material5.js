@@ -162,16 +162,23 @@ export class Material5 {
     const segCol = new THREE.Color().setRGB(...(self >= 0 ? this.segRGB[self % this.segRGB.length] : ALU_RAW), THREE.SRGBColorSpace);
     const raw = new THREE.Color().setRGB(...ALU_RAW, THREE.SRGBColorSpace);
     const alu = new THREE.Color().setRGB(...ALU, THREE.SRGBColorSpace);
+    // fixture (G54) coordinates of a vertex = this mesh's own local matrix (identity for the stock box, the segment
+    // frame for a height-field surface), independent of any parent transform: the material can sit under the rotating
+    // table of the Machine view and the clipping against the fixture-frame constraints stays exact.
+    const local = new THREE.Matrix4();
+    if (sg) local.set(sg.R[0][0], sg.R[0][1], sg.R[0][2], sg.o[0], sg.R[1][0], sg.R[1][1], sg.R[1][2], sg.o[1], sg.R[2][0], sg.R[2][1], sg.R[2][2], sg.o[2], 0, 0, 0, 1);
     mat.onBeforeCompile = (sh) => {
       for (const k of Object.keys(U)) sh.uniforms[k] = U[k];
       sh.uniforms.uSelf = { value: self };
       sh.uniforms.uSegCol = { value: segCol };
       sh.uniforms.uRaw = { value: raw };
       sh.uniforms.uAlu = { value: alu };
+      sh.uniforms.uLocal = { value: local };
       const isSurf = self >= 0;
       let vs = sh.vertexShader.replace('#include <common>', `#include <common>
 ${common}
 uniform highp sampler2D uOT;
+uniform mat4 uLocal;
 varying vec3 vW5; varying float vCut5; flat out int vOwn5;`);
       vs = vs.replace('#include <begin_vertex>', isSurf ? `#include <begin_vertex>
 {
@@ -184,7 +191,7 @@ varying vec3 vW5; varying float vCut5; flat out int vOwn5;`);
 }` : `#include <begin_vertex>
 vCut5 = 1.0; vOwn5 = 0;`);
       vs = vs.replace('#include <project_vertex>', `#include <project_vertex>
-vW5 = (modelMatrix * vec4(transformed, 1.0)).xyz;`);
+vW5 = (uLocal * vec4(transformed, 1.0)).xyz;`);
       sh.vertexShader = vs;
       let fs = sh.fragmentShader.replace('#include <common>', `#include <common>
 ${common}

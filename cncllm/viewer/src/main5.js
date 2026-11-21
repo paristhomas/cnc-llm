@@ -123,6 +123,22 @@ async function boot() {
     api.sim = new SimView5(D, { view: simEl, controls: document.getElementById('simcontrols'), side: document.getElementById('simside') }, toolColor, workerSrc);
   } catch (e) { fail(e); return; }
   api.data = D;
+  // Machine view self-check from the rendered objects (see SimView5.machineCheck), before the page reports ready
+  try {
+    const t0 = performance.now();
+    window.__machineCheck = api.sim.machineCheck();
+    window.__machineCheck.ms = Math.round(performance.now() - t0);
+    if (!window.__machineCheck.pass) console.warn('Machine view self-check failed', window.__machineCheck);
+  } catch (e) { console.error('Machine view self-check could not run', e); window.__machineCheck = { error: String(e) }; }
+  // deterministic hooks for reviews and screenshots
+  window.__viewer = {
+    seekSwing: (seg, t) => api.sim.seekSwing(seg, t),
+    setMode: (m) => api.sim.setMode(m, false),
+    gotoSeg: (s) => api.sim.gotoSeg(s),
+    seekU: (u) => { api.sim.playing = false; api.sim.syncPlay(); api.sim.setCursor(api.sim.uToCursor(u)); return api.sim.cursor; },
+    state: () => ({ mode: api.sim.mode, cursor: api.sim.cursor, caught: !!api.sim.caught, u: api.sim.cursorToU(api.sim.cursor),
+      segments: api.sim.N, playing: api.sim.playing, pose: api.sim.mp ? { phase: api.sim.mp.phase, A: api.sim.mp.dispA, C: api.sim.mp.dispC, tip: api.sim.mp.tip } : null }),
+  };
   const resEl = document.getElementById('resview');
   let pendingRegion = null;
   const makeResult = () => {

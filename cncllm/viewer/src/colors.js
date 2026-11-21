@@ -44,3 +44,18 @@ export function devGradientCSS(tol) {
   return `linear-gradient(90deg, ${DEV.gougeDeep} 0%, ${DEV.gouge} ${p(-(tol + 0.25 * (1 - tol)))}, rgb(168,196,237) ${p(-tol)}, ` +
     `${DEV.ok} ${p(-tol)}, ${DEV.ok} ${p(tol)}, rgb(245,184,168) ${p(tol)}, ${DEV.proud} ${p(tol + 0.25 * (1 - tol))}, ${DEV.proudDeep} 100%)`;
 }
+
+// 3+2 report colours (same as the simulator's deviation plots, cncllm/x5.py DEV_COLORS / dev_colors): green within
+// tolerance, proud orange -> dark red with magnitude (tol .. 1 mm), gouge blue, tab witness purple.
+export const DEV5 = { ok: '#3f9b5a', proudLo: '#f39c34', proudHi: '#8f1414', gouge: '#2160c4', witness: '#8e5bd0' };
+const C5 = Object.fromEntries(Object.entries(DEV5).map(([k, v]) => [k, hexRgb(v)]));
+export function devColor5(d, tol) {
+  if (d > tol) return lerp(C5.proudLo, C5.proudHi, Math.min(Math.max((d - tol) / 0.9, 0), 1));
+  if (d < -tol) return C5.gouge;
+  return C5.ok;
+}
+export function devGradient5CSS(tol) {   // colour bar over -1 .. +1 mm
+  const p = (v) => (50 + v * 50).toFixed(2) + '%';
+  return `linear-gradient(90deg, ${DEV5.gouge} 0%, ${DEV5.gouge} ${p(-tol)}, ${DEV5.ok} ${p(-tol)}, ${DEV5.ok} ${p(tol)}, ` +
+    `${DEV5.proudLo} ${p(tol)}, ${DEV5.proudHi} 100%)`;
+}

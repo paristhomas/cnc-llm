@@ -160,8 +160,9 @@ def _subdivide(V, F, TF, budget=MAX_SUBDIV_TRIS, min_edge=0.3):
     return V2[first], inv.ravel()[F2], TF2
 
 
-def _vertex_deviation(part, dev, V, F, TF):
-    """Deviation and class per mesh vertex from the nearest probe point on the same B-rep face."""
+def _vertex_deviation(part, dev, V, F, TF, pclass=None):
+    """Deviation and class per mesh vertex from the nearest probe point on the same B-rep face (class from `pclass`,
+    default part.pclass)."""
     from scipy.spatial import cKDTree
 
     nv = len(V)
@@ -170,6 +171,7 @@ def _vertex_deviation(part, dev, V, F, TF):
     vdev = np.zeros(nv)
     vcls = np.zeros(nv, np.int8)
     P, pf = part.P, part.pface
+    pclass = part.pclass if pclass is None else np.asarray(pclass)
     # probes in the edge band (within 0.03 mm of a face boundary) are excluded from the score: colour the faces
     # from their interior probes (fall back to all probes of a face that has no interior ones)
     edge = getattr(part, "pedge", None)
@@ -197,14 +199,14 @@ def _vertex_deviation(part, dev, V, F, TF):
         w = 1.0 / np.maximum(d, 1e-4)
         pi = idx[nn]
         vdev[vi] = (dev[pi] * w).sum(1) / w.sum(1)
-        vcls[vi] = part.pclass[pi[:, 0]]
+        vcls[vi] = pclass[pi[:, 0]]
         done[vi] = True
     rest = np.where(~done)[0]
     if len(rest):
         tree = cKDTree(P)
         _, nn = tree.query(V[rest])
         vdev[rest] = dev[nn]
-        vcls[rest] = part.pclass[nn]
+        vcls[rest] = pclass[nn]
     return vdev, vcls
 
 
