@@ -908,7 +908,7 @@ def build(run_dir, source: str | None = None) -> Path:
     if score is not None:
         score_label = (f'of the whole part surface within ±{tol:g} mm'
                        + (' · same program, re-scored under the whole-surface rule' if rescored else
-                          f' · trusted final evaluation of iteration {final_iter}' if is_final else ' (latest iteration, not evaluated)'))
+                          (f' · final evaluation of iteration {final_iter}, integrity check failed' if integrity_fail else f' · trusted final evaluation of iteration {final_iter}') if is_final else ' (latest iteration, not evaluated)'))
     else:
         score_label = 'no whole-surface score: this run was simulated before the rule and has not been re-scored yet'
     score2 = (f'<div class="score-2"><span>proud (failed) <b>{_pct(ws["whole_surface_proud_pct"])}</b></span>'
